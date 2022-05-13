@@ -1,0 +1,76 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "github.com/wzyjerry/auth/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Security security = 3;
+}
+
+message Server {
+  message HTTP {
+    string addr = 1;
+    google.protobuf.Duration timeout = 2;
+  }
+  message GRPC {
+    string addr = 1;
+    google.protobuf.Duration timeout = 2;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+}
+
+message Data {
+  message Postgres {
+    string env = 1;
+  }
+  message Redis {
+    string env = 1;
+    google.protobuf.Duration read_timeout = 2;
+    google.protobuf.Duration write_timeout = 3;
+  }
+  Postgres postgres = 1;
+  Redis redis = 2;
+}
+
+message Security {
+  string password_regex = 1;
+  Aliyun aliyun = 2;
+  Oauth oauth = 3;
+  Expiration expiration = 4;
+}
+
+message Expiration {
+  google.protobuf.Duration code = 1;
+}
+
+message Aliyun {
+  Email email = 1;
+  Sms sms = 2;
+}
+
+message Email {
+  string access_key_id = 1;
+  string access_key_secret = 2;
+  string account_name = 3;
+  string from_alias = 4;
+}
+
+message Sms {
+  string access_key_id = 1;
+  string access_key_secret = 2;
+  string sign_name = 3;
+}
+
+message Oauth {
+  Github github = 1;
+}
+
+message Github {
+  string client_id = 1;
+  string client_secret = 2;
+}

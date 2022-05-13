@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package login.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+option go_package = "api/login/v1;v1";
+
+enum Type {
+    TYPE_UNSET = 0;
+    TYPE_ACCOUNT = 1;
+    TYPE_EMAIL = 2;
+    TYPE_PHONE = 4;
+}
+
+enum Method {
+    METHOD_UNSET = 0;
+    METHOD_PASSWORD = 1;
+    METHOD_CODE = 2;
+}
+
+message LoginRequest {
+    int32 scope = 1;
+    Method method = 2;
+    string unique = 3;
+    string secret = 4;
+}
+
+message LoginReply {
+    string token_type = 1;
+    int32 expires_in = 2;
+    string scope = 3;
+    string access_token = 4;
+    string refresh_token = 5;
+    string id_token = 6;
+}
+
+message PrePhoneRequest {
+    string phone = 1;
+}
+
+message PreEmailRequest {
+    string email = 1;
+}
+
+service Login {
+    rpc PrePhone(PrePhoneRequest) returns (google.protobuf.Empty);
+    rpc PreEmail(PreEmailRequest) returns (google.protobuf.Empty);
+    rpc Login (LoginRequest) returns (LoginReply);
+}
