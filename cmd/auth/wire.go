@@ -14,6 +14,7 @@ import (
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
 	"github.com/wzyjerry/auth/internal/service"
+	"github.com/wzyjerry/auth/internal/util"
 )
 
 // wireApp init kratos application.
@@ -23,5 +24,5 @@ func wireApp(
 	*conf.Security,
 	log.Logger,
 ) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, util.ProviderSet, newApp))
 }

@@ -2,7 +2,9 @@ package data
 
 import (
 	"context"
+	"crypto/rsa"
 	"database/sql"
+	"encoding/base64"
 	"os"
 
 	"entgo.io/ent/dialect"
@@ -10,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/wire"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pkg/errors"
@@ -19,12 +22,24 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewRegisterRepo)
+var ProviderSet = wire.NewSet(NewData, NewUserRepo, NewPrivateKey)
 
 // Data .
 type Data struct {
 	db    *PostgresClient
 	redis *redis.Client
+}
+
+func NewPrivateKey(c *conf.Security, logger log.Logger) *rsa.PrivateKey {
+	result, err := base64.StdEncoding.DecodeString(os.Getenv(c.PrivateKey))
+	if err != nil {
+		log.Fatalf("failed parse base64 private key: %v", err)
+	}
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(result)
+	if err != nil {
+		log.Fatalf("failed parse private key: %v", err)
+	}
+	return privateKey
 }
 
 // NewData .

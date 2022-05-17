@@ -14,6 +14,7 @@ import (
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
 	"github.com/wzyjerry/auth/internal/service"
+	"github.com/wzyjerry/auth/internal/util"
 )
 
 // Injectors from wire.go:
@@ -24,12 +25,16 @@ func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Securi
 	if err != nil {
 		return nil, nil, err
 	}
-	registerRepo := data.NewRegisterRepo(dataData, security, logger)
-	aliyunHelper := biz.NewAliyunHelper(logger, security)
-	registerUsecase := biz.NewRegisterUsecase(registerRepo, security, aliyunHelper, logger)
+	userRepo := data.NewUserRepo(dataData, security, logger)
+	aliyunHelper := util.NewAliyunHelper(logger, security)
+	registerUsecase := biz.NewRegisterUsecase(userRepo, security, aliyunHelper)
 	registerService := service.NewRegisterService(registerUsecase)
-	httpServer := server.NewHTTPServer(confServer, logger, registerService)
-	grpcServer := server.NewGRPCServer(confServer, logger, registerService)
+	privateKey := data.NewPrivateKey(security, logger)
+	tokenHelper := util.NewTokenHelper(security, privateKey)
+	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase)
+	loginService := service.NewLoginService(loginUsecase, security, tokenHelper)
+	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService)
+	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
 		cleanup()

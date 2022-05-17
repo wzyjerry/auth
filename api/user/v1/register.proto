@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+option go_package = "api/user/v1;v1";
+
+message RegisterAccountRequest {
+    string username = 1 [(validate.rules).string.min_len = 1]; // 账户名(*)
+    string password = 2 [(validate.rules).string.min_len = 1]; // 密码
+    string nickname = 3 [(validate.rules).string.min_len = 1]; // 昵称
+}
+
+message RegisterReply {
+    string id = 1; // 用户ID
+}
+
+message RegisterPreEmailRequest {
+    string email = 1 [(validate.rules).string.min_len = 1]; // 邮箱(*)
+}
+
+message RegisterEmailRequest {
+    string email = 1 [(validate.rules).string.email = true]; // 邮箱(*)
+    string password = 2 [(validate.rules).string.min_len = 1]; // 密码
+    string nickname = 3 [(validate.rules).string.min_len = 1]; // 昵称
+    string code = 4 [(validate.rules).string.min_len = 1]; // 验证码
+}
+
+message RegisterPrePhoneRequest {
+    string phone = 1 [(validate.rules).string = {
+        pattern: "^\\+[1-9]\\d{1,14}$"
+    }]; // 手机号(*)
+}
+
+message RegisterPhoneRequest {
+    string phone = 1 [(validate.rules).string.min_len = 1]; // 手机号(*)
+    string password = 2 [(validate.rules).string.min_len = 1]; // 密码
+    string nickname = 3 [(validate.rules).string.min_len = 1]; // 昵称
+    string code = 4 [(validate.rules).string.min_len = 1]; // 验证码
+}
+
+service Register {
+    rpc Account (RegisterAccountRequest) returns (RegisterReply) {
+        option (google.api.http) = {
+            post: "/user/v1/register/account"
+            body: "*"
+        };
+    }
+    rpc PreEmail(RegisterPreEmailRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/v1/register/pre_email"
+            body: "*"
+        };
+    }
+    rpc Email (RegisterEmailRequest) returns (RegisterReply) {
+        option (google.api.http) = {
+            post: "/user/v1/register/email"
+            body: "*"
+        };
+    }
+    rpc PrePhone (RegisterPrePhoneRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/v1/register/pre_phone"
+            body: "*"
+        };
+    }
+    rpc Phone (RegisterPhoneRequest) returns (RegisterReply) {
+        option (google.api.http) = {
+            post: "/user/v1/register/phone"
+            body: "*"
+        };
+    }
+}

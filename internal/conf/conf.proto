@@ -39,13 +39,18 @@ message Data {
 
 message Security {
   string password_regex = 1;
-  Aliyun aliyun = 2;
-  Oauth oauth = 3;
-  Expiration expiration = 4;
+  string private_key = 2;
+  Aliyun aliyun = 3;
+  Oauth oauth = 4;
+  Expiration expiration = 5;
 }
 
 message Expiration {
   google.protobuf.Duration code = 1;
+  google.protobuf.Duration token_extend = 2;
+  google.protobuf.Duration access_token_min = 3;
+  google.protobuf.Duration access_token_max = 4;
+  google.protobuf.Duration refresh_token = 5;
 }
 
 message Aliyun {
@@ -67,7 +72,8 @@ message Sms {
 }
 
 message Oauth {
-  Github github = 1;
+  string client_id = 1;
+  Github github = 2;
 }
 
 message Github {

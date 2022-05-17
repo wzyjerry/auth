@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 	math_rand "math/rand"
+
+	"github.com/google/uuid"
+	"github.com/google/wire"
 )
 
 func P[T any](v T) *T {
@@ -13,7 +16,8 @@ func P[T any](v T) *T {
 }
 
 var (
-	rnd *rand.Rand
+	rnd         *rand.Rand
+	ProviderSet = wire.NewSet(NewTokenHelper, NewAliyunHelper)
 )
 
 func init() {
@@ -24,4 +28,12 @@ func init() {
 
 func Rnd6() string {
 	return fmt.Sprintf("%06v", rnd.Int31n(1000000))
+}
+
+func RndFloat64() float64 {
+	return rnd.Float64()
+}
+
+func NewUUID() string {
+	return uuid.NewString()
 }

@@ -2,12 +2,9 @@ package biz
 
 import (
 	"context"
-	"net/http"
 	"strings"
 
 	"github.com/dlclark/regexp2"
-	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/ent"
 	"github.com/wzyjerry/auth/internal/ent/schema/authenticatorNested"
@@ -17,42 +14,24 @@ import (
 )
 
 var (
-	passwordRegex            *regexp2.Regexp
-	ErrUnknownKind           = errors.New(http.StatusInternalServerError, "UNKNOWN_KIND", "unknown kind")
-	ErrInvalidPassword       = errors.New(http.StatusBadRequest, "INVALID_PASSWORD", "incalid password")
-	ErrCodeMismatch          = errors.New(http.StatusBadRequest, "CODE_MISMATCH", "code mismatch")
-	ErrAuthenticatorConflict = errors.New(http.StatusConflict, "AUTHENTICATOR_CONFLICT", "authenticator conflict")
+	passwordRegex *regexp2.Regexp
 )
 
-type RegisterRepo interface {
-	// redis部分
-	CachePreEmail(ctx context.Context, email string, code string) error
-	CachePrePhone(ctx context.Context, phone string, code string) error
-	VerifyPreEmailCode(ctx context.Context, email string, code string) (bool, error)
-	VerifyPrePhoneCode(ctx context.Context, phone string, code string) (bool, error)
-	// db部分
-	GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique string) (*ent.Authenticator, error)
-	CreateUser(ctx context.Context, kind int32, anchor *authenticatorNested.Anchor, password *string, nickname string, ip string, avatar *string) (string, error)
-}
-
 type RegisterUsecase struct {
-	repo   RegisterRepo
-	helper *AliyunHelper
+	repo   UserRepo
+	helper *util.AliyunHelper
 	conf   *conf.Security
-	log    *log.Helper
 }
 
 func NewRegisterUsecase(
-	repo RegisterRepo,
+	repo UserRepo,
 	conf *conf.Security,
-	helper *AliyunHelper,
-	logger log.Logger,
+	helper *util.AliyunHelper,
 ) *RegisterUsecase {
 	return &RegisterUsecase{
 		repo:   repo,
 		conf:   conf,
 		helper: helper,
-		log:    log.NewHelper(logger),
 	}
 }
 
@@ -123,10 +102,10 @@ func (uc *RegisterUsecase) PreEmail(ctx context.Context, email string) error {
 		return ErrAuthenticatorConflict
 	}
 	code := util.Rnd6()
-	if err := uc.helper.SendEmail(email, NewEmailHtmlCode(code)); err != nil {
+	if err := uc.helper.SendEmail(email, uc.helper.NewEmailHtmlCode(code)); err != nil {
 		return err
 	}
-	if err := uc.repo.CachePreEmail(ctx, email, code); err != nil {
+	if err := uc.repo.CacheRegisterEmail(ctx, email, code); err != nil {
 		return err
 	}
 	return nil
@@ -141,22 +120,22 @@ func (uc *RegisterUsecase) PrePhone(ctx context.Context, phone string) error {
 	// 区分国内国际模板
 	switch {
 	case strings.HasPrefix(phone, "+86"):
-		if err := uc.helper.SendSms(phone, NewSms228845627(code)); err != nil {
+		if err := uc.helper.SendSms(phone, uc.helper.NewSms228845627(code)); err != nil {
 			return err
 		}
 	default:
-		if err := uc.helper.SendSms(phone, NewSms228852216(code)); err != nil {
+		if err := uc.helper.SendSms(phone, uc.helper.NewSms228852216(code)); err != nil {
 			return err
 		}
 	}
-	if err := uc.repo.CachePrePhone(ctx, phone, code); err != nil {
+	if err := uc.repo.CacheRegisterPhone(ctx, phone, code); err != nil {
 		return err
 	}
 	return nil
 }
 
 // email 邮箱注册，email为唯一值，nickname必填，password和avatar选填
-func (uc *RegisterUsecase) email(ctx context.Context, email string, password *string, nickname string) (string, error) {
+func (uc *RegisterUsecase) Email(ctx context.Context, email string, password *string, nickname string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
 		return "", err
@@ -182,7 +161,7 @@ func (uc *RegisterUsecase) email(ctx context.Context, email string, password *st
 }
 
 // phone 手机注册，phone为唯一值，nickname必填，password和avatar选填
-func (uc *RegisterUsecase) phone(ctx context.Context, phone string, password *string, nickname string) (string, error) {
+func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, password *string, nickname string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
 		return "", err
@@ -208,19 +187,19 @@ func (uc *RegisterUsecase) phone(ctx context.Context, phone string, password *st
 }
 
 // Phone 手机密码注册，phone为唯一值，nickname、code和password必填
-func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, code string, password string, nickname string) (string, error) {
-	verified, err := uc.repo.VerifyPrePhoneCode(ctx, phone, code)
+func (uc *RegisterUsecase) PhonePassword(ctx context.Context, phone string, code string, password string, nickname string) (string, error) {
+	verified, err := uc.repo.VerifyRegisterPhoneCode(ctx, phone, code)
 	if err != nil || !verified {
 		return "", ErrCodeMismatch
 	}
-	return uc.phone(ctx, phone, &password, nickname)
+	return uc.Phone(ctx, phone, &password, nickname)
 }
 
 // Email 邮箱密码注册，email为唯一值，nickname、code和password必填
-func (uc *RegisterUsecase) Email(ctx context.Context, email string, code string, password string, nickname string) (string, error) {
-	verified, err := uc.repo.VerifyPreEmailCode(ctx, email, code)
+func (uc *RegisterUsecase) EmailPassword(ctx context.Context, email string, code string, password string, nickname string) (string, error) {
+	verified, err := uc.repo.VerifyRegisterEmailCode(ctx, email, code)
 	if err != nil || !verified {
 		return "", ErrCodeMismatch
 	}
-	return uc.email(ctx, email, &password, nickname)
+	return uc.Email(ctx, email, &password, nickname)
 }

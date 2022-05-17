@@ -14,6 +14,8 @@ data:
     write_timeout: 0.2s
 security:
   password_regex: "^(?=.*?[0-9]+)(?=.*?[a-zA-Z]+).{8,}$"
+  private_key: PRIVATE_KEY
+  
   aliyun:
     email:
       access_key_id: ALIYUN_EMAIL_ACCESS_KEY_ID
@@ -25,8 +27,13 @@ security:
       access_key_secret: ALIYUN_SMS_ACCESS_KEY_SECRET
       sign_name: AMiner
   oauth:
+    client_id: OAUTH_CLIENT_ID
     github:
       client_id: OAUTH_GITHUB_CLIENT_ID
       client_secret: OAUTH_GITHUB_CLIENT_SECRET
   expiration:
     code: 600s
+    token_extend: 300s
+    access_token_min: 3600s
+    access_token_max: 5400s
+    refresh_token: 7776000s

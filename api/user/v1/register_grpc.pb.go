@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.15.6
-// source: register/v1/register.proto
+// source: user/v1/register.proto
 
 package v1
 
@@ -23,11 +23,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RegisterClient interface {
-	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*RegisterReply, error)
-	PreEmail(ctx context.Context, in *PreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Email(ctx context.Context, in *EmailRequest, opts ...grpc.CallOption) (*RegisterReply, error)
-	PrePhone(ctx context.Context, in *PrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Phone(ctx context.Context, in *PhoneRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	Account(ctx context.Context, in *RegisterAccountRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	PreEmail(ctx context.Context, in *RegisterPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Email(ctx context.Context, in *RegisterEmailRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	PrePhone(ctx context.Context, in *RegisterPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Phone(ctx context.Context, in *RegisterPhoneRequest, opts ...grpc.CallOption) (*RegisterReply, error)
 }
 
 type registerClient struct {
@@ -38,45 +38,45 @@ func NewRegisterClient(cc grpc.ClientConnInterface) RegisterClient {
 	return &registerClient{cc}
 }
 
-func (c *registerClient) Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+func (c *registerClient) Account(ctx context.Context, in *RegisterAccountRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
 	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/register.v1.Register/Account", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Register/Account", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *registerClient) PreEmail(ctx context.Context, in *PreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *registerClient) PreEmail(ctx context.Context, in *RegisterPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/register.v1.Register/PreEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Register/PreEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *registerClient) Email(ctx context.Context, in *EmailRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+func (c *registerClient) Email(ctx context.Context, in *RegisterEmailRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
 	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/register.v1.Register/Email", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Register/Email", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *registerClient) PrePhone(ctx context.Context, in *PrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *registerClient) PrePhone(ctx context.Context, in *RegisterPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/register.v1.Register/PrePhone", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Register/PrePhone", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *registerClient) Phone(ctx context.Context, in *PhoneRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+func (c *registerClient) Phone(ctx context.Context, in *RegisterPhoneRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
 	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/register.v1.Register/Phone", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Register/Phone", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,11 +87,11 @@ func (c *registerClient) Phone(ctx context.Context, in *PhoneRequest, opts ...gr
 // All implementations must embed UnimplementedRegisterServer
 // for forward compatibility
 type RegisterServer interface {
-	Account(context.Context, *AccountRequest) (*RegisterReply, error)
-	PreEmail(context.Context, *PreEmailRequest) (*emptypb.Empty, error)
-	Email(context.Context, *EmailRequest) (*RegisterReply, error)
-	PrePhone(context.Context, *PrePhoneRequest) (*emptypb.Empty, error)
-	Phone(context.Context, *PhoneRequest) (*RegisterReply, error)
+	Account(context.Context, *RegisterAccountRequest) (*RegisterReply, error)
+	PreEmail(context.Context, *RegisterPreEmailRequest) (*emptypb.Empty, error)
+	Email(context.Context, *RegisterEmailRequest) (*RegisterReply, error)
+	PrePhone(context.Context, *RegisterPrePhoneRequest) (*emptypb.Empty, error)
+	Phone(context.Context, *RegisterPhoneRequest) (*RegisterReply, error)
 	mustEmbedUnimplementedRegisterServer()
 }
 
@@ -99,19 +99,19 @@ type RegisterServer interface {
 type UnimplementedRegisterServer struct {
 }
 
-func (UnimplementedRegisterServer) Account(context.Context, *AccountRequest) (*RegisterReply, error) {
+func (UnimplementedRegisterServer) Account(context.Context, *RegisterAccountRequest) (*RegisterReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
 }
-func (UnimplementedRegisterServer) PreEmail(context.Context, *PreEmailRequest) (*emptypb.Empty, error) {
+func (UnimplementedRegisterServer) PreEmail(context.Context, *RegisterPreEmailRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreEmail not implemented")
 }
-func (UnimplementedRegisterServer) Email(context.Context, *EmailRequest) (*RegisterReply, error) {
+func (UnimplementedRegisterServer) Email(context.Context, *RegisterEmailRequest) (*RegisterReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Email not implemented")
 }
-func (UnimplementedRegisterServer) PrePhone(context.Context, *PrePhoneRequest) (*emptypb.Empty, error) {
+func (UnimplementedRegisterServer) PrePhone(context.Context, *RegisterPrePhoneRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PrePhone not implemented")
 }
-func (UnimplementedRegisterServer) Phone(context.Context, *PhoneRequest) (*RegisterReply, error) {
+func (UnimplementedRegisterServer) Phone(context.Context, *RegisterPhoneRequest) (*RegisterReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Phone not implemented")
 }
 func (UnimplementedRegisterServer) mustEmbedUnimplementedRegisterServer() {}
@@ -128,7 +128,7 @@ func RegisterRegisterServer(s grpc.ServiceRegistrar, srv RegisterServer) {
 }
 
 func _Register_Account_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountRequest)
+	in := new(RegisterAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -137,16 +137,16 @@ func _Register_Account_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/register.v1.Register/Account",
+		FullMethod: "/api.user.v1.Register/Account",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).Account(ctx, req.(*AccountRequest))
+		return srv.(RegisterServer).Account(ctx, req.(*RegisterAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Register_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PreEmailRequest)
+	in := new(RegisterPreEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -155,16 +155,16 @@ func _Register_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/register.v1.Register/PreEmail",
+		FullMethod: "/api.user.v1.Register/PreEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).PreEmail(ctx, req.(*PreEmailRequest))
+		return srv.(RegisterServer).PreEmail(ctx, req.(*RegisterPreEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Register_Email_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmailRequest)
+	in := new(RegisterEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -173,16 +173,16 @@ func _Register_Email_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/register.v1.Register/Email",
+		FullMethod: "/api.user.v1.Register/Email",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).Email(ctx, req.(*EmailRequest))
+		return srv.(RegisterServer).Email(ctx, req.(*RegisterEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Register_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrePhoneRequest)
+	in := new(RegisterPrePhoneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -191,16 +191,16 @@ func _Register_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/register.v1.Register/PrePhone",
+		FullMethod: "/api.user.v1.Register/PrePhone",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).PrePhone(ctx, req.(*PrePhoneRequest))
+		return srv.(RegisterServer).PrePhone(ctx, req.(*RegisterPrePhoneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Register_Phone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PhoneRequest)
+	in := new(RegisterPhoneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -209,10 +209,10 @@ func _Register_Phone_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/register.v1.Register/Phone",
+		FullMethod: "/api.user.v1.Register/Phone",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).Phone(ctx, req.(*PhoneRequest))
+		return srv.(RegisterServer).Phone(ctx, req.(*RegisterPhoneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -221,7 +221,7 @@ func _Register_Phone_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Register_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "register.v1.Register",
+	ServiceName: "api.user.v1.Register",
 	HandlerType: (*RegisterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -246,5 +246,5 @@ var Register_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "register/v1/register.proto",
+	Metadata: "user/v1/register.proto",
 }

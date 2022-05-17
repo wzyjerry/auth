@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.15.6
-// source: login/v1/login.proto
+// source: user/v1/login.proto
 
 package v1
 
@@ -23,9 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LoginClient interface {
-	PrePhone(ctx context.Context, in *PrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	PreEmail(ctx context.Context, in *PreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error)
 }
 
 type loginClient struct {
@@ -36,18 +37,18 @@ func NewLoginClient(cc grpc.ClientConnInterface) LoginClient {
 	return &loginClient{cc}
 }
 
-func (c *loginClient) PrePhone(ctx context.Context, in *PrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *loginClient) PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/login.v1.Login/PrePhone", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Login/PrePhone", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *loginClient) PreEmail(ctx context.Context, in *PreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *loginClient) PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/login.v1.Login/PreEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Login/PreEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +57,16 @@ func (c *loginClient) PreEmail(ctx context.Context, in *PreEmailRequest, opts ..
 
 func (c *loginClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
 	out := new(LoginReply)
-	err := c.cc.Invoke(ctx, "/login.v1.Login/Login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Login/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *loginClient) Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error) {
+	out := new(TrashReply)
+	err := c.cc.Invoke(ctx, "/api.user.v1.Login/Trash", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,9 +77,10 @@ func (c *loginClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.
 // All implementations must embed UnimplementedLoginServer
 // for forward compatibility
 type LoginServer interface {
-	PrePhone(context.Context, *PrePhoneRequest) (*emptypb.Empty, error)
-	PreEmail(context.Context, *PreEmailRequest) (*emptypb.Empty, error)
+	PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error)
+	PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	Trash(context.Context, *emptypb.Empty) (*TrashReply, error)
 	mustEmbedUnimplementedLoginServer()
 }
 
@@ -77,14 +88,17 @@ type LoginServer interface {
 type UnimplementedLoginServer struct {
 }
 
-func (UnimplementedLoginServer) PrePhone(context.Context, *PrePhoneRequest) (*emptypb.Empty, error) {
+func (UnimplementedLoginServer) PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PrePhone not implemented")
 }
-func (UnimplementedLoginServer) PreEmail(context.Context, *PreEmailRequest) (*emptypb.Empty, error) {
+func (UnimplementedLoginServer) PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreEmail not implemented")
 }
 func (UnimplementedLoginServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedLoginServer) Trash(context.Context, *emptypb.Empty) (*TrashReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Trash not implemented")
 }
 func (UnimplementedLoginServer) mustEmbedUnimplementedLoginServer() {}
 
@@ -100,7 +114,7 @@ func RegisterLoginServer(s grpc.ServiceRegistrar, srv LoginServer) {
 }
 
 func _Login_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrePhoneRequest)
+	in := new(LoginPrePhoneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -109,16 +123,16 @@ func _Login_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/login.v1.Login/PrePhone",
+		FullMethod: "/api.user.v1.Login/PrePhone",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).PrePhone(ctx, req.(*PrePhoneRequest))
+		return srv.(LoginServer).PrePhone(ctx, req.(*LoginPrePhoneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Login_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PreEmailRequest)
+	in := new(LoginPreEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -127,10 +141,10 @@ func _Login_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/login.v1.Login/PreEmail",
+		FullMethod: "/api.user.v1.Login/PreEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).PreEmail(ctx, req.(*PreEmailRequest))
+		return srv.(LoginServer).PreEmail(ctx, req.(*LoginPreEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -145,10 +159,28 @@ func _Login_Login_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/login.v1.Login/Login",
+		FullMethod: "/api.user.v1.Login/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LoginServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Login_Trash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServer).Trash(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.user.v1.Login/Trash",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServer).Trash(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -157,7 +189,7 @@ func _Login_Login_Handler(srv interface{}, ctx context.Context, dec func(interfa
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Login_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "login.v1.Login",
+	ServiceName: "api.user.v1.Login",
 	HandlerType: (*LoginServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -172,7 +204,11 @@ var Login_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Login",
 			Handler:    _Login_Login_Handler,
 		},
+		{
+			MethodName: "Trash",
+			Handler:    _Login_Trash_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "login/v1/login.proto",
+	Metadata: "user/v1/login.proto",
 }

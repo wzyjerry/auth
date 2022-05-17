@@ -19,31 +19,31 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type RegisterHTTPServer interface {
-	Account(context.Context, *AccountRequest) (*RegisterReply, error)
-	Email(context.Context, *EmailRequest) (*RegisterReply, error)
-	Phone(context.Context, *PhoneRequest) (*RegisterReply, error)
-	PreEmail(context.Context, *PreEmailRequest) (*emptypb.Empty, error)
-	PrePhone(context.Context, *PrePhoneRequest) (*emptypb.Empty, error)
+	Account(context.Context, *RegisterAccountRequest) (*RegisterReply, error)
+	Email(context.Context, *RegisterEmailRequest) (*RegisterReply, error)
+	Phone(context.Context, *RegisterPhoneRequest) (*RegisterReply, error)
+	PreEmail(context.Context, *RegisterPreEmailRequest) (*emptypb.Empty, error)
+	PrePhone(context.Context, *RegisterPrePhoneRequest) (*emptypb.Empty, error)
 }
 
 func RegisterRegisterHTTPServer(s *http.Server, srv RegisterHTTPServer) {
 	r := s.Route("/")
-	r.POST("/register/v1/account", _Register_Account0_HTTP_Handler(srv))
-	r.POST("/register/v1/pre_email", _Register_PreEmail0_HTTP_Handler(srv))
-	r.POST("/register/v1/email", _Register_Email0_HTTP_Handler(srv))
-	r.POST("/register/v1/pre_phone", _Register_PrePhone0_HTTP_Handler(srv))
-	r.POST("/register/v1/phone", _Register_Phone0_HTTP_Handler(srv))
+	r.POST("/user/v1/register/account", _Register_Account0_HTTP_Handler(srv))
+	r.POST("/user/v1/register/pre_email", _Register_PreEmail1_HTTP_Handler(srv))
+	r.POST("/user/v1/register/email", _Register_Email0_HTTP_Handler(srv))
+	r.POST("/user/v1/register/pre_phone", _Register_PrePhone1_HTTP_Handler(srv))
+	r.POST("/user/v1/register/phone", _Register_Phone0_HTTP_Handler(srv))
 }
 
 func _Register_Account0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in AccountRequest
+		var in RegisterAccountRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/register.v1.Register/Account")
+		http.SetOperation(ctx, "/api.user.v1.Register/Account")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Account(ctx, req.(*AccountRequest))
+			return srv.Account(ctx, req.(*RegisterAccountRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -54,15 +54,15 @@ func _Register_Account0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Conte
 	}
 }
 
-func _Register_PreEmail0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
+func _Register_PreEmail1_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PreEmailRequest
+		var in RegisterPreEmailRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/register.v1.Register/PreEmail")
+		http.SetOperation(ctx, "/api.user.v1.Register/PreEmail")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.PreEmail(ctx, req.(*PreEmailRequest))
+			return srv.PreEmail(ctx, req.(*RegisterPreEmailRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -75,13 +75,13 @@ func _Register_PreEmail0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Cont
 
 func _Register_Email0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in EmailRequest
+		var in RegisterEmailRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/register.v1.Register/Email")
+		http.SetOperation(ctx, "/api.user.v1.Register/Email")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Email(ctx, req.(*EmailRequest))
+			return srv.Email(ctx, req.(*RegisterEmailRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -92,15 +92,15 @@ func _Register_Email0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context
 	}
 }
 
-func _Register_PrePhone0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
+func _Register_PrePhone1_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PrePhoneRequest
+		var in RegisterPrePhoneRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/register.v1.Register/PrePhone")
+		http.SetOperation(ctx, "/api.user.v1.Register/PrePhone")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.PrePhone(ctx, req.(*PrePhoneRequest))
+			return srv.PrePhone(ctx, req.(*RegisterPrePhoneRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -113,13 +113,13 @@ func _Register_PrePhone0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Cont
 
 func _Register_Phone0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PhoneRequest
+		var in RegisterPhoneRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/register.v1.Register/Phone")
+		http.SetOperation(ctx, "/api.user.v1.Register/Phone")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Phone(ctx, req.(*PhoneRequest))
+			return srv.Phone(ctx, req.(*RegisterPhoneRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -131,11 +131,11 @@ func _Register_Phone0_HTTP_Handler(srv RegisterHTTPServer) func(ctx http.Context
 }
 
 type RegisterHTTPClient interface {
-	Account(ctx context.Context, req *AccountRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
-	Email(ctx context.Context, req *EmailRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
-	Phone(ctx context.Context, req *PhoneRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
-	PreEmail(ctx context.Context, req *PreEmailRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	PrePhone(ctx context.Context, req *PrePhoneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	Account(ctx context.Context, req *RegisterAccountRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
+	Email(ctx context.Context, req *RegisterEmailRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
+	Phone(ctx context.Context, req *RegisterPhoneRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
+	PreEmail(ctx context.Context, req *RegisterPreEmailRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	PrePhone(ctx context.Context, req *RegisterPrePhoneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type RegisterHTTPClientImpl struct {
@@ -146,11 +146,11 @@ func NewRegisterHTTPClient(client *http.Client) RegisterHTTPClient {
 	return &RegisterHTTPClientImpl{client}
 }
 
-func (c *RegisterHTTPClientImpl) Account(ctx context.Context, in *AccountRequest, opts ...http.CallOption) (*RegisterReply, error) {
+func (c *RegisterHTTPClientImpl) Account(ctx context.Context, in *RegisterAccountRequest, opts ...http.CallOption) (*RegisterReply, error) {
 	var out RegisterReply
-	pattern := "/register/v1/account"
+	pattern := "/user/v1/register/account"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/register.v1.Register/Account"))
+	opts = append(opts, http.Operation("/api.user.v1.Register/Account"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -159,11 +159,11 @@ func (c *RegisterHTTPClientImpl) Account(ctx context.Context, in *AccountRequest
 	return &out, err
 }
 
-func (c *RegisterHTTPClientImpl) Email(ctx context.Context, in *EmailRequest, opts ...http.CallOption) (*RegisterReply, error) {
+func (c *RegisterHTTPClientImpl) Email(ctx context.Context, in *RegisterEmailRequest, opts ...http.CallOption) (*RegisterReply, error) {
 	var out RegisterReply
-	pattern := "/register/v1/email"
+	pattern := "/user/v1/register/email"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/register.v1.Register/Email"))
+	opts = append(opts, http.Operation("/api.user.v1.Register/Email"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -172,11 +172,11 @@ func (c *RegisterHTTPClientImpl) Email(ctx context.Context, in *EmailRequest, op
 	return &out, err
 }
 
-func (c *RegisterHTTPClientImpl) Phone(ctx context.Context, in *PhoneRequest, opts ...http.CallOption) (*RegisterReply, error) {
+func (c *RegisterHTTPClientImpl) Phone(ctx context.Context, in *RegisterPhoneRequest, opts ...http.CallOption) (*RegisterReply, error) {
 	var out RegisterReply
-	pattern := "/register/v1/phone"
+	pattern := "/user/v1/register/phone"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/register.v1.Register/Phone"))
+	opts = append(opts, http.Operation("/api.user.v1.Register/Phone"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -185,11 +185,11 @@ func (c *RegisterHTTPClientImpl) Phone(ctx context.Context, in *PhoneRequest, op
 	return &out, err
 }
 
-func (c *RegisterHTTPClientImpl) PreEmail(ctx context.Context, in *PreEmailRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *RegisterHTTPClientImpl) PreEmail(ctx context.Context, in *RegisterPreEmailRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/register/v1/pre_email"
+	pattern := "/user/v1/register/pre_email"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/register.v1.Register/PreEmail"))
+	opts = append(opts, http.Operation("/api.user.v1.Register/PreEmail"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -198,11 +198,11 @@ func (c *RegisterHTTPClientImpl) PreEmail(ctx context.Context, in *PreEmailReque
 	return &out, err
 }
 
-func (c *RegisterHTTPClientImpl) PrePhone(ctx context.Context, in *PrePhoneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *RegisterHTTPClientImpl) PrePhone(ctx context.Context, in *RegisterPrePhoneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/register/v1/pre_phone"
+	pattern := "/user/v1/register/pre_phone"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/register.v1.Register/PrePhone"))
+	opts = append(opts, http.Operation("/api.user.v1.Register/PrePhone"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

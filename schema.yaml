@@ -3,6 +3,8 @@ user: &table
   ancestor_id: string # 祖先ID
   password: string # 密码
   nickname: string # 昵称
+  family_name: string # 姓
+  given_name: string # 名
   ip: string # 注册IP
   avatar: string # 头像url
 ---

@@ -16,33 +16,47 @@ import (
 	"github.com/wzyjerry/auth/internal/ent/schema/authenticatorNested"
 )
 
-type registerRepo struct {
+type userRepo struct {
 	data *Data
 	conf *conf.Security
 	log  *log.Helper
 }
 
 const (
-	AuthPreEmail = "Auth:Email:Pre:"
-	AuthPrePhone = "Auth:Phone:Pre:"
+	AuthRegisterEmail = "Auth:Register:Email:"
+	AuthRegisterPhone = "Auth:Register:Phone:"
+	AuthLoginEmail    = "Auth:Login:Email:"
+	AuthLoginPhone    = "Auth:Login:Phone:"
 )
 
-func (r *registerRepo) cacheCode(ctx context.Context, key string, code string) error {
+func (r *userRepo) cacheCode(ctx context.Context, key string, code string) error {
 	if err := r.data.redis.Set(ctx, key, code, r.conf.Expiration.Code.AsDuration()).Err(); err != nil {
 		return errors.New(http.StatusInternalServerError, "ERR_CACHE_CODE", err.Error())
 	}
 	return nil
 }
 
-func (r *registerRepo) CachePreEmail(ctx context.Context, email string, code string) error {
-	return r.cacheCode(ctx, AuthPreEmail+email, code)
+func (r *userRepo) GetUser(ctx context.Context, id string) (*ent.User, error) {
+	return r.data.db.User.Get(ctx, id)
 }
 
-func (r *registerRepo) CachePrePhone(ctx context.Context, phone string, code string) error {
-	return r.cacheCode(ctx, AuthPrePhone+phone, code)
+func (r *userRepo) CacheRegisterEmail(ctx context.Context, email string, code string) error {
+	return r.cacheCode(ctx, AuthRegisterEmail+email, code)
 }
 
-func (r *registerRepo) verifyCode(ctx context.Context, key string, code string) (bool, error) {
+func (r *userRepo) CacheRegisterPhone(ctx context.Context, phone string, code string) error {
+	return r.cacheCode(ctx, AuthRegisterPhone+phone, code)
+}
+
+func (r *userRepo) CacheLoginEmail(ctx context.Context, email string, code string) error {
+	return r.cacheCode(ctx, AuthLoginEmail+email, code)
+}
+
+func (r *userRepo) CacheLoginPhone(ctx context.Context, phone string, code string) error {
+	return r.cacheCode(ctx, AuthLoginPhone+phone, code)
+}
+
+func (r *userRepo) verifyCode(ctx context.Context, key string, code string) (bool, error) {
 	result := r.data.redis.Get(ctx, key)
 	if result.Err() != nil {
 		return false, result.Err()
@@ -54,15 +68,23 @@ func (r *registerRepo) verifyCode(ctx context.Context, key string, code string) 
 	return true, nil
 }
 
-func (r *registerRepo) VerifyPreEmailCode(ctx context.Context, email string, code string) (bool, error) {
-	return r.verifyCode(ctx, AuthPreEmail+email, code)
+func (r *userRepo) VerifyRegisterEmailCode(ctx context.Context, email string, code string) (bool, error) {
+	return r.verifyCode(ctx, AuthRegisterEmail+email, code)
 }
 
-func (r *registerRepo) VerifyPrePhoneCode(ctx context.Context, phone string, code string) (bool, error) {
-	return r.verifyCode(ctx, AuthPrePhone+phone, code)
+func (r *userRepo) VerifyRegisterPhoneCode(ctx context.Context, phone string, code string) (bool, error) {
+	return r.verifyCode(ctx, AuthRegisterPhone+phone, code)
 }
 
-func (r *registerRepo) GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique string) (*ent.Authenticator, error) {
+func (r *userRepo) VerifyLoginEmailCode(ctx context.Context, email string, code string) (bool, error) {
+	return r.verifyCode(ctx, AuthLoginEmail+email, code)
+}
+
+func (r *userRepo) VerifyLoginPhoneCode(ctx context.Context, phone string, code string) (bool, error) {
+	return r.verifyCode(ctx, AuthLoginPhone+phone, code)
+}
+
+func (r *userRepo) GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique string) (*ent.Authenticator, error) {
 	switch kind {
 	case authenticatorNested.Kind_KIND_ACCOUNT:
 		return r.data.db.Authenticator.
@@ -105,7 +127,7 @@ func (r *registerRepo) GetAuthenticator(ctx context.Context, kind authenticatorN
 	}
 }
 
-func (r *registerRepo) CreateUser(ctx context.Context, kind int32, anchor *authenticatorNested.Anchor, password *string, nickname string, ip string, avatar *string) (string, error) {
+func (r *userRepo) CreateUser(ctx context.Context, kind int32, anchor *authenticatorNested.Anchor, password *string, nickname string, ip string, avatar *string) (string, error) {
 	id := r.data.db.GenerateId()
 	if err := r.data.db.WithTx(ctx, func(tx *ent.Tx) error {
 		if err := tx.User.Create().
@@ -133,11 +155,11 @@ func (r *registerRepo) CreateUser(ctx context.Context, kind int32, anchor *authe
 	return id, nil
 }
 
-func NewRegisterRepo(
+func NewUserRepo(
 	data *Data,
 	conf *conf.Security,
-	logger log.Logger) biz.RegisterRepo {
-	return &registerRepo{
+	logger log.Logger) biz.UserRepo {
+	return &userRepo{
 		data: data,
 		conf: conf,
 		log:  log.NewHelper(logger),

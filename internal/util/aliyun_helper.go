@@ -1,4 +1,4 @@
-package biz
+package util
 
 import (
 	"fmt"
@@ -11,7 +11,6 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/conf"
-	"github.com/wzyjerry/auth/internal/util"
 )
 
 type EmailTemplate struct {
@@ -21,10 +20,10 @@ type EmailTemplate struct {
 }
 
 // Html验证码
-func NewEmailHtmlCode(code string) *EmailTemplate {
+func (h *AliyunHelper) NewEmailHtmlCode(code string) *EmailTemplate {
 	return &EmailTemplate{
 		subject: "AMiner邮件验证码 (Your AMiner verification code)",
-		html: util.P(fmt.Sprintf(`<!DOCTYPE html>
+		html: P(fmt.Sprintf(`<!DOCTYPE html>
 		<html lang="en">
 		<head>
 		   <meta charset="UTF-8">
@@ -42,10 +41,10 @@ func NewEmailHtmlCode(code string) *EmailTemplate {
 }
 
 // Text验证码
-func NewEmailTextCode(code string) *EmailTemplate {
+func (h *AliyunHelper) NewEmailTextCode(code string) *EmailTemplate {
 	return &EmailTemplate{
 		subject: "AMiner邮件验证码 (Your AMiner verification code)",
-		text: util.P(fmt.Sprintf(`您的邮箱验证码见下文，验证码有效期是10分钟，请勿泄露。
+		text: P(fmt.Sprintf(`您的邮箱验证码见下文，验证码有效期是10分钟，请勿泄露。
 		Here is the AMiner verification code. It expires in 10 minutes. Don't share this code with anyone else.
 		%s`, code)),
 	}
@@ -57,7 +56,7 @@ type SmsTemplate struct {
 }
 
 // 国内验证码
-func NewSms228845627(code string) *SmsTemplate {
+func (h *AliyunHelper) NewSms228845627(code string) *SmsTemplate {
 	return &SmsTemplate{
 		code:  "SMS_228845627",
 		param: fmt.Sprintf(`{"code":"%s"}`, code),
@@ -65,7 +64,7 @@ func NewSms228845627(code string) *SmsTemplate {
 }
 
 // 国际验证码
-func NewSms228852216(code string) *SmsTemplate {
+func (h *AliyunHelper) NewSms228852216(code string) *SmsTemplate {
 	return &SmsTemplate{
 		code:  "SMS_228852216",
 		param: fmt.Sprintf(`{"code":"%s"}`, code),
@@ -85,18 +84,18 @@ func NewAliyunHelper(
 ) *AliyunHelper {
 	log := log.NewHelper(logger)
 	emailConfig := &openapi.Config{
-		AccessKeyId:     util.P(os.Getenv(conf.Aliyun.Email.AccessKeyId)),
-		AccessKeySecret: util.P(os.Getenv(conf.Aliyun.Email.AccessKeySecret)),
-		Endpoint:        util.P("dm.aliyuncs.com"),
+		AccessKeyId:     P(os.Getenv(conf.Aliyun.Email.AccessKeyId)),
+		AccessKeySecret: P(os.Getenv(conf.Aliyun.Email.AccessKeySecret)),
+		Endpoint:        P("dm.aliyuncs.com"),
 	}
 	emailClient, err := dm20151123.NewClient(emailConfig)
 	if err != nil {
 		log.Fatalf("aliyun email fatal")
 	}
 	smsConfig := &openapi.Config{
-		AccessKeyId:     util.P(os.Getenv(conf.Aliyun.Sms.AccessKeyId)),
-		AccessKeySecret: util.P(os.Getenv(conf.Aliyun.Sms.AccessKeySecret)),
-		Endpoint:        util.P("dysmsapi.aliyuncs.com"),
+		AccessKeyId:     P(os.Getenv(conf.Aliyun.Sms.AccessKeyId)),
+		AccessKeySecret: P(os.Getenv(conf.Aliyun.Sms.AccessKeySecret)),
+		Endpoint:        P("dysmsapi.aliyuncs.com"),
 	}
 	smsClient, err := dysmsapi20170525.NewClient(smsConfig)
 	if err != nil {
@@ -113,9 +112,9 @@ func NewAliyunHelper(
 func (h *AliyunHelper) SendEmail(email string, template *EmailTemplate) error {
 	request := &dm20151123.SingleSendMailRequest{
 		AccountName:    &h.conf.Aliyun.Email.AccountName,
-		AddressType:    util.P[int32](1),
+		AddressType:    P[int32](1),
 		FromAlias:      &h.conf.Aliyun.Email.FromAlias,
-		ReplyToAddress: util.P(true),
+		ReplyToAddress: P(true),
 		Subject:        &template.subject,
 		HtmlBody:       template.html,
 		TextBody:       template.text,

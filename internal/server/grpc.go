@@ -2,11 +2,10 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "github.com/wzyjerry/auth/api/register/v1"
+	v1 "github.com/wzyjerry/auth/api/user/v1"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/service"
@@ -17,11 +16,11 @@ func NewGRPCServer(
 	c *conf.Server,
 	logger log.Logger,
 	register *service.RegisterService,
+	login *service.LoginService,
 ) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
-			metadata.Server(),
 			middleware.Metadata,
 			validate.Validator(),
 		),
@@ -34,5 +33,6 @@ func NewGRPCServer(
 	}
 	srv := grpc.NewServer(opts...)
 	v1.RegisterRegisterServer(srv, register)
+	v1.RegisterLoginServer(srv, login)
 	return srv
 }
