@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+option go_package = "api/user/v1;v1";
+
+enum Type {
+    TYPE_UNSET = 0;
+    TYPE_ACCOUNT = 1;
+    TYPE_EMAIL = 2;
+    TYPE_PHONE = 3;
+    TYPE_GITHUB = 4;
+}
+
+enum Method {
+    METHOD_UNSET = 0;
+    METHOD_PASSWORD = 1;
+    METHOD_CODE = 2;
+}
+
+message LoginRequest {
+    Type type = 1 [(validate.rules).enum.defined_only = true];
+    Method method = 2 [(validate.rules).enum.defined_only = true];
+    string unique = 3;
+    string secret = 4 [(validate.rules).string.min_len = 1];
+}
+
+message OAuthLoginReply {
+    string token_type = 1;
+    int32 expires_in = 2;
+    string scope = 3;
+    string access_token = 4;
+    optional string refresh_token = 5;
+    optional string id_token = 6;
+}
+
+message LoginReply {
+    string token = 1;
+}
+
+message LoginPrePhoneRequest {
+    string phone = 1 [(validate.rules).string = {
+        pattern: "^\\+[1-9]\\d{1,14}$"
+    }];
+}
+
+message LoginPreEmailRequest {
+    string email = 1 [(validate.rules).string.email = true];
+}
+
+service Login {
+    rpc PrePhone(LoginPrePhoneRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/v1/login/pre_phone"
+            body: "*"
+        };
+    }
+    rpc PreEmail(LoginPreEmailRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/v1/login/pre_email"
+            body: "*"
+        };
+    }
+    rpc Login (LoginRequest) returns (LoginReply) {
+        option (google.api.http) = {
+            post: "/user/v1/login/login"
+            body: "*"
+        };
+    }
+    rpc Trash (google.protobuf.Empty) returns (TrashReply) {
+        option (google.api.http) = {
+            get: "/user/v1/login/trash"
+        };
+    }
+}
+
+message TrashReply {
+    bool authToken = 1;
+    bool userToken = 2;
+    bool clientToken = 3;
+    string sub = 4;
+}

@@ -1,0 +1,23 @@
+# 用户
+user: &table
+  ancestor_id: string # 祖先ID
+  password: string # 密码
+  nickname: string # 昵称
+  ip: string # 注册IP
+  avatar: string # 头像url
+---
+# 认证器类型
+kind:
+  - account # 用户账户
+  - email # 邮箱
+  - phone # 手机
+  - github # Github
+# 认证器
+authenticator: &table
+  user_id: string # 用户ID
+  kind: kind # 认证器类型
+  unique:  # 唯一值
+    account: string # 用户账户
+    email: string # 邮箱
+    phone: string # 手机
+    github: int # Github
