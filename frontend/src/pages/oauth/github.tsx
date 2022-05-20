@@ -9,15 +9,20 @@ import { LoginClient } from '@/api';
 import { Go, Reject } from '@/util';
 
 import { Token } from '@/util/token';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const Github = () => {
   const { search } = useLocation();
   const history = useHistory();
-  const params = new URLSearchParams(search);
-  const code = params.get('code');
-  let returnTo = params.get('return_to');
-  returnTo = returnTo ? returnTo : '/user/login';
+  const {code, returnTo} = useMemo(() => {
+    const params = new URLSearchParams(search);
+    const code = params.get('code');
+    const returnTo = params.get('return_to') || '/user/login';
+    return {
+      code,
+      returnTo,
+    };
+  }, [search]);
   const githubLogin = async(returnTo: string) => {
     if (code === null) {
       returnTo += '&error=invalid_code';
@@ -41,9 +46,9 @@ const Github = () => {
     history.push(returnTo);
   }
   useEffect(() => {
-    githubLogin(returnTo!)
-  })
-  return null;
+    githubLogin(returnTo)
+  }, [returnTo])
+  return <noscript />;
 };
 
 export default Github;
