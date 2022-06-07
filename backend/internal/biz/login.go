@@ -1,11 +1,7 @@
 package biz
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"net/http"
-	"os"
 	"strings"
 
 	v1 "github.com/wzyjerry/auth/api/user/v1"
@@ -16,11 +12,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type GithubInfo struct {
-	Id     int64  `json:"id"`
-	Name   string `json:"name"`
-	Avatar string `json:"avatar_url"`
+type ThirdParty[UniqueType any] interface {
+	Login(ctx context.Context, code string) (BasicInfo[UniqueType], error)
 }
+
+type BasicInfo[UniqueType any] interface {
+	GetUnique() UniqueType
+	GetNickname() string
+	GetAvatar() *string
+}
+
+type GithubProvider = ThirdParty[int64]
 
 type LoginUsecase struct {
 	repo            UserRepo
@@ -28,6 +30,7 @@ type LoginUsecase struct {
 	tokenHelper     *util.TokenHelper
 	aliyunHelper    *util.AliyunHelper
 	registerUsecase *RegisterUsecase
+	githubProvider  GithubProvider
 }
 
 func NewLoginUsecase(
@@ -36,6 +39,7 @@ func NewLoginUsecase(
 	tokenHelper *util.TokenHelper,
 	aliyunHelper *util.AliyunHelper,
 	registerUsecase *RegisterUsecase,
+	githubProvider GithubProvider,
 ) *LoginUsecase {
 	return &LoginUsecase{
 		repo:            repo,
@@ -43,6 +47,7 @@ func NewLoginUsecase(
 		tokenHelper:     tokenHelper,
 		aliyunHelper:    aliyunHelper,
 		registerUsecase: registerUsecase,
+		githubProvider:  githubProvider,
 	}
 }
 
@@ -164,75 +169,15 @@ func (uc *LoginUsecase) phoneCode(ctx context.Context, phone string, code string
 	return user, nil
 }
 
-func (uc *LoginUsecase) acquirGithubAccessToken(ctx context.Context, code string) (string, error) {
-	body := bytes.NewBuffer(nil)
-	json.NewEncoder(body).Encode(map[string]any{
-		"code":          code,
-		"client_id":     os.Getenv(uc.conf.Oauth.Github.ClientId),
-		"client_secret": os.Getenv(uc.conf.Oauth.Github.ClientSecret),
-	})
-	req, err := http.NewRequest(http.MethodPost, "https://github.com/login/oauth/access_token", body)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		reply := make(map[string]interface{})
-		if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
-			return "", err
-		}
-		token, ok := reply["access_token"].(string)
-		if !ok {
-			return "", ErrCodeMismatch
-		}
-		return token, nil
-	} else {
-		return "", ErrNetworkError
-	}
-}
-
-func (uc *LoginUsecase) acquirGithubUser(ctx context.Context, accessToken string) (*GithubInfo, error) {
-	req, err := http.NewRequest(http.MethodGet, "https://api.github.com/user", nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "token "+accessToken)
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		var reply GithubInfo
-		if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
-			return nil, err
-		}
-		return &reply, nil
-	} else {
-		return nil, err
-	}
-}
-
 func (uc *LoginUsecase) githubCode(ctx context.Context, code string) (*ent.User, error) {
-	accessToken, err := uc.acquirGithubAccessToken(ctx, code)
+	info, err := uc.githubProvider.Login(ctx, code)
 	if err != nil {
 		return nil, err
 	}
-	info, err := uc.acquirGithubUser(ctx, accessToken)
-	if err != nil {
-		return nil, err
-	}
-	unique := info.Id
-	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_GITHUB, unique)
+	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_GITHUB, info.GetUnique())
 	var userId string
 	if err != nil {
-		id, err := uc.registerUsecase.Github(ctx, unique, info.Name, info.Avatar)
+		id, err := uc.registerUsecase.Github(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
 		if err != nil {
 			return nil, err
 		}

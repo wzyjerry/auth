@@ -181,7 +181,7 @@ func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, password *st
 	return "", ErrAuthenticatorConflict
 }
 
-func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string, avatar string) (string, error) {
+func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string, avatar *string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
 		return "", err
@@ -196,7 +196,7 @@ func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string
 				nil,
 				nickname,
 				ip,
-				&avatar,
+				avatar,
 			)
 		}
 		return "", err

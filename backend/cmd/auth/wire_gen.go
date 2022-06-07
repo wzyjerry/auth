@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/biz"
+	"github.com/wzyjerry/auth/internal/biz/third_party/github"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
@@ -31,7 +32,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Securi
 	registerService := service.NewRegisterService(registerUsecase)
 	privateKey := data.NewPrivateKey(security, logger)
 	tokenHelper := util.NewTokenHelper(security, privateKey)
-	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase)
+	thirdParty := github.New(security)
+	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase, thirdParty)
 	loginService := service.NewLoginService(loginUsecase, security, tokenHelper)
 	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService)
 	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService)

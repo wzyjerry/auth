@@ -15,7 +15,6 @@ var (
 	ErrCodeMismatch          = errors.New(http.StatusBadRequest, "CODE_MISMATCH", "code mismatch")
 	ErrAuthenticatorConflict = errors.New(http.StatusConflict, "AUTHENTICATOR_CONFLICT", "authenticator conflict")
 	ErrPasswordLogin         = errors.Newf(http.StatusBadRequest, "PASSWORD_LOGIN", "invalid unique token or password")
-	ErrNetworkError          = errors.Newf(http.StatusInternalServerError, "NETWORD_ERROR", "http functional error")
 )
 
 type UserRepo interface {

@@ -1,10 +1,10 @@
 server:
   http:
     addr: 0.0.0.0:8888
-    timeout: 1s
+    timeout: 5s
   grpc:
     addr: 0.0.0.0:9999
-    timeout: 1s
+    timeout: 5s
 data:
   postgres:
     env: AUTH_POSTGRES

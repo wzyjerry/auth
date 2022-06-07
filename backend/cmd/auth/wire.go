@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/wzyjerry/auth/internal/biz"
+	"github.com/wzyjerry/auth/internal/biz/third_party"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
@@ -24,5 +25,5 @@ func wireApp(
 	*conf.Security,
 	log.Logger,
 ) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, util.ProviderSet, newApp))
+	panic(wire.Build(third_party.ProviderSet, server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, util.ProviderSet, newApp))
 }
