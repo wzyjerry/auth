@@ -129,12 +129,24 @@ func (r *userRepo) GetAuthenticator(ctx context.Context, kind authenticatorNeste
 				)
 			}).
 			Only(ctx)
+	case authenticatorNested.Kind_KIND_MICROSOFT:
+		return r.data.db.Authenticator.
+			Query().
+			Where(func(s *sql.Selector) {
+				s.Where(
+					sql.And(
+						sql.EQ(authenticator.FieldKind, int32(kind)),
+						sqljson.ValueEQ(authenticator.FieldUnique, unique, sqljson.Path("microsoft")),
+					),
+				)
+			}).
+			Only(ctx)
 	default:
 		return nil, biz.ErrUnknownKind
 	}
 }
 
-func (r *userRepo) CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string, avatar *string) (string, error) {
+func (r *userRepo) CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string) (string, error) {
 	id := r.data.db.GenerateId()
 	if err := r.data.db.WithTx(ctx, func(tx *ent.Tx) error {
 		if err := tx.User.Create().
@@ -142,7 +154,6 @@ func (r *userRepo) CreateUser(ctx context.Context, kind int32, unique *authentic
 			SetAncestorID(id).
 			SetNickname(nickname).
 			SetIP(ip).
-			SetNillableAvatar(avatar).
 			SetNillablePassword(password).
 			Exec(ctx); err != nil {
 			return err
@@ -160,6 +171,10 @@ func (r *userRepo) CreateUser(ctx context.Context, kind int32, unique *authentic
 		return "", err
 	}
 	return id, nil
+}
+
+func (r *userRepo) CreateAvatar(ctx context.Context, id string, avatar string) {
+	r.data.db.Avatar.Create().SetID(id).SetAvatar(avatar).Exec(ctx)
 }
 
 func NewUserRepo(

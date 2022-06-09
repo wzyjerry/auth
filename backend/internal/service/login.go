@@ -46,7 +46,7 @@ func (s *LoginService) Login(ctx context.Context, in *v1.LoginRequest) (*v1.Logi
 	if err != nil {
 		return nil, err
 	}
-	token, err := s.uc.GenerateAccessToken(os.Getenv(s.conf.Oauth.ClientId), user)
+	token, err := s.uc.GenerateAccessToken(os.Getenv(s.conf.ClientId), user)
 	if err != nil {
 		return nil, err
 	}

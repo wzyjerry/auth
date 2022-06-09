@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"os"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/wzyjerry/auth/internal/biz"
 	"github.com/wzyjerry/auth/internal/conf"
+	"github.com/wzyjerry/auth/internal/util"
 )
 
 type Info struct {
@@ -26,21 +28,39 @@ func (i *Info) GetNickname() string {
 	return i.Name
 }
 
-func (i *Info) GetAvatar() *string {
-	return &i.Name
+func (i *Info) GetAvatar() func(ctx context.Context) (string, error) {
+	return func(ctx context.Context) (string, error) {
+		req, err := http.NewRequest(http.MethodGet, i.Avatar, nil)
+		if err != nil {
+			return "", err
+		}
+		resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+		if err != nil {
+			return "", err
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			return "", ErrNetworkError
+		}
+		img, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return "", err
+		}
+		return util.ImgBase64(img), nil
+	}
 }
 
 type Provider struct {
-	conf *conf.Security
+	conf *conf.ThirdParty
 }
 
 var (
 	ErrCodeMismatch = errors.New(http.StatusBadRequest, "CODE_MISMATCH", "code mismatch")
-	ErrNetworkError = errors.Newf(http.StatusInternalServerError, "NETWORD_ERROR", "http functional error")
+	ErrNetworkError = errors.Newf(http.StatusInternalServerError, "NETWORK_ERROR", "http functional error")
 )
 
 func New(
-	conf *conf.Security,
+	conf *conf.ThirdParty,
 ) biz.GithubProvider {
 	return &Provider{
 		conf: conf,
@@ -51,8 +71,8 @@ func (p *Provider) acquirAccessToken(ctx context.Context, code string) (string, 
 	body := bytes.NewBuffer(nil)
 	json.NewEncoder(body).Encode(map[string]any{
 		"code":          code,
-		"client_id":     os.Getenv(p.conf.Oauth.Github.ClientId),
-		"client_secret": os.Getenv(p.conf.Oauth.Github.ClientSecret),
+		"client_id":     os.Getenv(p.conf.Github.ClientId),
+		"client_secret": os.Getenv(p.conf.Github.ClientSecret),
 	})
 	req, err := http.NewRequest(http.MethodPost, "https://github.com/login/oauth/access_token", body)
 	if err != nil {
@@ -65,19 +85,18 @@ func (p *Provider) acquirAccessToken(ctx context.Context, code string) (string, 
 		return "", err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		reply := make(map[string]interface{})
-		if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
-			return "", err
-		}
-		token, ok := reply["access_token"].(string)
-		if !ok {
-			return "", ErrCodeMismatch
-		}
-		return token, nil
-	} else {
+	if resp.StatusCode != http.StatusOK {
 		return "", ErrNetworkError
 	}
+	reply := make(map[string]interface{})
+	if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
+		return "", err
+	}
+	token, ok := reply["access_token"].(string)
+	if !ok {
+		return "", ErrCodeMismatch
+	}
+	return token, nil
 }
 
 func (p *Provider) acquirUser(ctx context.Context, accessToken string) (*Info, error) {
@@ -91,15 +110,14 @@ func (p *Provider) acquirUser(ctx context.Context, accessToken string) (*Info, e
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		var reply Info
-		if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
-			return nil, err
-		}
-		return &reply, nil
-	} else {
+	if resp.StatusCode != http.StatusOK {
 		return nil, err
 	}
+	var reply Info
+	if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
+		return nil, err
+	}
+	return &reply, nil
 }
 
 func (p *Provider) Login(ctx context.Context, code string) (biz.BasicInfo[int64], error) {

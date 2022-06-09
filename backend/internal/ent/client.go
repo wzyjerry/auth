@@ -10,6 +10,7 @@ import (
 	"github.com/wzyjerry/auth/internal/ent/migrate"
 
 	"github.com/wzyjerry/auth/internal/ent/authenticator"
+	"github.com/wzyjerry/auth/internal/ent/avatar"
 	"github.com/wzyjerry/auth/internal/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -23,6 +24,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Authenticator is the client for interacting with the Authenticator builders.
 	Authenticator *AuthenticatorClient
+	// Avatar is the client for interacting with the Avatar builders.
+	Avatar *AvatarClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -39,6 +42,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Authenticator = NewAuthenticatorClient(c.config)
+	c.Avatar = NewAvatarClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -74,6 +78,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:           ctx,
 		config:        cfg,
 		Authenticator: NewAuthenticatorClient(cfg),
+		Avatar:        NewAvatarClient(cfg),
 		User:          NewUserClient(cfg),
 	}, nil
 }
@@ -95,6 +100,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:           ctx,
 		config:        cfg,
 		Authenticator: NewAuthenticatorClient(cfg),
+		Avatar:        NewAvatarClient(cfg),
 		User:          NewUserClient(cfg),
 	}, nil
 }
@@ -126,6 +132,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Authenticator.Use(hooks...)
+	c.Avatar.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -217,6 +224,96 @@ func (c *AuthenticatorClient) GetX(ctx context.Context, id string) *Authenticato
 // Hooks returns the client hooks.
 func (c *AuthenticatorClient) Hooks() []Hook {
 	return c.hooks.Authenticator
+}
+
+// AvatarClient is a client for the Avatar schema.
+type AvatarClient struct {
+	config
+}
+
+// NewAvatarClient returns a client for the Avatar from the given config.
+func NewAvatarClient(c config) *AvatarClient {
+	return &AvatarClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `avatar.Hooks(f(g(h())))`.
+func (c *AvatarClient) Use(hooks ...Hook) {
+	c.hooks.Avatar = append(c.hooks.Avatar, hooks...)
+}
+
+// Create returns a create builder for Avatar.
+func (c *AvatarClient) Create() *AvatarCreate {
+	mutation := newAvatarMutation(c.config, OpCreate)
+	return &AvatarCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Avatar entities.
+func (c *AvatarClient) CreateBulk(builders ...*AvatarCreate) *AvatarCreateBulk {
+	return &AvatarCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Avatar.
+func (c *AvatarClient) Update() *AvatarUpdate {
+	mutation := newAvatarMutation(c.config, OpUpdate)
+	return &AvatarUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AvatarClient) UpdateOne(a *Avatar) *AvatarUpdateOne {
+	mutation := newAvatarMutation(c.config, OpUpdateOne, withAvatar(a))
+	return &AvatarUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AvatarClient) UpdateOneID(id string) *AvatarUpdateOne {
+	mutation := newAvatarMutation(c.config, OpUpdateOne, withAvatarID(id))
+	return &AvatarUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Avatar.
+func (c *AvatarClient) Delete() *AvatarDelete {
+	mutation := newAvatarMutation(c.config, OpDelete)
+	return &AvatarDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *AvatarClient) DeleteOne(a *Avatar) *AvatarDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *AvatarClient) DeleteOneID(id string) *AvatarDeleteOne {
+	builder := c.Delete().Where(avatar.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AvatarDeleteOne{builder}
+}
+
+// Query returns a query builder for Avatar.
+func (c *AvatarClient) Query() *AvatarQuery {
+	return &AvatarQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Avatar entity by its id.
+func (c *AvatarClient) Get(ctx context.Context, id string) (*Avatar, error) {
+	return c.Query().Where(avatar.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AvatarClient) GetX(ctx context.Context, id string) *Avatar {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AvatarClient) Hooks() []Hook {
+	return c.hooks.Avatar
 }
 
 // UserClient is a client for the User schema.

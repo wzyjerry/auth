@@ -107,26 +107,6 @@ func (uu *UserUpdate) ClearIP() *UserUpdate {
 	return uu
 }
 
-// SetAvatar sets the "avatar" field.
-func (uu *UserUpdate) SetAvatar(s string) *UserUpdate {
-	uu.mutation.SetAvatar(s)
-	return uu
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableAvatar(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetAvatar(*s)
-	}
-	return uu
-}
-
-// ClearAvatar clears the value of the "avatar" field.
-func (uu *UserUpdate) ClearAvatar() *UserUpdate {
-	uu.mutation.ClearAvatar()
-	return uu
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -256,19 +236,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldIP,
 		})
 	}
-	if value, ok := uu.mutation.Avatar(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: user.FieldAvatar,
-		})
-	}
-	if uu.mutation.AvatarCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldAvatar,
-		})
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -365,26 +332,6 @@ func (uuo *UserUpdateOne) SetNillableIP(s *string) *UserUpdateOne {
 // ClearIP clears the value of the "ip" field.
 func (uuo *UserUpdateOne) ClearIP() *UserUpdateOne {
 	uuo.mutation.ClearIP()
-	return uuo
-}
-
-// SetAvatar sets the "avatar" field.
-func (uuo *UserUpdateOne) SetAvatar(s string) *UserUpdateOne {
-	uuo.mutation.SetAvatar(s)
-	return uuo
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableAvatar(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetAvatar(*s)
-	}
-	return uuo
-}
-
-// ClearAvatar clears the value of the "avatar" field.
-func (uuo *UserUpdateOne) ClearAvatar() *UserUpdateOne {
-	uuo.mutation.ClearAvatar()
 	return uuo
 }
 
@@ -539,19 +486,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: user.FieldIP,
-		})
-	}
-	if value, ok := uuo.mutation.Avatar(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: user.FieldAvatar,
-		})
-	}
-	if uuo.mutation.AvatarCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldAvatar,
 		})
 	}
 	_node = &User{config: uuo.config}

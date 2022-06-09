@@ -11,6 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/biz"
 	"github.com/wzyjerry/auth/internal/biz/third_party/github"
+	"github.com/wzyjerry/auth/internal/biz/third_party/microsoft"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
@@ -21,19 +22,20 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Security, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Security, thirdParty *conf.ThirdParty, logger log.Logger) (*kratos.App, func(), error) {
 	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err
 	}
 	userRepo := data.NewUserRepo(dataData, security, logger)
 	aliyunHelper := util.NewAliyunHelper(logger, security)
-	registerUsecase := biz.NewRegisterUsecase(userRepo, security, aliyunHelper)
+	registerUsecase := biz.NewRegisterUsecase(userRepo, security, aliyunHelper, logger)
 	registerService := service.NewRegisterService(registerUsecase)
 	privateKey := data.NewPrivateKey(security, logger)
 	tokenHelper := util.NewTokenHelper(security, privateKey)
-	thirdParty := github.New(security)
-	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase, thirdParty)
+	bizThirdParty := github.New(thirdParty)
+	thirdParty2 := microsoft.New(thirdParty)
+	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase, bizThirdParty, thirdParty2)
 	loginService := service.NewLoginService(loginUsecase, security, tokenHelper)
 	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService)
 	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService)

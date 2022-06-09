@@ -1,34 +1,68 @@
 import styles from './login.less';
 import { useLocation } from 'react-router-dom';
-import { Button } from 'antd';
-import { GithubOutlined } from '@ant-design/icons';
+import { Layout, message } from 'antd';
+import LoginForm from '@/components/login';
+import { Reject } from '@/util';
+import { Token, ErrSetLocalstorage } from '@/util/token';
+import { useHistory } from 'umi';
+import { useMemo, useEffect } from 'react';
+const { Content } = Layout;
 
-const Login = () => {
-  const { pathname, search } = useLocation();
-  const params = new URLSearchParams(search);
-  const paramsWithoutError = new URLSearchParams();
-  params.forEach((v, k) => {
-    if (k !== 'error') {
-      paramsWithoutError.append(k, v)
+const Login: React.FC = () => {
+  const { search } = useLocation();
+  const history = useHistory();
+  const {returnTo} = useMemo(() => {
+    const params = new URLSearchParams(search);
+    const returnTo = params.get('return_to') || '/';
+    return {
+      returnTo,
+    };
+  }, [search]);
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const error = params.get('error');
+    switch (error) {
+    case null:
+      break;
+    case 'SetLocalstorage':
+      message.error('持久化Token错误');
+      break;
+    case 'CODE_MISMATCH':
+      message.error('code错误');
+      break;
+    case 'NETWORK_ERROR':
+      message.error('网络错误');
+      break;
+    case 'invalid_code':
+      message.error('code未找到');
+      break;
+    default:
+      message.error(error);
     }
-  })
-  const returnTo = encodeURIComponent(`${pathname}?${paramsWithoutError.toString()}`);
-  const githubLogin = () => {
-    const aim = `http://oauth.windranger.tk:8000/oauth/github?return_to=${returnTo}`;
-    const redirectUri = encodeURIComponent(aim);
-    const href = `https://github.com/login/oauth/authorize?client_id=07abbea8ee6cb09a302a&redirect_uri=${redirectUri}`;
-    window.location.href = href;
-  };
+  }, [search])
+
+  const onSuccess = (token: string):void => {
+    const helper = new Token();
+    const err = helper.Save(token)
+    if (err instanceof Reject) {
+      switch (err.error) {
+      case ErrSetLocalstorage:
+        message.error('持久化Token错误');
+        break;
+      default:
+        message.error(err.error);
+      }
+      return;
+    }
+    history.push(returnTo);
+  }
+
   return (
-    <div className={styles.oauth}>
-      <Button
-        className={styles.github}
-        shape="circle"
-        icon={<GithubOutlined />}
-        size="large"
-        onClick={githubLogin}
-      />
-    </div>
+    <Layout className={styles.login}>
+      <Content className={styles.main}>
+        <LoginForm onSuccess={onSuccess} returnTo={returnTo}></LoginForm>
+      </Content>
+    </Layout>
   );
 };
 export default Login;

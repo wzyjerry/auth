@@ -28,9 +28,6 @@ type User struct {
 	// IP holds the value of the "ip" field.
 	// 注册IP
 	IP *string `json:"ip,omitempty"`
-	// Avatar holds the value of the "avatar" field.
-	// 头像url
-	Avatar *string `json:"avatar,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,7 +35,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldAncestorID, user.FieldPassword, user.FieldNickname, user.FieldIP, user.FieldAvatar:
+		case user.FieldID, user.FieldAncestorID, user.FieldPassword, user.FieldNickname, user.FieldIP:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
@@ -89,13 +86,6 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 				u.IP = new(string)
 				*u.IP = value.String
 			}
-		case user.FieldAvatar:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field avatar", values[i])
-			} else if value.Valid {
-				u.Avatar = new(string)
-				*u.Avatar = value.String
-			}
 		}
 	}
 	return nil
@@ -138,10 +128,6 @@ func (u *User) String() string {
 	}
 	if v := u.IP; v != nil {
 		builder.WriteString(", ip=")
-		builder.WriteString(*v)
-	}
-	if v := u.Avatar; v != nil {
-		builder.WriteString(", avatar=")
 		builder.WriteString(*v)
 	}
 	builder.WriteByte(')')

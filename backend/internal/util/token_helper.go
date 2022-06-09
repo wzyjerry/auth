@@ -40,13 +40,6 @@ func NewTokenHelper(
 	}
 }
 
-func (h *TokenHelper) randAccessTokenExpiration() time.Duration {
-	min := h.conf.Expiration.AccessTokenMin.AsDuration().Seconds()
-	max := h.conf.Expiration.AccessTokenMax.AsDuration().Seconds()
-	diff := max - min
-	return time.Duration(min+(diff*RndFloat64())) * time.Second
-}
-
 func (h *TokenHelper) ParseJWT(
 	signed string,
 ) (*jwt.Token, error) {
@@ -64,7 +57,7 @@ func (h *TokenHelper) IsIdToken(token *jwt.Token) bool {
 
 func (h *TokenHelper) IsAuthToken(token *jwt.Token) bool {
 	audience := (*token).Audience()
-	return len(audience) > 0 && strings.Compare(audience[0], os.Getenv(h.conf.Oauth.ClientId)) == 0
+	return len(audience) > 0 && strings.Compare(audience[0], os.Getenv(h.conf.ClientId)) == 0
 }
 
 func (h *TokenHelper) IsClientToken(token *jwt.Token) bool {
@@ -81,13 +74,12 @@ func (h *TokenHelper) GenerateAccessToken(
 	subject string,
 ) jwt.Token {
 	now := time.Now()
-	accessTokenExpiration := h.randAccessTokenExpiration()
 	token, _ := jwt.NewBuilder().
 		Audience([]string{clientId}).
 		Issuer(issuerWord).
 		IssuedAt(now).
 		NotBefore(now).
-		Expiration(now.Add(accessTokenExpiration)).
+		Expiration(now.Add(h.conf.Expiration.AccessToken.AsDuration())).
 		JwtID(NewUUID()).
 		Subject(subject).
 		Build()

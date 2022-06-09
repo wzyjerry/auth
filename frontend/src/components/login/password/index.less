@@ -1,0 +1,46 @@
+.form {
+  .accountLine {
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+    padding: 24px;
+    padding-bottom: 0;
+    .accountLabel {
+      font-size:  16px;
+      padding: 6.4px 24px;
+    }
+    .account {
+      width: 276px;
+      border-radius: 8px;
+    }
+  }
+  .passwordLine {
+    border: 1px solid #e7e7e7;
+    border-radius: 8px 8px 0 0;
+    margin-top: -24px;
+    border-top: none;
+    padding: 0px 24px;
+    .passwordLabel {
+      font-size:  16px;
+      padding: 6.4px 24px;
+    }
+    .password {
+      width: 180px;
+      margin-right: 12px;
+      border-radius: 8px;
+      > :global(.ant-input) {
+      }
+    }
+  }
+  .submitLine {
+    .register {
+      margin-right: 12px;
+      width: 210px;
+      border-radius: 8px;
+    }
+    .login {
+      width: 210px;
+      border-radius: 8px;
+    }
+  }
+}

@@ -29,6 +29,7 @@ type UserRepo interface {
 	VerifyLoginPhoneCode(ctx context.Context, phone string, code string) (bool, error)
 	// db部分
 	GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique interface{}) (*ent.Authenticator, error)
-	CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string, avatar *string) (string, error)
+	CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string) (string, error)
+	CreateAvatar(ctx context.Context, id string, avatar string)
 	GetUser(ctx context.Context, id string) (*ent.User, error)
 }

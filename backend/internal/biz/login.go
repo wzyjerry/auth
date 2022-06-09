@@ -19,18 +19,20 @@ type ThirdParty[UniqueType any] interface {
 type BasicInfo[UniqueType any] interface {
 	GetUnique() UniqueType
 	GetNickname() string
-	GetAvatar() *string
+	GetAvatar() func(ctx context.Context) (string, error)
 }
 
 type GithubProvider = ThirdParty[int64]
+type MicrosoftProvider = ThirdParty[string]
 
 type LoginUsecase struct {
-	repo            UserRepo
-	conf            *conf.Security
-	tokenHelper     *util.TokenHelper
-	aliyunHelper    *util.AliyunHelper
-	registerUsecase *RegisterUsecase
-	githubProvider  GithubProvider
+	repo              UserRepo
+	conf              *conf.Security
+	tokenHelper       *util.TokenHelper
+	aliyunHelper      *util.AliyunHelper
+	registerUsecase   *RegisterUsecase
+	githubProvider    GithubProvider
+	microsoftProvider MicrosoftProvider
 }
 
 func NewLoginUsecase(
@@ -40,14 +42,16 @@ func NewLoginUsecase(
 	aliyunHelper *util.AliyunHelper,
 	registerUsecase *RegisterUsecase,
 	githubProvider GithubProvider,
+	microsoftProvider MicrosoftProvider,
 ) *LoginUsecase {
 	return &LoginUsecase{
-		repo:            repo,
-		conf:            conf,
-		tokenHelper:     tokenHelper,
-		aliyunHelper:    aliyunHelper,
-		registerUsecase: registerUsecase,
-		githubProvider:  githubProvider,
+		repo:              repo,
+		conf:              conf,
+		tokenHelper:       tokenHelper,
+		aliyunHelper:      aliyunHelper,
+		registerUsecase:   registerUsecase,
+		githubProvider:    githubProvider,
+		microsoftProvider: microsoftProvider,
 	}
 }
 
@@ -58,6 +62,9 @@ func (uc *LoginUsecase) verifyPassword(hash string, password string) bool {
 func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.Kind, unique string, password string) (*ent.User, error) {
 	auth, err := uc.repo.GetAuthenticator(ctx, kind, unique)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, ErrPasswordLogin
+		}
 		return nil, err
 	}
 	user, err := uc.repo.GetUser(ctx, *auth.UserID)
@@ -177,11 +184,42 @@ func (uc *LoginUsecase) githubCode(ctx context.Context, code string) (*ent.User,
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_GITHUB, info.GetUnique())
 	var userId string
 	if err != nil {
-		id, err := uc.registerUsecase.Github(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
-		if err != nil {
+		if ent.IsNotFound(err) {
+			id, err := uc.registerUsecase.Github(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
+			if err != nil {
+				return nil, err
+			}
+			userId = id
+		} else {
 			return nil, err
 		}
-		userId = id
+	} else {
+		userId = *auth.UserID
+	}
+	user, err := uc.repo.GetUser(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (uc *LoginUsecase) microsoftCode(ctx context.Context, code string) (*ent.User, error) {
+	info, err := uc.microsoftProvider.Login(ctx, code)
+	if err != nil {
+		return nil, err
+	}
+	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_MICROSOFT, info.GetUnique())
+	var userId string
+	if err != nil {
+		if ent.IsNotFound(err) {
+			id, err := uc.registerUsecase.Microsoft(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
+			if err != nil {
+				return nil, err
+			}
+			userId = id
+		} else {
+			return nil, err
+		}
 	} else {
 		userId = *auth.UserID
 	}
@@ -234,6 +272,12 @@ func (uc *LoginUsecase) Login(ctx context.Context, _type v1.Type, method v1.Meth
 			user = result
 		case v1.Type_TYPE_GITHUB:
 			result, err := uc.githubCode(ctx, secret)
+			if err != nil {
+				return nil, err
+			}
+			user = result
+		case v1.Type_TYPE_MICROSOFT:
+			result, err := uc.microsoftCode(ctx, secret)
 			if err != nil {
 				return nil, err
 			}

@@ -40,17 +40,17 @@ message Data {
 message Security {
   string password_regex = 1;
   string private_key = 2;
-  Aliyun aliyun = 3;
-  Oauth oauth = 4;
-  Expiration expiration = 5;
+  string client_id = 3;
+  Aliyun aliyun = 4;
+  ThirdParty third_party = 5;
+  Expiration expiration = 6;
 }
 
 message Expiration {
   google.protobuf.Duration code = 1;
   google.protobuf.Duration token_extend = 2;
-  google.protobuf.Duration access_token_min = 3;
-  google.protobuf.Duration access_token_max = 4;
-  google.protobuf.Duration refresh_token = 5;
+  google.protobuf.Duration access_token = 3;
+  google.protobuf.Duration refresh_token = 4;
 }
 
 message Aliyun {
@@ -71,12 +71,13 @@ message Sms {
   string sign_name = 3;
 }
 
-message Oauth {
-  string client_id = 1;
-  Github github = 2;
+message ThirdParty {
+  OAuth github = 1;
+  OAuth microsoft = 2;
 }
 
-message Github {
+message OAuth {
   string client_id = 1;
   string client_secret = 2;
+  string redirect_uri = 3;
 }

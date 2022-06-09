@@ -3,8 +3,10 @@ package biz
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/dlclark/regexp2"
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/ent"
 	"github.com/wzyjerry/auth/internal/ent/schema/authenticatorNested"
@@ -21,17 +23,20 @@ type RegisterUsecase struct {
 	repo   UserRepo
 	helper *util.AliyunHelper
 	conf   *conf.Security
+	logger *log.Helper
 }
 
 func NewRegisterUsecase(
 	repo UserRepo,
 	conf *conf.Security,
 	helper *util.AliyunHelper,
+	logger log.Logger,
 ) *RegisterUsecase {
 	return &RegisterUsecase{
 		repo:   repo,
 		conf:   conf,
 		helper: helper,
+		logger: log.NewHelper(logger),
 	}
 }
 
@@ -49,7 +54,7 @@ func (uc *RegisterUsecase) hashPassword(password string) string {
 	return string(hash)
 }
 
-// Account 用户账户注册，username为唯一值，password和nickname必填，avatar选填
+// Account 用户账户注册，username为唯一值，password和nickname必填
 func (uc *RegisterUsecase) Account(ctx context.Context, username string, password string, nickname string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
@@ -69,7 +74,6 @@ func (uc *RegisterUsecase) Account(ctx context.Context, username string, passwor
 				hash,
 				nickname,
 				ip,
-				nil,
 			)
 		}
 		return "", err
@@ -88,6 +92,7 @@ func (uc *RegisterUsecase) PreEmail(ctx context.Context, email string) error {
 			if err := uc.repo.CacheRegisterEmail(ctx, email, code); err != nil {
 				return err
 			}
+			return nil
 		}
 		return err
 	}
@@ -113,13 +118,14 @@ func (uc *RegisterUsecase) PrePhone(ctx context.Context, phone string) error {
 			if err := uc.repo.CacheRegisterPhone(ctx, phone, code); err != nil {
 				return err
 			}
+			return nil
 		}
 		return err
 	}
 	return ErrAuthenticatorConflict
 }
 
-// email 邮箱注册，email为唯一值，nickname必填，password和avatar选填
+// email 邮箱注册，email为唯一值，nickname必填，password选填
 func (uc *RegisterUsecase) Email(ctx context.Context, email string, password *string, nickname string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
@@ -142,7 +148,6 @@ func (uc *RegisterUsecase) Email(ctx context.Context, email string, password *st
 				hash,
 				nickname,
 				ip,
-				nil,
 			)
 		}
 		return "", err
@@ -150,7 +155,7 @@ func (uc *RegisterUsecase) Email(ctx context.Context, email string, password *st
 	return "", ErrAuthenticatorConflict
 }
 
-// phone 手机注册，phone为唯一值，nickname必填，password和avatar选填
+// phone 手机注册，phone为唯一值，nickname必填，password选填
 func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, password *string, nickname string) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
@@ -173,7 +178,6 @@ func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, password *st
 				hash,
 				nickname,
 				ip,
-				nil,
 			)
 		}
 		return "", err
@@ -181,14 +185,14 @@ func (uc *RegisterUsecase) Phone(ctx context.Context, phone string, password *st
 	return "", ErrAuthenticatorConflict
 }
 
-func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string, avatar *string) (string, error) {
+func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string, avatar func(ctx context.Context) (string, error)) (string, error) {
 	ip, err := middleware.GetIp(ctx)
 	if err != nil {
 		return "", err
 	}
 	if _, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_GITHUB, id); err != nil {
 		if ent.IsNotFound(err) {
-			return uc.repo.CreateUser(ctx,
+			id, err := uc.repo.CreateUser(ctx,
 				int32(authenticatorNested.Kind_KIND_GITHUB),
 				&authenticatorNested.Unique{
 					Github: &id,
@@ -196,8 +200,58 @@ func (uc *RegisterUsecase) Github(ctx context.Context, id int64, nickname string
 				nil,
 				nickname,
 				ip,
-				avatar,
 			)
+			if err != nil {
+				return "", err
+			}
+			go func() {
+				ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+				defer cancel()
+				base64, err := avatar(ctx)
+				if err == nil {
+					uc.repo.CreateAvatar(ctx, id, base64)
+				} else {
+					uc.logger.Errorf("拉取Github头像失败: %v", err)
+				}
+			}()
+			return id, nil
+		}
+		return "", err
+
+	}
+	return "", ErrAuthenticatorConflict
+}
+
+func (uc *RegisterUsecase) Microsoft(ctx context.Context, id string, nickname string, avatar func(ctx context.Context) (string, error)) (string, error) {
+	ip, err := middleware.GetIp(ctx)
+	if err != nil {
+		return "", err
+	}
+	if _, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_MICROSOFT, id); err != nil {
+		if ent.IsNotFound(err) {
+			id, err := uc.repo.CreateUser(ctx,
+				int32(authenticatorNested.Kind_KIND_MICROSOFT),
+				&authenticatorNested.Unique{
+					Microsoft: &id,
+				},
+				nil,
+				nickname,
+				ip,
+			)
+			if err != nil {
+				return "", err
+			}
+			go func() {
+				ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+				defer cancel()
+				base64, err := avatar(ctx)
+				if err == nil {
+					uc.repo.CreateAvatar(ctx, id, base64)
+				} else {
+					uc.logger.Errorf("拉取Microsoft头像失败: %v", err)
+				}
+			}()
+			return id, nil
 		}
 		return "", err
 

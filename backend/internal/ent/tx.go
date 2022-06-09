@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Authenticator is the client for interacting with the Authenticator builders.
 	Authenticator *AuthenticatorClient
+	// Avatar is the client for interacting with the Avatar builders.
+	Avatar *AvatarClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -152,6 +154,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Authenticator = NewAuthenticatorClient(tx.config)
+	tx.Avatar = NewAvatarClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

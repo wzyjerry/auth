@@ -30,6 +30,5 @@ func (User) Fields() []ent.Field{
         field.String("password").Optional().Nillable().Comment("密码"),
         field.String("nickname").Optional().Nillable().Comment("昵称"),
         field.String("ip").Optional().Nillable().Comment("注册IP"),
-        field.String("avatar").Optional().Nillable().Comment("头像url"),
     }
 }

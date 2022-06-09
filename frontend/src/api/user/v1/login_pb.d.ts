@@ -180,6 +180,7 @@ export interface TypeMap {
   TYPE_EMAIL: 2;
   TYPE_PHONE: 3;
   TYPE_GITHUB: 4;
+  TYPE_MICROSOFT: 5;
 }
 
 export const Type: TypeMap;

@@ -23,6 +23,7 @@ func wireApp(
 	*conf.Server,
 	*conf.Data,
 	*conf.Security,
+	*conf.ThirdParty,
 	log.Logger,
 ) (*kratos.App, func(), error) {
 	panic(wire.Build(third_party.ProviderSet, server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, util.ProviderSet, newApp))

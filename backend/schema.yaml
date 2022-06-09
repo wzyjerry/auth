@@ -4,7 +4,10 @@ user: &table
   password: string # 密码
   nickname: string # 昵称
   ip: string # 注册IP
-  avatar: string # 头像url
+---
+# 头像（使用用户ID）
+avatar: &table
+  avatar: string # 头像base64串
 ---
 # 认证器类型
 kind:
@@ -12,6 +15,7 @@ kind:
   - email # 邮箱
   - phone # 手机
   - github # Github
+  - microsoft # Azure AD
 # 认证器
 authenticator: &table
   user_id: string # 用户ID
@@ -21,3 +25,4 @@ authenticator: &table
     email: string # 邮箱
     phone: string # 手机
     github: int # Github
+    microsoft: string # Azure AD

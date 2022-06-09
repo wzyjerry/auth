@@ -15,6 +15,7 @@ data:
 security:
   password_regex: "^(?=.*?[0-9]+)(?=.*?[a-zA-Z]+).{8,}$"
   private_key: PRIVATE_KEY
+  client_id: OAUTH_CLIENT_ID
   
   aliyun:
     email:
@@ -26,14 +27,16 @@ security:
       access_key_id: ALIYUN_SMS_ACCESS_KEY_ID
       access_key_secret: ALIYUN_SMS_ACCESS_KEY_SECRET
       sign_name: AMiner
-  oauth:
-    client_id: OAUTH_CLIENT_ID
+  third_party:
     github:
       client_id: OAUTH_GITHUB_CLIENT_ID
       client_secret: OAUTH_GITHUB_CLIENT_SECRET
+    microsoft:
+      client_id: OAUTH_MICROSOFT_CLIENT_ID
+      client_secret: OAUTH_MICROSOFT_CLIENT_SECRET
+      redirect_uri: http://localhost:8000/oauth/microsoft
   expiration:
     code: 600s
     token_extend: 300s
-    access_token_min: 3600s
-    access_token_max: 5400s
+    access_token: 3600s
     refresh_token: 7776000s

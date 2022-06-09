@@ -22,6 +22,17 @@ var (
 		Columns:    AuthenticatorColumns,
 		PrimaryKey: []*schema.Column{AuthenticatorColumns[0]},
 	}
+	// AvatarColumns holds the columns for the "avatar" table.
+	AvatarColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "avatar", Type: field.TypeString, Nullable: true},
+	}
+	// AvatarTable holds the schema information for the "avatar" table.
+	AvatarTable = &schema.Table{
+		Name:       "avatar",
+		Columns:    AvatarColumns,
+		PrimaryKey: []*schema.Column{AvatarColumns[0]},
+	}
 	// UserColumns holds the columns for the "user" table.
 	UserColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -29,7 +40,6 @@ var (
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "nickname", Type: field.TypeString, Nullable: true},
 		{Name: "ip", Type: field.TypeString, Nullable: true},
-		{Name: "avatar", Type: field.TypeString, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{
@@ -40,6 +50,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AuthenticatorTable,
+		AvatarTable,
 		UserTable,
 	}
 )
@@ -47,6 +58,9 @@ var (
 func init() {
 	AuthenticatorTable.Annotation = &entsql.Annotation{
 		Table: "authenticator",
+	}
+	AvatarTable.Annotation = &entsql.Annotation{
+		Table: "avatar",
 	}
 	UserTable.Annotation = &entsql.Annotation{
 		Table: "user",

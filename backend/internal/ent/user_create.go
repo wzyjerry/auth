@@ -74,20 +74,6 @@ func (uc *UserCreate) SetNillableIP(s *string) *UserCreate {
 	return uc
 }
 
-// SetAvatar sets the "avatar" field.
-func (uc *UserCreate) SetAvatar(s string) *UserCreate {
-	uc.mutation.SetAvatar(s)
-	return uc
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (uc *UserCreate) SetNillableAvatar(s *string) *UserCreate {
-	if s != nil {
-		uc.SetAvatar(*s)
-	}
-	return uc
-}
-
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(s string) *UserCreate {
 	uc.mutation.SetID(s)
@@ -231,14 +217,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldIP,
 		})
 		_node.IP = &value
-	}
-	if value, ok := uc.mutation.Avatar(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: user.FieldAvatar,
-		})
-		_node.Avatar = &value
 	}
 	return _node, _spec
 }

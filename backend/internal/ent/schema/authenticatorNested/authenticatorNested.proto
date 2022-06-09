@@ -11,6 +11,7 @@ enum Kind {
     KIND_EMAIL = 2; // 邮箱
     KIND_PHONE = 3; // 手机
     KIND_GITHUB = 4; // Github
+    KIND_MICROSOFT = 5; // Azure AD
     KIND_CLEAR = -1; // 保留字：清空
 }
 
@@ -28,4 +29,5 @@ message Unique {
     optional string email = 2; // 邮箱
     optional string phone = 3; // 手机
     optional int64 github = 4; // Github
+    optional string microsoft = 5; // Azure AD
 }

@@ -15,8 +15,6 @@ const (
 	FieldNickname = "nickname"
 	// FieldIP holds the string denoting the ip field in the database.
 	FieldIP = "ip"
-	// FieldAvatar holds the string denoting the avatar field in the database.
-	FieldAvatar = "avatar"
 	// Table holds the table name of the user in the database.
 	Table = "user"
 )
@@ -28,7 +26,6 @@ var Columns = []string{
 	FieldPassword,
 	FieldNickname,
 	FieldIP,
-	FieldAvatar,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

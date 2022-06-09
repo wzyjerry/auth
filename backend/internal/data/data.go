@@ -72,7 +72,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		redis: client,
 	}
 	// 数据库迁移
-	if err := data.db.Schema.Create(ctx, schema.WithAtlas(true)); err != nil {
+	if err := data.db.Schema.Create(ctx, schema.WithAtlas(true), schema.WithDropColumn(true)); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 	return data, cleanup, nil

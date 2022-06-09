@@ -11,5 +11,4 @@ message User {
     optional string password = 3; // 密码
     optional string nickname = 4; // 昵称
     optional string ip = 5; // 注册IP
-    optional string avatar = 6; // 头像url
 }

@@ -44,7 +44,7 @@ interface backendError {
 
 export function errorHandler(error: ResponseError<backendError>) {
   if (error.data) {
-    return Promise.reject(new Err(`[${error.data.code}]${error.data.reason}`, error.data.message))
+    return Promise.reject(new Err(error.data.reason, error.data.message))
   }
-  return Promise.reject(new Err("NETWORD_ERROR", "netword error"))
+  return Promise.reject(new Err("NETWORK_ERROR", "network error"))
 };

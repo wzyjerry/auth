@@ -7,48 +7,47 @@ import {
 
 import { LoginClient } from '@/api';
 import { Go, Reject } from '@/util';
-
 import { Token } from '@/util/token';
 import { useEffect, useMemo } from 'react';
 
 const Github = () => {
   const { search } = useLocation();
   const history = useHistory();
-  const {code, returnTo} = useMemo(() => {
+  const {code, state} = useMemo(() => {
     const params = new URLSearchParams(search);
     const code = params.get('code');
-    const returnTo = params.get('return_to') || '/user/login';
+    const state = params.get('state')||'/';
     return {
       code,
-      returnTo,
+      state,
     };
   }, [search]);
   const githubLogin = async(returnTo: string) => {
     if (code === null) {
-      returnTo += '&error=invalid_code';
+      returnTo = `/user/login?error=invalid_code&return_to=${encodeURIComponent(returnTo)}`;
     } else {
       const loginClient = new LoginClient();
       const loginRequest = new LoginRequest();
       loginRequest.setType(Type.TYPE_GITHUB);
       loginRequest.setMethod(Method.METHOD_CODE);
       loginRequest.setSecret(code);
-      let reply = await Go(loginClient.Login(loginRequest))
+      const reply = await Go(loginClient.Login(loginRequest))
       if (reply instanceof Reject) {
-        returnTo += `&error=${reply.error.name}`
+        returnTo = `/user/login?error=${reply.error.name}&return_to=${encodeURIComponent(returnTo)}`;
       } else {
         const helper = new Token();
-        let err = helper.Save(reply.val.token)
+        const err = helper.Save(reply.val.token)
         if (err instanceof Reject) {
-          returnTo += `&error=${err.error.name}`
+          returnTo = `/user/login?error=${err.error.name}&return_to=${encodeURIComponent(returnTo)}`;
         }
       }
     }
     history.push(returnTo);
   }
   useEffect(() => {
-    githubLogin(returnTo)
-  }, [returnTo])
-  return <noscript />;
+    githubLogin(state)
+  }, [state])
+  return (<></>);
 };
 
 export default Github;

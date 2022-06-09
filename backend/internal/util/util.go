@@ -2,10 +2,13 @@ package util
 
 import (
 	crypto_rand "crypto/rand"
+	"encoding/base64"
 	"encoding/binary"
 	"fmt"
 	"math/rand"
 	math_rand "math/rand"
+	"net/http"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/google/wire"
@@ -36,4 +39,14 @@ func RndFloat64() float64 {
 
 func NewUUID() string {
 	return uuid.NewString()
+}
+
+func ImgBase64(img []byte) string {
+	mimeType := http.DetectContentType(img)
+	var avatar strings.Builder
+	avatar.WriteString("data:")
+	avatar.WriteString(mimeType)
+	avatar.WriteString(";base64,")
+	avatar.Write([]byte(base64.StdEncoding.EncodeToString(img)))
+	return avatar.String()
 }
