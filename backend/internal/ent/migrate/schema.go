@@ -9,6 +9,23 @@ import (
 )
 
 var (
+	// ApplicationColumns holds the columns for the "application" table.
+	ApplicationColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "homepage", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "callback", Type: field.TypeString, Nullable: true},
+		{Name: "admin", Type: field.TypeString, Nullable: true},
+		{Name: "client_id", Type: field.TypeString, Nullable: true},
+		{Name: "client_secrets", Type: field.TypeJSON, Nullable: true},
+	}
+	// ApplicationTable holds the schema information for the "application" table.
+	ApplicationTable = &schema.Table{
+		Name:       "application",
+		Columns:    ApplicationColumns,
+		PrimaryKey: []*schema.Column{ApplicationColumns[0]},
+	}
 	// AuthenticatorColumns holds the columns for the "authenticator" table.
 	AuthenticatorColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
@@ -25,6 +42,8 @@ var (
 	// AvatarColumns holds the columns for the "avatar" table.
 	AvatarColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
+		{Name: "kind", Type: field.TypeInt32, Nullable: true},
+		{Name: "rel_id", Type: field.TypeString, Nullable: true},
 		{Name: "avatar", Type: field.TypeString, Nullable: true},
 	}
 	// AvatarTable holds the schema information for the "avatar" table.
@@ -49,6 +68,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ApplicationTable,
 		AuthenticatorTable,
 		AvatarTable,
 		UserTable,
@@ -56,6 +76,9 @@ var (
 )
 
 func init() {
+	ApplicationTable.Annotation = &entsql.Annotation{
+		Table: "application",
+	}
 	AuthenticatorTable.Annotation = &entsql.Annotation{
 		Table: "authenticator",
 	}

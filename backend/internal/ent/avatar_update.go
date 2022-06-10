@@ -27,6 +27,53 @@ func (au *AvatarUpdate) Where(ps ...predicate.Avatar) *AvatarUpdate {
 	return au
 }
 
+// SetKind sets the "kind" field.
+func (au *AvatarUpdate) SetKind(i int32) *AvatarUpdate {
+	au.mutation.ResetKind()
+	au.mutation.SetKind(i)
+	return au
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (au *AvatarUpdate) SetNillableKind(i *int32) *AvatarUpdate {
+	if i != nil {
+		au.SetKind(*i)
+	}
+	return au
+}
+
+// AddKind adds i to the "kind" field.
+func (au *AvatarUpdate) AddKind(i int32) *AvatarUpdate {
+	au.mutation.AddKind(i)
+	return au
+}
+
+// ClearKind clears the value of the "kind" field.
+func (au *AvatarUpdate) ClearKind() *AvatarUpdate {
+	au.mutation.ClearKind()
+	return au
+}
+
+// SetRelID sets the "rel_id" field.
+func (au *AvatarUpdate) SetRelID(s string) *AvatarUpdate {
+	au.mutation.SetRelID(s)
+	return au
+}
+
+// SetNillableRelID sets the "rel_id" field if the given value is not nil.
+func (au *AvatarUpdate) SetNillableRelID(s *string) *AvatarUpdate {
+	if s != nil {
+		au.SetRelID(*s)
+	}
+	return au
+}
+
+// ClearRelID clears the value of the "rel_id" field.
+func (au *AvatarUpdate) ClearRelID() *AvatarUpdate {
+	au.mutation.ClearRelID()
+	return au
+}
+
 // SetAvatar sets the "avatar" field.
 func (au *AvatarUpdate) SetAvatar(s string) *AvatarUpdate {
 	au.mutation.SetAvatar(s)
@@ -124,6 +171,39 @@ func (au *AvatarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := au.mutation.Kind(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: avatar.FieldKind,
+		})
+	}
+	if value, ok := au.mutation.AddedKind(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: avatar.FieldKind,
+		})
+	}
+	if au.mutation.KindCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Column: avatar.FieldKind,
+		})
+	}
+	if value, ok := au.mutation.RelID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: avatar.FieldRelID,
+		})
+	}
+	if au.mutation.RelIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: avatar.FieldRelID,
+		})
+	}
 	if value, ok := au.mutation.Avatar(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -154,6 +234,53 @@ type AvatarUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AvatarMutation
+}
+
+// SetKind sets the "kind" field.
+func (auo *AvatarUpdateOne) SetKind(i int32) *AvatarUpdateOne {
+	auo.mutation.ResetKind()
+	auo.mutation.SetKind(i)
+	return auo
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (auo *AvatarUpdateOne) SetNillableKind(i *int32) *AvatarUpdateOne {
+	if i != nil {
+		auo.SetKind(*i)
+	}
+	return auo
+}
+
+// AddKind adds i to the "kind" field.
+func (auo *AvatarUpdateOne) AddKind(i int32) *AvatarUpdateOne {
+	auo.mutation.AddKind(i)
+	return auo
+}
+
+// ClearKind clears the value of the "kind" field.
+func (auo *AvatarUpdateOne) ClearKind() *AvatarUpdateOne {
+	auo.mutation.ClearKind()
+	return auo
+}
+
+// SetRelID sets the "rel_id" field.
+func (auo *AvatarUpdateOne) SetRelID(s string) *AvatarUpdateOne {
+	auo.mutation.SetRelID(s)
+	return auo
+}
+
+// SetNillableRelID sets the "rel_id" field if the given value is not nil.
+func (auo *AvatarUpdateOne) SetNillableRelID(s *string) *AvatarUpdateOne {
+	if s != nil {
+		auo.SetRelID(*s)
+	}
+	return auo
+}
+
+// ClearRelID clears the value of the "rel_id" field.
+func (auo *AvatarUpdateOne) ClearRelID() *AvatarUpdateOne {
+	auo.mutation.ClearRelID()
+	return auo
 }
 
 // SetAvatar sets the "avatar" field.
@@ -276,6 +403,39 @@ func (auo *AvatarUpdateOne) sqlSave(ctx context.Context) (_node *Avatar, err err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := auo.mutation.Kind(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: avatar.FieldKind,
+		})
+	}
+	if value, ok := auo.mutation.AddedKind(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: avatar.FieldKind,
+		})
+	}
+	if auo.mutation.KindCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Column: avatar.FieldKind,
+		})
+	}
+	if value, ok := auo.mutation.RelID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: avatar.FieldRelID,
+		})
+	}
+	if auo.mutation.RelIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: avatar.FieldRelID,
+		})
 	}
 	if value, ok := auo.mutation.Avatar(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

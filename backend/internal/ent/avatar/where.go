@@ -90,10 +90,239 @@ func IDLTE(id string) predicate.Avatar {
 	})
 }
 
+// Kind applies equality check predicate on the "kind" field. It's identical to KindEQ.
+func Kind(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldKind), v))
+	})
+}
+
+// RelID applies equality check predicate on the "rel_id" field. It's identical to RelIDEQ.
+func RelID(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRelID), v))
+	})
+}
+
 // Avatar applies equality check predicate on the "avatar" field. It's identical to AvatarEQ.
 func Avatar(v string) predicate.Avatar {
 	return predicate.Avatar(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldAvatar), v))
+	})
+}
+
+// KindEQ applies the EQ predicate on the "kind" field.
+func KindEQ(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldKind), v))
+	})
+}
+
+// KindNEQ applies the NEQ predicate on the "kind" field.
+func KindNEQ(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldKind), v))
+	})
+}
+
+// KindIn applies the In predicate on the "kind" field.
+func KindIn(vs ...int32) predicate.Avatar {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Avatar(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldKind), v...))
+	})
+}
+
+// KindNotIn applies the NotIn predicate on the "kind" field.
+func KindNotIn(vs ...int32) predicate.Avatar {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Avatar(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldKind), v...))
+	})
+}
+
+// KindGT applies the GT predicate on the "kind" field.
+func KindGT(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldKind), v))
+	})
+}
+
+// KindGTE applies the GTE predicate on the "kind" field.
+func KindGTE(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldKind), v))
+	})
+}
+
+// KindLT applies the LT predicate on the "kind" field.
+func KindLT(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldKind), v))
+	})
+}
+
+// KindLTE applies the LTE predicate on the "kind" field.
+func KindLTE(v int32) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldKind), v))
+	})
+}
+
+// KindIsNil applies the IsNil predicate on the "kind" field.
+func KindIsNil() predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldKind)))
+	})
+}
+
+// KindNotNil applies the NotNil predicate on the "kind" field.
+func KindNotNil() predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldKind)))
+	})
+}
+
+// RelIDEQ applies the EQ predicate on the "rel_id" field.
+func RelIDEQ(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDNEQ applies the NEQ predicate on the "rel_id" field.
+func RelIDNEQ(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDIn applies the In predicate on the "rel_id" field.
+func RelIDIn(vs ...string) predicate.Avatar {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Avatar(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldRelID), v...))
+	})
+}
+
+// RelIDNotIn applies the NotIn predicate on the "rel_id" field.
+func RelIDNotIn(vs ...string) predicate.Avatar {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Avatar(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldRelID), v...))
+	})
+}
+
+// RelIDGT applies the GT predicate on the "rel_id" field.
+func RelIDGT(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDGTE applies the GTE predicate on the "rel_id" field.
+func RelIDGTE(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDLT applies the LT predicate on the "rel_id" field.
+func RelIDLT(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDLTE applies the LTE predicate on the "rel_id" field.
+func RelIDLTE(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDContains applies the Contains predicate on the "rel_id" field.
+func RelIDContains(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDHasPrefix applies the HasPrefix predicate on the "rel_id" field.
+func RelIDHasPrefix(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDHasSuffix applies the HasSuffix predicate on the "rel_id" field.
+func RelIDHasSuffix(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDIsNil applies the IsNil predicate on the "rel_id" field.
+func RelIDIsNil() predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRelID)))
+	})
+}
+
+// RelIDNotNil applies the NotNil predicate on the "rel_id" field.
+func RelIDNotNil() predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRelID)))
+	})
+}
+
+// RelIDEqualFold applies the EqualFold predicate on the "rel_id" field.
+func RelIDEqualFold(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRelID), v))
+	})
+}
+
+// RelIDContainsFold applies the ContainsFold predicate on the "rel_id" field.
+func RelIDContainsFold(v string) predicate.Avatar {
+	return predicate.Avatar(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRelID), v))
 	})
 }
 

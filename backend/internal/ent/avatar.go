@@ -16,6 +16,12 @@ type Avatar struct {
 	// ID of the ent.
 	// 主键
 	ID string `json:"id,omitempty"`
+	// Kind holds the value of the "kind" field.
+	// 头像类型
+	Kind *int32 `json:"kind,omitempty"`
+	// RelID holds the value of the "rel_id" field.
+	// 关联ID
+	RelID *string `json:"rel_id,omitempty"`
 	// Avatar holds the value of the "avatar" field.
 	// 头像base64串
 	Avatar *string `json:"avatar,omitempty"`
@@ -26,7 +32,9 @@ func (*Avatar) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case avatar.FieldID, avatar.FieldAvatar:
+		case avatar.FieldKind:
+			values[i] = new(sql.NullInt64)
+		case avatar.FieldID, avatar.FieldRelID, avatar.FieldAvatar:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Avatar", columns[i])
@@ -48,6 +56,20 @@ func (a *Avatar) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				a.ID = value.String
+			}
+		case avatar.FieldKind:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field kind", values[i])
+			} else if value.Valid {
+				a.Kind = new(int32)
+				*a.Kind = int32(value.Int64)
+			}
+		case avatar.FieldRelID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field rel_id", values[i])
+			} else if value.Valid {
+				a.RelID = new(string)
+				*a.RelID = value.String
 			}
 		case avatar.FieldAvatar:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -84,6 +106,14 @@ func (a *Avatar) String() string {
 	var builder strings.Builder
 	builder.WriteString("Avatar(")
 	builder.WriteString(fmt.Sprintf("id=%v", a.ID))
+	if v := a.Kind; v != nil {
+		builder.WriteString(", kind=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	if v := a.RelID; v != nil {
+		builder.WriteString(", rel_id=")
+		builder.WriteString(*v)
+	}
 	if v := a.Avatar; v != nil {
 		builder.WriteString(", avatar=")
 		builder.WriteString(*v)

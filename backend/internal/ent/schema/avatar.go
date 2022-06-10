@@ -26,6 +26,8 @@ func (Avatar)Annotations() []schema.Annotation {
 func (Avatar) Fields() []ent.Field{
     return []ent.Field{
         field.String("id").Comment("主键"),
+        field.Int32("kind").Optional().Nillable().Comment("头像类型"),
+        field.String("rel_id").Optional().Nillable().Comment("关联ID"),
         field.String("avatar").Optional().Nillable().Comment("头像base64串"),
     }
 }

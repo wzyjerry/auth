@@ -10,7 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/wzyjerry/auth/internal/biz"
-	"github.com/wzyjerry/auth/internal/biz/third_party"
+	"github.com/wzyjerry/auth/internal/biz/userBiz/third_party"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"

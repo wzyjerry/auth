@@ -254,12 +254,12 @@ func (aq *AvatarQuery) Clone() *AvatarQuery {
 // Example:
 //
 //	var v []struct {
-//		Avatar string `json:"avatar,omitempty"`
+//		Kind int32 `json:"kind,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Avatar.Query().
-//		GroupBy(avatar.FieldAvatar).
+//		GroupBy(avatar.FieldKind).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -281,11 +281,11 @@ func (aq *AvatarQuery) GroupBy(field string, fields ...string) *AvatarGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Avatar string `json:"avatar,omitempty"`
+//		Kind int32 `json:"kind,omitempty"`
 //	}
 //
 //	client.Avatar.Query().
-//		Select(avatar.FieldAvatar).
+//		Select(avatar.FieldKind).
 //		Scan(ctx, &v)
 //
 func (aq *AvatarQuery) Select(fields ...string) *AvatarSelect {

@@ -18,6 +18,34 @@ type AvatarCreate struct {
 	hooks    []Hook
 }
 
+// SetKind sets the "kind" field.
+func (ac *AvatarCreate) SetKind(i int32) *AvatarCreate {
+	ac.mutation.SetKind(i)
+	return ac
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (ac *AvatarCreate) SetNillableKind(i *int32) *AvatarCreate {
+	if i != nil {
+		ac.SetKind(*i)
+	}
+	return ac
+}
+
+// SetRelID sets the "rel_id" field.
+func (ac *AvatarCreate) SetRelID(s string) *AvatarCreate {
+	ac.mutation.SetRelID(s)
+	return ac
+}
+
+// SetNillableRelID sets the "rel_id" field if the given value is not nil.
+func (ac *AvatarCreate) SetNillableRelID(s *string) *AvatarCreate {
+	if s != nil {
+		ac.SetRelID(*s)
+	}
+	return ac
+}
+
 // SetAvatar sets the "avatar" field.
 func (ac *AvatarCreate) SetAvatar(s string) *AvatarCreate {
 	ac.mutation.SetAvatar(s)
@@ -143,6 +171,22 @@ func (ac *AvatarCreate) createSpec() (*Avatar, *sqlgraph.CreateSpec) {
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := ac.mutation.Kind(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: avatar.FieldKind,
+		})
+		_node.Kind = &value
+	}
+	if value, ok := ac.mutation.RelID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: avatar.FieldRelID,
+		})
+		_node.RelID = &value
 	}
 	if value, ok := ac.mutation.Avatar(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

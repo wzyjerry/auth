@@ -7,6 +7,10 @@ const (
 	Label = "avatar"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldKind holds the string denoting the kind field in the database.
+	FieldKind = "kind"
+	// FieldRelID holds the string denoting the rel_id field in the database.
+	FieldRelID = "rel_id"
 	// FieldAvatar holds the string denoting the avatar field in the database.
 	FieldAvatar = "avatar"
 	// Table holds the table name of the avatar in the database.
@@ -16,6 +20,8 @@ const (
 // Columns holds all SQL columns for avatar fields.
 var Columns = []string{
 	FieldID,
+	FieldKind,
+	FieldRelID,
 	FieldAvatar,
 }
 

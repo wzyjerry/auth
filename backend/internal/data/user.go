@@ -7,11 +7,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/wzyjerry/auth/internal/biz"
+	"github.com/wzyjerry/auth/internal/biz/userBiz"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/ent"
 	"github.com/wzyjerry/auth/internal/ent/authenticator"
+	"github.com/wzyjerry/auth/internal/ent/avatar"
 	"github.com/wzyjerry/auth/internal/ent/schema/authenticatorNested"
+	"github.com/wzyjerry/auth/internal/ent/schema/avatarNested"
 )
 
 type userRepo struct {
@@ -142,7 +144,7 @@ func (r *userRepo) GetAuthenticator(ctx context.Context, kind authenticatorNeste
 			}).
 			Only(ctx)
 	default:
-		return nil, biz.ErrUnknownKind
+		return nil, userBiz.ErrUnknownKind
 	}
 }
 
@@ -173,14 +175,22 @@ func (r *userRepo) CreateUser(ctx context.Context, kind int32, unique *authentic
 	return id, nil
 }
 
-func (r *userRepo) CreateAvatar(ctx context.Context, id string, avatar string) {
-	r.data.db.Avatar.Create().SetID(id).SetAvatar(avatar).Exec(ctx)
+func (r *userRepo) CreateAvatar(ctx context.Context, id string, base64 string) {
+	r.data.db.Avatar.Create().SetID(r.data.db.GenerateId()).SetKind(int32(avatarNested.Kind_KIND_USER)).SetRelID(id).SetAvatar(base64).Exec(ctx)
+}
+
+func (r *userRepo) GetAvatar(ctx context.Context, id string) (string, error) {
+	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	return *avatar.Avatar, nil
 }
 
 func NewUserRepo(
 	data *Data,
 	conf *conf.Security,
-	logger log.Logger) biz.UserRepo {
+	logger log.Logger) userBiz.UserRepo {
 	return &userRepo{
 		data: data,
 		conf: conf,

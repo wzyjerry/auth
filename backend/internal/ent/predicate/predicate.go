@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Application is the predicate function for application builders.
+type Application func(*sql.Selector)
+
 // Authenticator is the predicate function for authenticator builders.
 type Authenticator func(*sql.Selector)
 

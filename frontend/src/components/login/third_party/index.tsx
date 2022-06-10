@@ -3,7 +3,7 @@ import Github from './github';
 import Microsoft from './microsoft';
 
 interface ThirdPartyProp {
-  className: string|undefined
+  className?: string
   returnTo: string
 }
 const ThirdParty: React.FC<ThirdPartyProp> = (prop) => {

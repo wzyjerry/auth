@@ -1,4 +1,4 @@
-package service
+package userService
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	v1 "github.com/wzyjerry/auth/api/user/v1"
-	"github.com/wzyjerry/auth/internal/biz"
+	"github.com/wzyjerry/auth/internal/biz/userBiz"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/util"
@@ -16,13 +16,13 @@ import (
 type LoginService struct {
 	v1.UnimplementedLoginServer
 
-	uc     *biz.LoginUsecase
+	uc     *userBiz.LoginUsecase
 	conf   *conf.Security
 	helper *util.TokenHelper
 }
 
 func NewLoginService(
-	uc *biz.LoginUsecase,
+	uc *userBiz.LoginUsecase,
 	conf *conf.Security,
 	helper *util.TokenHelper,
 ) *LoginService {

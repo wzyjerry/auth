@@ -4,8 +4,18 @@ package avatarNested;
 
 option go_package = "github.com/wzyjerry/auth/internal/ent/schema/avatarNested";
 
-// 头像（使用用户ID）
+// 头像类型
+enum Kind {
+    KIND_UNSET = 0; // 保留字：未设置
+    KIND_USER = 1; // 用户头像
+    KIND_APPLICATION = 2; // 应用Logo
+    KIND_CLEAR = -1; // 保留字：清空
+}
+
+// 头像
 message Avatar {
     optional string id = 1; // 主键
-    optional string avatar = 2; // 头像base64串
+    optional Kind kind = 2; // 头像类型
+    optional string rel_id = 3; // 关联ID
+    optional string avatar = 4; // 头像base64串
 }

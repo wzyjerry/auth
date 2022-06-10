@@ -9,6 +9,19 @@ import (
 	"github.com/wzyjerry/auth/internal/ent"
 )
 
+// The ApplicationFunc type is an adapter to allow the use of ordinary
+// function as Application mutator.
+type ApplicationFunc func(context.Context, *ent.ApplicationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ApplicationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ApplicationMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ApplicationMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The AuthenticatorFunc type is an adapter to allow the use of ordinary
 // function as Authenticator mutator.
 type AuthenticatorFunc func(context.Context, *ent.AuthenticatorMutation) (ent.Value, error)

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Layout, message } from 'antd';
 import LoginForm from '@/components/login';
 import { Reject } from '@/util';
-import { Token, ErrSetLocalstorage } from '@/util/token';
+import { Token, ErrSetLocalstorage } from '@/util/localStorage';
 import { useHistory } from 'umi';
 import { useMemo, useEffect } from 'react';
 const { Content } = Layout;

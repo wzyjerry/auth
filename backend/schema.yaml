@@ -5,9 +5,29 @@ user: &table
   nickname: string # 昵称
   ip: string # 注册IP
 ---
-# 头像（使用用户ID）
+# 头像
 avatar: &table
+  # 头像类型
+  kind:
+    - user # 用户头像
+    - application # 应用Logo
+  rel_id: string # 关联ID
   avatar: string # 头像base64串
+---
+# 应用
+application: &table
+  name: string # 应用名称
+  homepage: string # 应用主页
+  description: string # 应用简介
+  callback: string # 授权回调地址
+  admin: string # 管理员ID
+  client_id: string # 应用ID
+  # 应用密钥
+  client_secret[]:
+    generated: datetime # 生成时间
+    last_used: datetime # 最后使用时间
+    description: string # 说明
+    secret: string # 密钥
 ---
 # 认证器类型
 kind:

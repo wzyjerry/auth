@@ -1,4 +1,4 @@
-package biz
+package userBiz
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	ErrNotFound              = errors.New(http.StatusNotFound, "NOT_FOUND", "not found")
 	ErrUnknownKind           = errors.New(http.StatusInternalServerError, "UNKNOWN_KIND", "unknown kind")
 	ErrInvalidPassword       = errors.New(http.StatusBadRequest, "INVALID_PASSWORD", "invalid password")
 	ErrCodeMismatch          = errors.New(http.StatusBadRequest, "CODE_MISMATCH", "code mismatch")
@@ -30,6 +31,7 @@ type UserRepo interface {
 	// db部分
 	GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique interface{}) (*ent.Authenticator, error)
 	CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string) (string, error)
-	CreateAvatar(ctx context.Context, id string, avatar string)
+	CreateAvatar(ctx context.Context, id string, base64 string)
 	GetUser(ctx context.Context, id string) (*ent.User, error)
+	GetAvatar(ctx context.Context, id string) (string, error)
 }

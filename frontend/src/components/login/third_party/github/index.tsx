@@ -2,8 +2,8 @@
 import { Button } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 interface GithubProp {
-  className: string|undefined;
-  returnTo: string;
+  className?: string
+  returnTo: string
 }
 const host = 'http://oauth.windranger.tk:8000'
 const githubClientId = '07abbea8ee6cb09a302a';

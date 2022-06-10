@@ -66,7 +66,7 @@ func (h *TokenHelper) IsClientToken(token *jwt.Token) bool {
 }
 
 func (h *TokenHelper) IsUserToken(token *jwt.Token) bool {
-	return !h.IsClientToken(token) && !h.IsAuthToken(token)
+	return !h.IsClientToken(token)
 }
 
 func (h *TokenHelper) GenerateAccessToken(

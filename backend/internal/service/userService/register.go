@@ -1,20 +1,20 @@
-package service
+package userService
 
 import (
 	"context"
 
 	v1 "github.com/wzyjerry/auth/api/user/v1"
-	"github.com/wzyjerry/auth/internal/biz"
+	"github.com/wzyjerry/auth/internal/biz/userBiz"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type RegisterService struct {
 	v1.UnimplementedRegisterServer
 
-	uc *biz.RegisterUsecase
+	uc *userBiz.RegisterUsecase
 }
 
-func NewRegisterService(uc *biz.RegisterUsecase) *RegisterService {
+func NewRegisterService(uc *userBiz.RegisterUsecase) *RegisterService {
 	return &RegisterService{
 		uc: uc,
 	}

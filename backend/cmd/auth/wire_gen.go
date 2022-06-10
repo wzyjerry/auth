@@ -9,13 +9,15 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/wzyjerry/auth/internal/biz"
-	"github.com/wzyjerry/auth/internal/biz/third_party/github"
-	"github.com/wzyjerry/auth/internal/biz/third_party/microsoft"
+	"github.com/wzyjerry/auth/internal/biz/applicationBiz"
+	"github.com/wzyjerry/auth/internal/biz/userBiz"
+	"github.com/wzyjerry/auth/internal/biz/userBiz/third_party/github"
+	"github.com/wzyjerry/auth/internal/biz/userBiz/third_party/microsoft"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
-	"github.com/wzyjerry/auth/internal/service"
+	"github.com/wzyjerry/auth/internal/service/applicationService"
+	"github.com/wzyjerry/auth/internal/service/userService"
 	"github.com/wzyjerry/auth/internal/util"
 )
 
@@ -29,16 +31,21 @@ func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Securi
 	}
 	userRepo := data.NewUserRepo(dataData, security, logger)
 	aliyunHelper := util.NewAliyunHelper(logger, security)
-	registerUsecase := biz.NewRegisterUsecase(userRepo, security, aliyunHelper, logger)
-	registerService := service.NewRegisterService(registerUsecase)
+	registerUsecase := userBiz.NewRegisterUsecase(userRepo, security, aliyunHelper, logger)
+	registerService := userService.NewRegisterService(registerUsecase)
 	privateKey := data.NewPrivateKey(security, logger)
 	tokenHelper := util.NewTokenHelper(security, privateKey)
-	bizThirdParty := github.New(thirdParty)
+	userBizThirdParty := github.New(thirdParty)
 	thirdParty2 := microsoft.New(thirdParty)
-	loginUsecase := biz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase, bizThirdParty, thirdParty2)
-	loginService := service.NewLoginService(loginUsecase, security, tokenHelper)
-	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService)
-	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService)
+	loginUsecase := userBiz.NewLoginUsecase(userRepo, security, tokenHelper, aliyunHelper, registerUsecase, userBizThirdParty, thirdParty2)
+	loginService := userService.NewLoginService(loginUsecase, security, tokenHelper)
+	profileUsecase := userBiz.NewProfileUsecase(userRepo)
+	profileService := userService.NewProfileService(profileUsecase, security, tokenHelper)
+	applicationRepo := data.NewApplicationRepo(dataData)
+	applicationUsecase := applicationBiz.NewApplicationUsecase(applicationRepo)
+	applicationServiceApplicationService := applicationService.NewApplicationService(applicationUsecase, security, tokenHelper)
+	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService)
+	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
 		cleanup()

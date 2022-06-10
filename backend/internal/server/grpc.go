@@ -5,18 +5,22 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "github.com/wzyjerry/auth/api/user/v1"
+	applicationV1 "github.com/wzyjerry/auth/api/application/v1"
+	userV1 "github.com/wzyjerry/auth/api/user/v1"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
-	"github.com/wzyjerry/auth/internal/service"
+	"github.com/wzyjerry/auth/internal/service/applicationService"
+	"github.com/wzyjerry/auth/internal/service/userService"
 )
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(
 	c *conf.Server,
 	logger log.Logger,
-	register *service.RegisterService,
-	login *service.LoginService,
+	register *userService.RegisterService,
+	login *userService.LoginService,
+	profile *userService.ProfileService,
+	application *applicationService.ApplicationService,
 ) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
@@ -32,7 +36,9 @@ func NewGRPCServer(
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterRegisterServer(srv, register)
-	v1.RegisterLoginServer(srv, login)
+	userV1.RegisterRegisterServer(srv, register)
+	userV1.RegisterLoginServer(srv, login)
+	userV1.RegisterProfileServer(srv, profile)
+	applicationV1.RegisterApplicationServer(srv, application)
 	return srv
 }

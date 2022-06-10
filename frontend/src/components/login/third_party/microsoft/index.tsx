@@ -2,7 +2,7 @@
 import { Button } from 'antd';
 import { WindowsOutlined } from '@ant-design/icons';
 interface MicrosoftProp {
-  className: string|undefined;
+  className?: string;
   returnTo: string;
 }
 const host = 'http://localhost:8000'
