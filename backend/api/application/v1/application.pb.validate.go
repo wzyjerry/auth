@@ -292,3 +292,657 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = CreateReplyValidationError{}
+
+// Validate checks the field values on RetrieveRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *RetrieveRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RetrieveRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// RetrieveRequestMultiError, or nil if none found.
+func (m *RetrieveRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RetrieveRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return RetrieveRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// RetrieveRequestMultiError is an error wrapping multiple validation errors
+// returned by RetrieveRequest.ValidateAll() if the designated constraints
+// aren't met.
+type RetrieveRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RetrieveRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RetrieveRequestMultiError) AllErrors() []error { return m }
+
+// RetrieveRequestValidationError is the validation error returned by
+// RetrieveRequest.Validate if the designated constraints aren't met.
+type RetrieveRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RetrieveRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RetrieveRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RetrieveRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RetrieveRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RetrieveRequestValidationError) ErrorName() string { return "RetrieveRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RetrieveRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRetrieveRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RetrieveRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RetrieveRequestValidationError{}
+
+// Validate checks the field values on Secret with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Secret) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Secret with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in SecretMultiError, or nil if none found.
+func (m *Secret) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Secret) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetGenerated()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SecretValidationError{
+					field:  "Generated",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SecretValidationError{
+					field:  "Generated",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetGenerated()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SecretValidationError{
+				field:  "Generated",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for Description
+
+	// no validation rules for MaskedSecret
+
+	if m.LastUsed != nil {
+
+		if all {
+			switch v := interface{}(m.GetLastUsed()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, SecretValidationError{
+						field:  "LastUsed",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, SecretValidationError{
+						field:  "LastUsed",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetLastUsed()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return SecretValidationError{
+					field:  "LastUsed",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return SecretMultiError(errors)
+	}
+
+	return nil
+}
+
+// SecretMultiError is an error wrapping multiple validation errors returned by
+// Secret.ValidateAll() if the designated constraints aren't met.
+type SecretMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SecretMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SecretMultiError) AllErrors() []error { return m }
+
+// SecretValidationError is the validation error returned by Secret.Validate if
+// the designated constraints aren't met.
+type SecretValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SecretValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SecretValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SecretValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SecretValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SecretValidationError) ErrorName() string { return "SecretValidationError" }
+
+// Error satisfies the builtin error interface
+func (e SecretValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSecret.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SecretValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SecretValidationError{}
+
+// Validate checks the field values on RetrieveReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *RetrieveReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RetrieveReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RetrieveReplyMultiError, or
+// nil if none found.
+func (m *RetrieveReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RetrieveReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	// no validation rules for ClientId
+
+	for idx, item := range m.GetClientSecrets() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RetrieveReplyValidationError{
+						field:  fmt.Sprintf("ClientSecrets[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RetrieveReplyValidationError{
+						field:  fmt.Sprintf("ClientSecrets[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RetrieveReplyValidationError{
+					field:  fmt.Sprintf("ClientSecrets[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Homepage
+
+	// no validation rules for Callback
+
+	if m.Avatar != nil {
+		// no validation rules for Avatar
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if len(errors) > 0 {
+		return RetrieveReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// RetrieveReplyMultiError is an error wrapping multiple validation errors
+// returned by RetrieveReply.ValidateAll() if the designated constraints
+// aren't met.
+type RetrieveReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RetrieveReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RetrieveReplyMultiError) AllErrors() []error { return m }
+
+// RetrieveReplyValidationError is the validation error returned by
+// RetrieveReply.Validate if the designated constraints aren't met.
+type RetrieveReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RetrieveReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RetrieveReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RetrieveReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RetrieveReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RetrieveReplyValidationError) ErrorName() string { return "RetrieveReplyValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RetrieveReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRetrieveReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RetrieveReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RetrieveReplyValidationError{}
+
+// Validate checks the field values on GenerateClientSecretRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GenerateClientSecretRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GenerateClientSecretRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GenerateClientSecretRequestMultiError, or nil if none found.
+func (m *GenerateClientSecretRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GenerateClientSecretRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Description
+
+	if len(errors) > 0 {
+		return GenerateClientSecretRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GenerateClientSecretRequestMultiError is an error wrapping multiple
+// validation errors returned by GenerateClientSecretRequest.ValidateAll() if
+// the designated constraints aren't met.
+type GenerateClientSecretRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GenerateClientSecretRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GenerateClientSecretRequestMultiError) AllErrors() []error { return m }
+
+// GenerateClientSecretRequestValidationError is the validation error returned
+// by GenerateClientSecretRequest.Validate if the designated constraints
+// aren't met.
+type GenerateClientSecretRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GenerateClientSecretRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GenerateClientSecretRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GenerateClientSecretRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GenerateClientSecretRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GenerateClientSecretRequestValidationError) ErrorName() string {
+	return "GenerateClientSecretRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GenerateClientSecretRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGenerateClientSecretRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GenerateClientSecretRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GenerateClientSecretRequestValidationError{}
+
+// Validate checks the field values on GenerateClientSecretReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GenerateClientSecretReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GenerateClientSecretReply with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GenerateClientSecretReplyMultiError, or nil if none found.
+func (m *GenerateClientSecretReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GenerateClientSecretReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetSecret()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GenerateClientSecretReplyValidationError{
+					field:  "Secret",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GenerateClientSecretReplyValidationError{
+					field:  "Secret",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetSecret()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GenerateClientSecretReplyValidationError{
+				field:  "Secret",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return GenerateClientSecretReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// GenerateClientSecretReplyMultiError is an error wrapping multiple validation
+// errors returned by GenerateClientSecretReply.ValidateAll() if the
+// designated constraints aren't met.
+type GenerateClientSecretReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GenerateClientSecretReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GenerateClientSecretReplyMultiError) AllErrors() []error { return m }
+
+// GenerateClientSecretReplyValidationError is the validation error returned by
+// GenerateClientSecretReply.Validate if the designated constraints aren't met.
+type GenerateClientSecretReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GenerateClientSecretReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GenerateClientSecretReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GenerateClientSecretReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GenerateClientSecretReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GenerateClientSecretReplyValidationError) ErrorName() string {
+	return "GenerateClientSecretReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GenerateClientSecretReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGenerateClientSecretReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GenerateClientSecretReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GenerateClientSecretReplyValidationError{}

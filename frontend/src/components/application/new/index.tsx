@@ -1,7 +1,7 @@
 import style from './index.less';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Form, Input, Button, message } from 'antd';
-import { CreateRequest } from '@/api/application/v1/application_pb';
+import { CreateRequest } from '@/api/application/v1/application';
 import { ApplicationClient } from '@/api';
 import { Go, Reject } from '@/util';
 interface registerForm {
@@ -15,13 +15,14 @@ const New: React.FC = () => {
   const location = useLocation();
   const onRegister = async (form: registerForm): Promise<void> => {
     const client = new ApplicationClient();
-    const request = new CreateRequest();
-    request.setName(form.name);
-    request.setHomepage(form.homepage);
+    const request: CreateRequest = {
+      name: form.name,
+      homepage: form.homepage,
+      callback: form.callback
+    };
     if (form.description !== undefined) {
-      request.setDescription(form.description);
+      request.description = form.description;
     }
-    request.setCallback(form.callback);
     const reply = await Go(client.Create(request))
     if (reply instanceof Reject) {
       switch (reply.error.name) {

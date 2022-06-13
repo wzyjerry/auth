@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApplicationClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error)
+	Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error)
+	GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error)
 }
 
 type applicationClient struct {
@@ -42,11 +44,31 @@ func (c *applicationClient) Create(ctx context.Context, in *CreateRequest, opts 
 	return out, nil
 }
 
+func (c *applicationClient) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error) {
+	out := new(RetrieveReply)
+	err := c.cc.Invoke(ctx, "/api.application.v1.Application/Retrieve", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationClient) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error) {
+	out := new(GenerateClientSecretReply)
+	err := c.cc.Invoke(ctx, "/api.application.v1.Application/GenerateClientSecret", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApplicationServer is the server API for Application service.
 // All implementations must embed UnimplementedApplicationServer
 // for forward compatibility
 type ApplicationServer interface {
 	Create(context.Context, *CreateRequest) (*CreateReply, error)
+	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
+	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	mustEmbedUnimplementedApplicationServer()
 }
 
@@ -56,6 +78,12 @@ type UnimplementedApplicationServer struct {
 
 func (UnimplementedApplicationServer) Create(context.Context, *CreateRequest) (*CreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedApplicationServer) Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Retrieve not implemented")
+}
+func (UnimplementedApplicationServer) GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateClientSecret not implemented")
 }
 func (UnimplementedApplicationServer) mustEmbedUnimplementedApplicationServer() {}
 
@@ -88,6 +116,42 @@ func _Application_Create_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Application_Retrieve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RetrieveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServer).Retrieve(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.Application/Retrieve",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServer).Retrieve(ctx, req.(*RetrieveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Application_GenerateClientSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateClientSecretRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServer).GenerateClientSecret(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.Application/GenerateClientSecret",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServer).GenerateClientSecret(ctx, req.(*GenerateClientSecretRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Application_ServiceDesc is the grpc.ServiceDesc for Application service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +162,14 @@ var Application_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Application_Create_Handler,
+		},
+		{
+			MethodName: "Retrieve",
+			Handler:    _Application_Retrieve_Handler,
+		},
+		{
+			MethodName: "GenerateClientSecret",
+			Handler:    _Application_GenerateClientSecret_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

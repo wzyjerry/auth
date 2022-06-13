@@ -19,11 +19,15 @@ const _ = http.SupportPackageIsVersion1
 
 type ApplicationHTTPServer interface {
 	Create(context.Context, *CreateRequest) (*CreateReply, error)
+	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
+	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
 }
 
 func RegisterApplicationHTTPServer(s *http.Server, srv ApplicationHTTPServer) {
 	r := s.Route("/")
 	r.POST("/application/v1", _Application_Create0_HTTP_Handler(srv))
+	r.GET("/application/v1/{id}", _Application_Retrieve0_HTTP_Handler(srv))
+	r.POST("/application/v1/{id}/generateClientSecret", _Application_GenerateClientSecret0_HTTP_Handler(srv))
 }
 
 func _Application_Create0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
@@ -45,8 +49,54 @@ func _Application_Create0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.
 	}
 }
 
+func _Application_Retrieve0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in RetrieveRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.application.v1.Application/Retrieve")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Retrieve(ctx, req.(*RetrieveRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*RetrieveReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Application_GenerateClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GenerateClientSecretRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.application.v1.Application/GenerateClientSecret")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GenerateClientSecret(ctx, req.(*GenerateClientSecretRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GenerateClientSecretReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ApplicationHTTPClient interface {
 	Create(ctx context.Context, req *CreateRequest, opts ...http.CallOption) (rsp *CreateReply, err error)
+	GenerateClientSecret(ctx context.Context, req *GenerateClientSecretRequest, opts ...http.CallOption) (rsp *GenerateClientSecretReply, err error)
+	Retrieve(ctx context.Context, req *RetrieveRequest, opts ...http.CallOption) (rsp *RetrieveReply, err error)
 }
 
 type ApplicationHTTPClientImpl struct {
@@ -64,6 +114,32 @@ func (c *ApplicationHTTPClientImpl) Create(ctx context.Context, in *CreateReques
 	opts = append(opts, http.Operation("/api.application.v1.Application/Create"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ApplicationHTTPClientImpl) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...http.CallOption) (*GenerateClientSecretReply, error) {
+	var out GenerateClientSecretReply
+	pattern := "/application/v1/{id}/generateClientSecret"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.application.v1.Application/GenerateClientSecret"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ApplicationHTTPClientImpl) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...http.CallOption) (*RetrieveReply, error) {
+	var out RetrieveReply
+	pattern := "/application/v1/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/api.application.v1.Application/Retrieve"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

@@ -43,3 +43,19 @@ func (s *ApplicationService) Create(ctx context.Context, in *v1.CreateRequest) (
 		Id: id,
 	}, nil
 }
+
+func (s *ApplicationService) Retrieve(ctx context.Context, in *v1.RetrieveRequest) (*v1.RetrieveReply, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return s.uc.Retrieve(ctx, (*token).Subject(), in.Id)
+}
+
+func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.GenerateClientSecretRequest) (*v1.GenerateClientSecretReply, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return s.uc.GenerateClientSecret(ctx, (*token).Subject(), in.Id, in.Description)
+}

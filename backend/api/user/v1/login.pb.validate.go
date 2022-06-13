@@ -79,8 +79,6 @@ func (m *LoginRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Unique
-
 	if utf8.RuneCountInString(m.GetSecret()) < 1 {
 		err := LoginRequestValidationError{
 			field:  "Secret",
@@ -90,6 +88,10 @@ func (m *LoginRequest) validate(all bool) error {
 			return err
 		}
 		errors = append(errors, err)
+	}
+
+	if m.Unique != nil {
+		// no validation rules for Unique
 	}
 
 	if len(errors) > 0 {

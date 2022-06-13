@@ -6,8 +6,7 @@ API_PROTO_FILES=$(shell find ../backend/api -name *.proto)
 api:
 	protoc --proto_path=../backend/api \
 	       --proto_path=../backend/third_party \
-	       --js_out=import_style=commonjs,binary:./src/api \
-	       --ts_out=:./src/api \
+	       --ts_proto_out=:./src/api \
 	       $(API_PROTO_FILES) $(THIRD_PARTY_PROTO_FILES)
 
 .PHONY: all

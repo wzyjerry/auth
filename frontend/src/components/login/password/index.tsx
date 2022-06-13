@@ -1,7 +1,7 @@
 import style from './index.less';
 import { Form, Input, Button, message } from 'antd';
 import { LoginClient } from '@/api';
-import { LoginRequest, Type, Method } from '@/api/user/v1/login_pb';
+import { LoginRequest, Type, Method } from '@/api/user/v1/login';
 import { LoginForm } from '..';
 import { Go, Reject } from '@/util';
 interface passwordForm {
@@ -11,15 +11,17 @@ interface passwordForm {
 const Password: React.FC<LoginForm> = (props) => {
   const onLogin = async (form: passwordForm): Promise<void> => {
     const client = new LoginClient();
-    const request = new LoginRequest();
-    request.setMethod(Method.METHOD_PASSWORD);
-    request.setSecret(form.password);
+    const request: LoginRequest = {
+      method: Method.METHOD_PASSWORD,
+      secret: form.password,
+      type: Type.TYPE_UNSET,
+    };
     if (form.account.includes('@')) {
-      request.setType(Type.TYPE_EMAIL);
-      request.setUnique(form.account);
+      request.type = Type.TYPE_EMAIL;
+      request.unique = form.account;
     } else {
-      request.setType(Type.TYPE_PHONE);
-      request.setUnique(`+86${form.account}`)
+      request.type = Type.TYPE_PHONE;
+      request.unique = `+86${form.account}`;
     }
     const reply = await Go(client.Login(request))
     if (reply instanceof Reject) {

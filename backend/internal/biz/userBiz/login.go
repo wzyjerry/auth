@@ -59,8 +59,11 @@ func (uc *LoginUsecase) verifyPassword(hash string, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
-func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.Kind, unique string, password string) (*ent.User, error) {
-	auth, err := uc.repo.GetAuthenticator(ctx, kind, unique)
+func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.Kind, unique *string, password string) (*ent.User, error) {
+	if unique == nil {
+		return nil, ErrUniqueRequired
+	}
+	auth, err := uc.repo.GetAuthenticator(ctx, kind, *unique)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, ErrPasswordLogin
@@ -78,17 +81,17 @@ func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.K
 }
 
 // accountPassword 账户密码登录
-func (uc *LoginUsecase) accountPassword(ctx context.Context, username string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) accountPassword(ctx context.Context, username *string, password string) (*ent.User, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_ACCOUNT, username, password)
 }
 
 // AccountPassword 邮箱密码登录
-func (uc *LoginUsecase) emailPassword(ctx context.Context, email string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) emailPassword(ctx context.Context, email *string, password string) (*ent.User, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_EMAIL, email, password)
 }
 
 // AccountPassword 手机密码登录
-func (uc *LoginUsecase) phonePassword(ctx context.Context, phone string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) phonePassword(ctx context.Context, phone *string, password string) (*ent.User, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_PHONE, phone, password)
 }
 
@@ -124,8 +127,11 @@ func (uc *LoginUsecase) PrePhone(ctx context.Context, phone string) error {
 	return nil
 }
 
-func (uc *LoginUsecase) emailCode(ctx context.Context, email string, code string) (*ent.User, error) {
-	verified, err := uc.repo.VerifyLoginEmailCode(ctx, email, code)
+func (uc *LoginUsecase) emailCode(ctx context.Context, email *string, code string) (*ent.User, error) {
+	if email == nil {
+		return nil, ErrUniqueRequired
+	}
+	verified, err := uc.repo.VerifyLoginEmailCode(ctx, *email, code)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +141,7 @@ func (uc *LoginUsecase) emailCode(ctx context.Context, email string, code string
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_EMAIL, email)
 	var userId string
 	if err != nil {
-		id, err := uc.registerUsecase.Email(ctx, email, nil, email)
+		id, err := uc.registerUsecase.Email(ctx, *email, nil, *email)
 		if err != nil {
 			return nil, err
 		}
@@ -150,8 +156,11 @@ func (uc *LoginUsecase) emailCode(ctx context.Context, email string, code string
 	return user, nil
 }
 
-func (uc *LoginUsecase) phoneCode(ctx context.Context, phone string, code string) (*ent.User, error) {
-	verified, err := uc.repo.VerifyLoginPhoneCode(ctx, phone, code)
+func (uc *LoginUsecase) phoneCode(ctx context.Context, phone *string, code string) (*ent.User, error) {
+	if phone == nil {
+		return nil, ErrUniqueRequired
+	}
+	verified, err := uc.repo.VerifyLoginPhoneCode(ctx, *phone, code)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +170,7 @@ func (uc *LoginUsecase) phoneCode(ctx context.Context, phone string, code string
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_PHONE, phone)
 	var userId string
 	if err != nil {
-		id, err := uc.registerUsecase.Phone(ctx, phone, nil, phone)
+		id, err := uc.registerUsecase.Phone(ctx, *phone, nil, *phone)
 		if err != nil {
 			return nil, err
 		}
@@ -230,7 +239,7 @@ func (uc *LoginUsecase) microsoftCode(ctx context.Context, code string) (*ent.Us
 	return user, nil
 }
 
-func (uc *LoginUsecase) Login(ctx context.Context, _type v1.Type, method v1.Method, unique string, secret string) (*ent.User, error) {
+func (uc *LoginUsecase) Login(ctx context.Context, _type v1.Type, method v1.Method, unique *string, secret string) (*ent.User, error) {
 	var user *ent.User
 	switch method {
 	case v1.Method_METHOD_PASSWORD:

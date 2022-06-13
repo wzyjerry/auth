@@ -1,5 +1,7 @@
 import { RequestConfig } from 'umi';
 import { errorHandler } from '@/util';
+import moment from 'moment';
+moment.locale('zh-cn');
 
 export const request: RequestConfig = {
   prefix: 'http://oauth.windranger.tk:8888',

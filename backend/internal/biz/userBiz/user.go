@@ -13,6 +13,7 @@ var (
 	ErrNotFound              = errors.New(http.StatusNotFound, "NOT_FOUND", "not found")
 	ErrUnknownKind           = errors.New(http.StatusInternalServerError, "UNKNOWN_KIND", "unknown kind")
 	ErrInvalidPassword       = errors.New(http.StatusBadRequest, "INVALID_PASSWORD", "invalid password")
+	ErrUniqueRequired        = errors.New(http.StatusBadRequest, "UNIQUE_REQUIRED", "unique required")
 	ErrCodeMismatch          = errors.New(http.StatusBadRequest, "CODE_MISMATCH", "code mismatch")
 	ErrAuthenticatorConflict = errors.New(http.StatusConflict, "AUTHENTICATOR_CONFLICT", "authenticator conflict")
 	ErrPasswordLogin         = errors.Newf(http.StatusBadRequest, "PASSWORD_LOGIN", "invalid unique token or password")

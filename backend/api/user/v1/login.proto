@@ -25,7 +25,7 @@ enum Method {
 message LoginRequest {
     Type type = 1 [(validate.rules).enum.defined_only = true];
     Method method = 2 [(validate.rules).enum.defined_only = true];
-    string unique = 3;
+    optional string unique = 3;
     string secret = 4 [(validate.rules).string.min_len = 1];
 }
 

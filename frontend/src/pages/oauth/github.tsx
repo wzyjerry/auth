@@ -3,7 +3,7 @@ import {
   LoginRequest,
   Type,
   Method,
-} from '@/api/user/v1/login_pb';
+} from '@/api/user/v1/login';
 
 import { LoginClient } from '@/api';
 import { Go, Reject } from '@/util';
@@ -27,10 +27,11 @@ const Github = () => {
       returnTo = `/user/login?error=invalid_code&return_to=${encodeURIComponent(returnTo)}`;
     } else {
       const loginClient = new LoginClient();
-      const loginRequest = new LoginRequest();
-      loginRequest.setType(Type.TYPE_GITHUB);
-      loginRequest.setMethod(Method.METHOD_CODE);
-      loginRequest.setSecret(code);
+      const loginRequest: LoginRequest = {
+        type: Type.TYPE_GITHUB,
+        method: Method.METHOD_CODE,
+        secret: code
+      };
       const reply = await Go(loginClient.Login(loginRequest));
       if (reply instanceof Reject) {
         returnTo = `/user/login?error=${reply.error.name}&return_to=${encodeURIComponent(returnTo)}`;

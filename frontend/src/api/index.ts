@@ -4,24 +4,31 @@ import {
   LoginPrePhoneRequest,
   LoginReply,
   LoginRequest,
-} from './user/v1/login_pb';
+} from './user/v1/login';
 
-import { GetAvatarReply } from './user/v1/profile_pb';
-import { CreateRequest, CreateReply } from './application/v1/application_pb';
+import { GetAvatarReply } from './user/v1/profile';
+import {
+  CreateRequest,
+  CreateReply,
+  RetrieveRequest,
+  RetrieveReply,
+  GenerateClientSecretRequest,
+  GenerateClientSecretReply,
+} from './application/v1/application';
 import { Token } from '@/util/localStorage';
 import { Reject } from '@/util';
 
 export class LoginClient {
-  async Login(bm: LoginRequest): Promise<LoginReply.AsObject> {
+  async Login(bm: LoginRequest): Promise<LoginReply> {
     return request('/user/v1/login/login', {
       method: 'POST',
-      data: bm.toObject(),
+      data: bm,
     });
   }
   async PrePhone(bm: LoginPrePhoneRequest): Promise<Empty> {
     return request('/user/v1/login/pre_phone', {
       method: 'POST',
-      data: bm.toObject(),
+      data: bm,
     });
   }
 }
@@ -35,7 +42,7 @@ const getBearer = (): string => {
   return `Bearer ${token.val}`;
 }
 export class ProfileClient {
-  async GetAvatar(): Promise<GetAvatarReply.AsObject> {
+  async GetAvatar(): Promise<GetAvatarReply> {
     return request('/user/v1/profile/avatar', {
       method: 'GET',
       headers: {
@@ -46,13 +53,30 @@ export class ProfileClient {
 }
 
 export class ApplicationClient {
-  async Create(bm: CreateRequest): Promise<CreateReply.AsObject> {
+  async Create(bm: CreateRequest): Promise<CreateReply> {
     return request('/application/v1', {
       method: 'POST',
       headers: {
         'Authorization': getBearer(),
       },
-      data: bm.toObject(),
+      data: bm,
+    })
+  }
+  async Retrieve(bm: RetrieveRequest): Promise<RetrieveReply> {
+    return request(`/application/v1/${bm.id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': getBearer(),
+      },
+    })
+  }
+  async GenerateClientSecret(bm: GenerateClientSecretRequest): Promise<GenerateClientSecretReply> {
+    return request(`/application/v1/${bm.id}/generateClientSecret`, {
+      method: 'POST',
+      headers: {
+        'Authorization': getBearer(),
+      },
+      data: bm,
     })
   }
 }

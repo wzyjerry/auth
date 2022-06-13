@@ -1,0 +1,40 @@
+.detail {
+  .title {
+    font-size: 24px;
+  }
+  .line {
+    width: 720px;
+    margin: 16px 0;
+    background-color: hsla(210,18%,87%,1);
+    border: none;
+    height: 1px;
+  }
+  .clientIdLine {
+    font-size: 20px;
+    padding-bottom: 12px;
+    .clientIdLabel {
+      padding-right: 12px;
+    }
+  }
+  .clientSecretLine {
+    font-size: 20px;
+    padding-bottom: 12px;
+    display: flex;
+    .generate {
+      margin-left: auto;
+      border-radius: 8px;
+    }
+  }
+  .clientSecretArea {
+    > .alert {
+      margin-bottom: 12px;
+    }
+    .clientSecretList {
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      > div:not(:last-child) {
+        border-bottom: 1px solid #d0d7de;
+      }
+    }
+  }
+}
