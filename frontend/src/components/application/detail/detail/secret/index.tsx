@@ -38,21 +38,21 @@ const SecretItem: React.FC<SecretProp> = (prop) => {
             history.push(`/404`);
             break;
           case 'REVOKE_BAD_REQUEST':
-            message.error(`不能删除最后一个客户端密码`);
+            message.error(`不能删除最后一个客户端密钥`);
             break;
           default:
             console.log(reply.error);
             message.error(`[${reply.error.name}]${reply.error.message}`);
       }
     }
-    message.success('客户端密码已删除');
+    message.success('客户端密钥已删除');
     prop.refresh()
   }
   return (
     <div className={style.secret+(prop.isNew?` ${style.new}`:'')}>
       <div className={style.iconArea}>
         <KeyOutlined className={style.icon} />
-        <span className={style.label}>客户端密码</span>
+        <span className={style.label}>客户端密钥</span>
       </div>
       <div className={style.infoArea}>
         <span className={style.description}>说明: {prop.secret.description}</span>
@@ -62,12 +62,12 @@ const SecretItem: React.FC<SecretProp> = (prop) => {
         </div>
         <span className={style.generated}>生成于 {moment(new ObjectID(prop.secret.id).getTimestamp()).calendar()}</span>
         <span className={style.lastUsed}>最后使用时间: {prop.secret.lastUsed?moment(prop.secret.lastUsed).calendar():'从未使用'}</span>
-        { prop.only &&<span className={style.only}>您不能删除唯一的客户端密码。首先生成一个新的客户端密码。</span> }
+        { prop.only &&<span className={style.only}>您不能删除唯一的客户端密钥。首先生成一个新的客户端密钥。</span> }
       </div>
       <div className={style.actionArea}>
         <Popconfirm
           placement='topRight'
-          title='此操作无法撤消。此客户端密码将立即停止工作。您确定要删除此客户端密码吗？'
+          title='此操作无法撤消。此客户端密钥将立即停止工作。您确定要删除此客户端密钥吗？'
           onConfirm={onRevoke}
           okText="确定"
           cancelText="取消"

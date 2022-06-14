@@ -62,7 +62,7 @@ const Detail: React.FC<DetailProp> = (prop) => {
       return (
         <div className={style.clientSecretArea}>
         {
-          isNew(detail.clientSecrets[0]) && <Alert className={style.alert} type='info' description='确保现在复制您的新客户端密码。你将无法再次看到它。'></Alert>
+          isNew(detail.clientSecrets[0]) && <Alert className={style.alert} type='info' description='确保现在复制您的新客户端密钥。你将无法再次看到它。'></Alert>
         }
           <div className={style.clientSecretList}>
             {
@@ -73,7 +73,7 @@ const Detail: React.FC<DetailProp> = (prop) => {
 
       )
     } else {
-      return <span>您需要一个客户端密码来验证应用程序。</span>
+      return <span>您需要一个客户端密钥来验证应用程序。</span>
     }
   }
   const [visible, setVisible] = useState(false);
