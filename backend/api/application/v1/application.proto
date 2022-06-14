@@ -43,7 +43,7 @@ message RetrieveRequest {
 }
 
 message Secret {
-    google.protobuf.Timestamp generated = 1;
+    string id = 1;
     optional google.protobuf.Timestamp last_used = 2;
     string description = 3;
     string masked_secret = 4;
@@ -68,6 +68,11 @@ message GenerateClientSecretReply {
     Secret secret = 1;
 }
 
+message RevokeClientSecretRequest {
+    string id = 1;
+    string secret_id = 2;
+}
+
 service Application {
     rpc Create(CreateRequest) returns (CreateReply) {
         option (google.api.http) = {
@@ -84,6 +89,11 @@ service Application {
         option (google.api.http) = {
             post: "/application/v1/{id}/generateClientSecret"
             body: "*"
+        };
+    }
+    rpc RevokeClientSecret(RevokeClientSecretRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/application/v1/{id}/{secret_id}"
         };
     }
 }

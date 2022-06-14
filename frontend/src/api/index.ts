@@ -1,4 +1,4 @@
-import { Empty } from 'google-protobuf/google/protobuf/empty_pb';
+import { Empty } from './google/protobuf/empty';
 import { request } from 'umi';
 import {
   LoginPrePhoneRequest,
@@ -14,6 +14,7 @@ import {
   RetrieveReply,
   GenerateClientSecretRequest,
   GenerateClientSecretReply,
+  RevokeClientSecretRequest,
 } from './application/v1/application';
 import { Token } from '@/util/localStorage';
 import { Reject } from '@/util';
@@ -77,6 +78,14 @@ export class ApplicationClient {
         'Authorization': getBearer(),
       },
       data: bm,
+    })
+  }
+  async RevokeClientSecret(bm: RevokeClientSecretRequest): Promise<Empty> {
+    return request(`/application/v1/${bm.id}/${bm.secretId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': getBearer(),
+      },
     })
   }
 }

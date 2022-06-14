@@ -1,7 +1,7 @@
 import style from './index.less';
 import copy from 'copy-to-clipboard';
 import { CopyOutlined } from '@ant-design/icons';
-import { Tabs, Form, Input, Button, message, Alert } from 'antd';
+import { Button, message, Alert } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { RetrieveRequest, RetrieveReply, GenerateClientSecretReply, Secret } from '@/api/application/v1/application';
 import { ApplicationClient } from '@/api';
@@ -15,6 +15,10 @@ interface DetailProp {
 const Detail: React.FC<DetailProp> = (prop) => {
   const history = useHistory();
   let [ detail, setDetail ] = useState<RetrieveReply>();
+  let [ refresh, setRefresh ] = useState(false);
+  const refreshDetail = (): void => {
+    setRefresh(!refresh);
+  }
   useEffect(() => {
     (async () => {
       const client = new ApplicationClient();
@@ -39,7 +43,7 @@ const Detail: React.FC<DetailProp> = (prop) => {
       }
       setDetail(reply.val);
     })()
-  }, [prop.id])
+  }, [prop.id, refresh])
   const copyClientId = (): void => {
     if (detail) {
       copy(detail.clientId);
@@ -62,7 +66,7 @@ const Detail: React.FC<DetailProp> = (prop) => {
         }
           <div className={style.clientSecretList}>
             {
-              detail.clientSecrets.map((secret) => <SecretItem secret={secret} only={only} isNew={isNew(secret)} key={secret.maskedSecret}></SecretItem>)
+              detail.clientSecrets.map((secret) => <SecretItem id={prop.id} secret={secret} only={only} isNew={isNew(secret)} key={secret.id} refresh={refreshDetail}></SecretItem>)
             }
           </div>
         </div>

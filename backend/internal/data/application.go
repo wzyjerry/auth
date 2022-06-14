@@ -10,16 +10,32 @@ import (
 	"github.com/wzyjerry/auth/internal/ent/schema/applicationNested"
 	"github.com/wzyjerry/auth/internal/ent/schema/avatarNested"
 	"github.com/wzyjerry/auth/internal/util"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type applicationRepo struct {
 	data *Data
 }
 
+func (r *applicationRepo) RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error {
+	application, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldClientSecrets).Only(ctx)
+	if err != nil {
+		return err
+	}
+	clientSecrets := make([]*applicationNested.ClientSecret, 0, len(application.ClientSecrets))
+	for _, item := range application.ClientSecrets {
+		if *item.Id != secretId {
+			clientSecrets = append(clientSecrets, item)
+		}
+	}
+	if len(clientSecrets) > 0 {
+		return r.data.db.Application.UpdateOneID(id).SetClientSecrets(clientSecrets).Exec(ctx)
+	}
+	return applicationBiz.ErrRevokeBadRequest
+}
+
 func (r *applicationRepo) GenerateClientSecret(ctx context.Context, admin string, id string, description string) (*applicationNested.ClientSecret, error) {
 	secret := &applicationNested.ClientSecret{
-		Generated:   timestamppb.Now(),
+		Id:          util.P(r.data.db.GenerateId()),
 		Description: &description,
 		Secret:      util.P(util.NewUUID()),
 	}

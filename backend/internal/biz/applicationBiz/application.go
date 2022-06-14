@@ -16,6 +16,7 @@ type ApplicationRepo interface {
 	Retrieve(ctx context.Context, admin string, id string) (*ent.Application, error)
 	GetAvatar(ctx context.Context, id string) (string, error)
 	GenerateClientSecret(ctx context.Context, admin string, id string, description string) (*applicationNested.ClientSecret, error)
+	RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error
 }
 
 type ApplicationUsecase struct {
@@ -24,6 +25,7 @@ type ApplicationUsecase struct {
 
 var (
 	ErrApplicationNotFound = errors.New(http.StatusNotFound, "APPLICATION_NOT_FOUND", "application not found")
+	ErrRevokeBadRequest    = errors.New(http.StatusBadRequest, "REVOKE_BAD_REQUEST", "can not revoke the last client secret")
 )
 
 func NewApplicationUsecase(
@@ -62,7 +64,7 @@ func (uc *ApplicationUsecase) Retrieve(ctx context.Context, admin string, id str
 	}
 	for _, item := range application.ClientSecrets {
 		secret := &v1.Secret{
-			Generated:    item.Generated,
+			Id:           *item.Id,
 			LastUsed:     item.LastUsed,
 			Description:  *item.Description,
 			MaskedSecret: "*****" + (*item.Secret)[len(*item.Secret)-5:],
@@ -82,11 +84,19 @@ func (uc *ApplicationUsecase) GenerateClientSecret(ctx context.Context, admin st
 	}
 	return &v1.GenerateClientSecretReply{
 		Secret: &v1.Secret{
-			Generated:    secret.Generated,
+			Id:           *secret.Id,
 			LastUsed:     secret.LastUsed,
 			Description:  *secret.Description,
 			MaskedSecret: *secret.Secret,
 		},
 	}, nil
 
+}
+
+func (uc *ApplicationUsecase) RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error {
+	err := uc.repo.RevokeClientSecret(ctx, admin, id, secretId)
+	if ent.IsNotFound(err) {
+		return ErrApplicationNotFound
+	}
+	return err
 }

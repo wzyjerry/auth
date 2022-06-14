@@ -24,7 +24,7 @@ application: &table
   client_id: string # 应用ID
   # 应用密钥
   client_secret[]:
-    generated: datetime # 生成时间
+    id: string # 密钥ID
     last_used: datetime # 最后使用时间
     description: string # 说明
     secret: string # 密钥

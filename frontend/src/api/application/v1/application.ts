@@ -2,6 +2,7 @@
 import * as Long from 'long';
 import * as _m0 from 'protobufjs/minimal';
 import { Timestamp } from '../../google/protobuf/timestamp';
+import { Empty } from '../../google/protobuf/empty';
 
 export const protobufPackage = 'api.application.v1';
 
@@ -21,7 +22,7 @@ export interface RetrieveRequest {
 }
 
 export interface Secret {
-  generated: Date | undefined;
+  id: string;
   lastUsed?: Date | undefined;
   description: string;
   maskedSecret: string;
@@ -44,6 +45,11 @@ export interface GenerateClientSecretRequest {
 
 export interface GenerateClientSecretReply {
   secret: Secret | undefined;
+}
+
+export interface RevokeClientSecretRequest {
+  id: string;
+  secretId: string;
 }
 
 function createBaseCreateRequest(): CreateRequest {
@@ -239,12 +245,7 @@ export const RetrieveRequest = {
 };
 
 function createBaseSecret(): Secret {
-  return {
-    generated: undefined,
-    lastUsed: undefined,
-    description: '',
-    maskedSecret: '',
-  };
+  return { id: '', lastUsed: undefined, description: '', maskedSecret: '' };
 }
 
 export const Secret = {
@@ -252,11 +253,8 @@ export const Secret = {
     message: Secret,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.generated !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.generated),
-        writer.uint32(10).fork(),
-      ).ldelim();
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
     }
     if (message.lastUsed !== undefined) {
       Timestamp.encode(
@@ -281,9 +279,7 @@ export const Secret = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.generated = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.id = reader.string();
           break;
         case 2:
           message.lastUsed = fromTimestamp(
@@ -306,9 +302,7 @@ export const Secret = {
 
   fromJSON(object: any): Secret {
     return {
-      generated: isSet(object.generated)
-        ? fromJsonTimestamp(object.generated)
-        : undefined,
+      id: isSet(object.id) ? String(object.id) : '',
       lastUsed: isSet(object.lastUsed)
         ? fromJsonTimestamp(object.lastUsed)
         : undefined,
@@ -321,8 +315,7 @@ export const Secret = {
 
   toJSON(message: Secret): unknown {
     const obj: any = {};
-    message.generated !== undefined &&
-      (obj.generated = message.generated.toISOString());
+    message.id !== undefined && (obj.id = message.id);
     message.lastUsed !== undefined &&
       (obj.lastUsed = message.lastUsed.toISOString());
     message.description !== undefined &&
@@ -334,7 +327,7 @@ export const Secret = {
 
   fromPartial<I extends Exact<DeepPartial<Secret>, I>>(object: I): Secret {
     const message = createBaseSecret();
-    message.generated = object.generated ?? undefined;
+    message.id = object.id ?? '';
     message.lastUsed = object.lastUsed ?? undefined;
     message.description = object.description ?? '';
     message.maskedSecret = object.maskedSecret ?? '';
@@ -598,12 +591,79 @@ export const GenerateClientSecretReply = {
   },
 };
 
+function createBaseRevokeClientSecretRequest(): RevokeClientSecretRequest {
+  return { id: '', secretId: '' };
+}
+
+export const RevokeClientSecretRequest = {
+  encode(
+    message: RevokeClientSecretRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.secretId !== '') {
+      writer.uint32(18).string(message.secretId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): RevokeClientSecretRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRevokeClientSecretRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.secretId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RevokeClientSecretRequest {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+      secretId: isSet(object.secretId) ? String(object.secretId) : '',
+    };
+  },
+
+  toJSON(message: RevokeClientSecretRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.secretId !== undefined && (obj.secretId = message.secretId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<RevokeClientSecretRequest>, I>>(
+    object: I,
+  ): RevokeClientSecretRequest {
+    const message = createBaseRevokeClientSecretRequest();
+    message.id = object.id ?? '';
+    message.secretId = object.secretId ?? '';
+    return message;
+  },
+};
+
 export interface Application {
   Create(request: CreateRequest): Promise<CreateReply>;
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
   GenerateClientSecret(
     request: GenerateClientSecretRequest,
   ): Promise<GenerateClientSecretReply>;
+  RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
 }
 
 export class ApplicationClientImpl implements Application {
@@ -613,6 +673,7 @@ export class ApplicationClientImpl implements Application {
     this.Create = this.Create.bind(this);
     this.Retrieve = this.Retrieve.bind(this);
     this.GenerateClientSecret = this.GenerateClientSecret.bind(this);
+    this.RevokeClientSecret = this.RevokeClientSecret.bind(this);
   }
   Create(request: CreateRequest): Promise<CreateReply> {
     const data = CreateRequest.encode(request).finish();
@@ -646,6 +707,16 @@ export class ApplicationClientImpl implements Application {
     return promise.then((data) =>
       GenerateClientSecretReply.decode(new _m0.Reader(data)),
     );
+  }
+
+  RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty> {
+    const data = RevokeClientSecretRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      'api.application.v1.Application',
+      'RevokeClientSecret',
+      data,
+    );
+    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 }
 

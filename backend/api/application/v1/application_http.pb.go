@@ -8,6 +8,7 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,6 +22,7 @@ type ApplicationHTTPServer interface {
 	Create(context.Context, *CreateRequest) (*CreateReply, error)
 	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
+	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
 }
 
 func RegisterApplicationHTTPServer(s *http.Server, srv ApplicationHTTPServer) {
@@ -28,6 +30,7 @@ func RegisterApplicationHTTPServer(s *http.Server, srv ApplicationHTTPServer) {
 	r.POST("/application/v1", _Application_Create0_HTTP_Handler(srv))
 	r.GET("/application/v1/{id}", _Application_Retrieve0_HTTP_Handler(srv))
 	r.POST("/application/v1/{id}/generateClientSecret", _Application_GenerateClientSecret0_HTTP_Handler(srv))
+	r.DELETE("/application/v1/{id}/{secret_id}", _Application_RevokeClientSecret0_HTTP_Handler(srv))
 }
 
 func _Application_Create0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
@@ -93,10 +96,33 @@ func _Application_GenerateClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) 
 	}
 }
 
+func _Application_RevokeClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in RevokeClientSecretRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.application.v1.Application/RevokeClientSecret")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.RevokeClientSecret(ctx, req.(*RevokeClientSecretRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ApplicationHTTPClient interface {
 	Create(ctx context.Context, req *CreateRequest, opts ...http.CallOption) (rsp *CreateReply, err error)
 	GenerateClientSecret(ctx context.Context, req *GenerateClientSecretRequest, opts ...http.CallOption) (rsp *GenerateClientSecretReply, err error)
 	Retrieve(ctx context.Context, req *RetrieveRequest, opts ...http.CallOption) (rsp *RetrieveReply, err error)
+	RevokeClientSecret(ctx context.Context, req *RevokeClientSecretRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type ApplicationHTTPClientImpl struct {
@@ -140,6 +166,19 @@ func (c *ApplicationHTTPClientImpl) Retrieve(ctx context.Context, in *RetrieveRe
 	opts = append(opts, http.Operation("/api.application.v1.Application/Retrieve"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ApplicationHTTPClientImpl) RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/application/v1/{id}/{secret_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/api.application.v1.Application/RevokeClientSecret"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

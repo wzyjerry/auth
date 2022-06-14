@@ -20,7 +20,7 @@ message Application {
 
 // 应用密钥
 message ClientSecret {
-    optional google.protobuf.Timestamp generated = 1; // 生成时间
+    optional string id = 1; // 密钥ID
     optional google.protobuf.Timestamp last_used = 2; // 最后使用时间
     optional string description = 3; // 说明
     optional string secret = 4; // 密钥

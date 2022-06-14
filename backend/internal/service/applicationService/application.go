@@ -8,6 +8,7 @@ import (
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/util"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type ApplicationService struct {
@@ -58,4 +59,12 @@ func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.Ge
 		return nil, err
 	}
 	return s.uc.GenerateClientSecret(ctx, (*token).Subject(), in.Id, in.Description)
+}
+
+func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.RevokeClientSecretRequest) (*emptypb.Empty, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return nil, s.uc.RevokeClientSecret(ctx, (*token).Subject(), in.Id, in.SecretId)
 }
