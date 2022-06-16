@@ -64,10 +64,11 @@ func (uc *ApplicationUsecase) Retrieve(ctx context.Context, admin string, id str
 	}
 	for _, item := range application.ClientSecrets {
 		secret := &v1.Secret{
-			Id:           *item.Id,
-			LastUsed:     item.LastUsed,
-			Description:  *item.Description,
-			MaskedSecret: "*****" + (*item.Secret)[len(*item.Secret)-5:],
+			Id:          *item.Id,
+			LastUsed:    item.LastUsed,
+			Description: *item.Description,
+			Masked:      true,
+			Secret:      "*****" + (*item.Secret)[len(*item.Secret)-5:],
 		}
 		reply.ClientSecrets = append(reply.ClientSecrets, secret)
 	}
@@ -84,10 +85,11 @@ func (uc *ApplicationUsecase) GenerateClientSecret(ctx context.Context, admin st
 	}
 	return &v1.GenerateClientSecretReply{
 		Secret: &v1.Secret{
-			Id:           *secret.Id,
-			LastUsed:     secret.LastUsed,
-			Description:  *secret.Description,
-			MaskedSecret: *secret.Secret,
+			Id:          *secret.Id,
+			LastUsed:    secret.LastUsed,
+			Description: *secret.Description,
+			Masked:      false,
+			Secret:      *secret.Secret,
 		},
 	}, nil
 

@@ -16,76 +16,73 @@ import {
   GenerateClientSecretReply,
   RevokeClientSecretRequest,
 } from './application/v1/application';
-import { Token } from '@/util/localStorage';
-import { Reject } from '@/util';
 
-export class LoginClient {
-  async Login(bm: LoginRequest): Promise<LoginReply> {
-    return request('/user/v1/login/login', {
-      method: 'POST',
-      data: bm,
-    });
-  }
-  async PrePhone(bm: LoginPrePhoneRequest): Promise<Empty> {
-    return request('/user/v1/login/pre_phone', {
-      method: 'POST',
-      data: bm,
-    });
-  }
+const go = async<T>(promise: Promise<T>) => {
+  return promise.then(response => ({response})).catch(error => ({error}));
+}
+const AUTH_TOKEN_KEY = "AUTH_TOKEN";
+const getBearer = () => {
+  return `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY)}`;
 }
 
-const helper = new Token();
-const getBearer = (): string => {
-  const token = helper.Load()
-  if (token instanceof Reject) {
-    return '';
+export namespace LoginClient {
+  export async function Login(bm: LoginRequest) {
+    return go<LoginReply>(request('/user/v1/login/login', {
+      method: 'POST',
+      data: bm,
+    }));
   }
-  return `Bearer ${token.val}`;
+  export async function PrePhone(bm: LoginPrePhoneRequest) {
+    return go<Empty>(request('/user/v1/login/pre_phone', {
+      method: 'POST',
+      data: bm,
+    }));
+  }
 }
-export class ProfileClient {
-  async GetAvatar(): Promise<GetAvatarReply> {
-    return request('/user/v1/profile/avatar', {
+export namespace ProfileClient {
+  export async function GetAvatar() {
+    return go<GetAvatarReply>(request('/user/v1/profile/avatar', {
       method: 'GET',
       headers: {
         'Authorization': getBearer(),
       }
-    })
+    }));
   }
 }
 
-export class ApplicationClient {
-  async Create(bm: CreateRequest): Promise<CreateReply> {
-    return request('/application/v1', {
+export namespace ApplicationClient {
+  export async function Create(bm: CreateRequest) {
+    return go<CreateReply>(request('/application/v1', {
       method: 'POST',
       headers: {
         'Authorization': getBearer(),
       },
       data: bm,
-    })
+    }));
   }
-  async Retrieve(bm: RetrieveRequest): Promise<RetrieveReply> {
-    return request(`/application/v1/${bm.id}`, {
+  export async function Retrieve(bm: RetrieveRequest) {
+    return go<RetrieveReply>(request(`/application/v1/${bm.id}`, {
       method: 'GET',
       headers: {
         'Authorization': getBearer(),
       },
-    })
+    }));
   }
-  async GenerateClientSecret(bm: GenerateClientSecretRequest): Promise<GenerateClientSecretReply> {
-    return request(`/application/v1/${bm.id}/generateClientSecret`, {
+  export async function GenerateClientSecret(bm: GenerateClientSecretRequest) {
+    return go<GenerateClientSecretReply>(request(`/application/v1/${bm.id}/generateClientSecret`, {
       method: 'POST',
       headers: {
         'Authorization': getBearer(),
       },
       data: bm,
-    })
+    }));
   }
-  async RevokeClientSecret(bm: RevokeClientSecretRequest): Promise<Empty> {
-    return request(`/application/v1/${bm.id}/${bm.secretId}`, {
+  export async function RevokeClientSecret (bm: RevokeClientSecretRequest) {
+    return go<Empty>(request(`/application/v1/${bm.id}/${bm.secretId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': getBearer(),
       },
-    })
+    }));
   }
 }

@@ -36,9 +36,9 @@ func NewGRPCServer(
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	userV1.RegisterRegisterServer(srv, register)
-	userV1.RegisterLoginServer(srv, login)
-	userV1.RegisterProfileServer(srv, profile)
-	applicationV1.RegisterApplicationServer(srv, application)
+	userV1.RegisterRegisterServiceServer(srv, register)
+	userV1.RegisterLoginServiceServer(srv, login)
+	userV1.RegisterProfileServiceServer(srv, profile)
+	applicationV1.RegisterApplicationServiceServer(srv, application)
 	return srv
 }

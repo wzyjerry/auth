@@ -14,7 +14,7 @@ import (
 )
 
 type LoginService struct {
-	v1.UnimplementedLoginServer
+	v1.UnimplementedLoginServiceServer
 
 	uc     *userBiz.LoginUsecase
 	conf   *conf.Security

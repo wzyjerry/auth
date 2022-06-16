@@ -45,9 +45,9 @@ func NewHTTPServer(
 	srv := http.NewServer(opts...)
 	openAPIhandler := openapiv2.NewHandler()
 	srv.HandlePrefix("/q/", openAPIhandler)
-	userV1.RegisterRegisterHTTPServer(srv, register)
-	userV1.RegisterLoginHTTPServer(srv, login)
-	userV1.RegisterProfileHTTPServer(srv, profile)
-	applicationV1.RegisterApplicationHTTPServer(srv, application)
+	userV1.RegisterRegisterServiceHTTPServer(srv, register)
+	userV1.RegisterLoginServiceHTTPServer(srv, login)
+	userV1.RegisterProfileServiceHTTPServer(srv, profile)
+	applicationV1.RegisterApplicationServiceHTTPServer(srv, application)
 	return srv
 }

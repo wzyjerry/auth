@@ -462,7 +462,7 @@ export const RegisterPhoneRequest = {
   },
 };
 
-export interface Register {
+export interface RegisterService {
   Account(request: RegisterAccountRequest): Promise<RegisterReply>;
   PreEmail(request: RegisterPreEmailRequest): Promise<Empty>;
   Email(request: RegisterEmailRequest): Promise<RegisterReply>;
@@ -470,7 +470,7 @@ export interface Register {
   Phone(request: RegisterPhoneRequest): Promise<RegisterReply>;
 }
 
-export class RegisterClientImpl implements Register {
+export class RegisterServiceClientImpl implements RegisterService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
@@ -482,31 +482,51 @@ export class RegisterClientImpl implements Register {
   }
   Account(request: RegisterAccountRequest): Promise<RegisterReply> {
     const data = RegisterAccountRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Register', 'Account', data);
+    const promise = this.rpc.request(
+      'api.user.v1.RegisterService',
+      'Account',
+      data,
+    );
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 
   PreEmail(request: RegisterPreEmailRequest): Promise<Empty> {
     const data = RegisterPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Register', 'PreEmail', data);
+    const promise = this.rpc.request(
+      'api.user.v1.RegisterService',
+      'PreEmail',
+      data,
+    );
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   Email(request: RegisterEmailRequest): Promise<RegisterReply> {
     const data = RegisterEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Register', 'Email', data);
+    const promise = this.rpc.request(
+      'api.user.v1.RegisterService',
+      'Email',
+      data,
+    );
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 
   PrePhone(request: RegisterPrePhoneRequest): Promise<Empty> {
     const data = RegisterPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Register', 'PrePhone', data);
+    const promise = this.rpc.request(
+      'api.user.v1.RegisterService',
+      'PrePhone',
+      data,
+    );
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   Phone(request: RegisterPhoneRequest): Promise<RegisterReply> {
     const data = RegisterPhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Register', 'Phone', data);
+    const promise = this.rpc.request(
+      'api.user.v1.RegisterService',
+      'Phone',
+      data,
+    );
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 }

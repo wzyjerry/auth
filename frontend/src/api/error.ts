@@ -9,6 +9,7 @@ interface error {
 }
 
 const errorHandler = (error: ResponseError<error>) => {
+  console.log('here');
   if (error.response) {
     notification.error({
       message: `请求错误 ${error.data.code}: ${error.data.reason}`,

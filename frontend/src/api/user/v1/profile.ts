@@ -9,6 +9,13 @@ export interface GetAvatarReply {
   avatar: string;
 }
 
+export interface User {
+  token: string;
+  id: string;
+  nickname: string;
+  avatar: string;
+}
+
 function createBaseGetAvatarReply(): GetAvatarReply {
   return { avatar: '' };
 }
@@ -63,11 +70,87 @@ export const GetAvatarReply = {
   },
 };
 
-export interface Profile {
+function createBaseUser(): User {
+  return { token: '', id: '', nickname: '', avatar: '' };
+}
+
+export const User = {
+  encode(message: User, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.token !== '') {
+      writer.uint32(10).string(message.token);
+    }
+    if (message.id !== '') {
+      writer.uint32(18).string(message.id);
+    }
+    if (message.nickname !== '') {
+      writer.uint32(26).string(message.nickname);
+    }
+    if (message.avatar !== '') {
+      writer.uint32(34).string(message.avatar);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): User {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUser();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.token = reader.string();
+          break;
+        case 2:
+          message.id = reader.string();
+          break;
+        case 3:
+          message.nickname = reader.string();
+          break;
+        case 4:
+          message.avatar = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): User {
+    return {
+      token: isSet(object.token) ? String(object.token) : '',
+      id: isSet(object.id) ? String(object.id) : '',
+      nickname: isSet(object.nickname) ? String(object.nickname) : '',
+      avatar: isSet(object.avatar) ? String(object.avatar) : '',
+    };
+  },
+
+  toJSON(message: User): unknown {
+    const obj: any = {};
+    message.token !== undefined && (obj.token = message.token);
+    message.id !== undefined && (obj.id = message.id);
+    message.nickname !== undefined && (obj.nickname = message.nickname);
+    message.avatar !== undefined && (obj.avatar = message.avatar);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<User>, I>>(object: I): User {
+    const message = createBaseUser();
+    message.token = object.token ?? '';
+    message.id = object.id ?? '';
+    message.nickname = object.nickname ?? '';
+    message.avatar = object.avatar ?? '';
+    return message;
+  },
+};
+
+export interface ProfileService {
   GetAvatar(request: Empty): Promise<GetAvatarReply>;
 }
 
-export class ProfileClientImpl implements Profile {
+export class ProfileServiceClientImpl implements ProfileService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
@@ -75,7 +158,11 @@ export class ProfileClientImpl implements Profile {
   }
   GetAvatar(request: Empty): Promise<GetAvatarReply> {
     const data = Empty.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Profile', 'GetAvatar', data);
+    const promise = this.rpc.request(
+      'api.user.v1.ProfileService',
+      'GetAvatar',
+      data,
+    );
     return promise.then((data) => GetAvatarReply.decode(new _m0.Reader(data)));
   }
 }

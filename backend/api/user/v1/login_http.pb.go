@@ -18,28 +18,28 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-type LoginHTTPServer interface {
+type LoginServiceHTTPServer interface {
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error)
 	PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error)
 	Trash(context.Context, *emptypb.Empty) (*TrashReply, error)
 }
 
-func RegisterLoginHTTPServer(s *http.Server, srv LoginHTTPServer) {
+func RegisterLoginServiceHTTPServer(s *http.Server, srv LoginServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/user/v1/login/pre_phone", _Login_PrePhone0_HTTP_Handler(srv))
-	r.POST("/user/v1/login/pre_email", _Login_PreEmail0_HTTP_Handler(srv))
-	r.POST("/user/v1/login/login", _Login_Login0_HTTP_Handler(srv))
-	r.GET("/user/v1/login/trash", _Login_Trash0_HTTP_Handler(srv))
+	r.POST("/user/v1/login/pre_phone", _LoginService_PrePhone0_HTTP_Handler(srv))
+	r.POST("/user/v1/login/pre_email", _LoginService_PreEmail0_HTTP_Handler(srv))
+	r.POST("/user/v1/login/login", _LoginService_Login0_HTTP_Handler(srv))
+	r.GET("/user/v1/login/trash", _LoginService_Trash0_HTTP_Handler(srv))
 }
 
-func _Login_PrePhone0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) error {
+func _LoginService_PrePhone0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LoginPrePhoneRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.user.v1.Login/PrePhone")
+		http.SetOperation(ctx, "/api.user.v1.LoginService/PrePhone")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.PrePhone(ctx, req.(*LoginPrePhoneRequest))
 		})
@@ -52,13 +52,13 @@ func _Login_PrePhone0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) e
 	}
 }
 
-func _Login_PreEmail0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) error {
+func _LoginService_PreEmail0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LoginPreEmailRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.user.v1.Login/PreEmail")
+		http.SetOperation(ctx, "/api.user.v1.LoginService/PreEmail")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.PreEmail(ctx, req.(*LoginPreEmailRequest))
 		})
@@ -71,13 +71,13 @@ func _Login_PreEmail0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) e
 	}
 }
 
-func _Login_Login0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) error {
+func _LoginService_Login0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LoginRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.user.v1.Login/Login")
+		http.SetOperation(ctx, "/api.user.v1.LoginService/Login")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Login(ctx, req.(*LoginRequest))
 		})
@@ -90,13 +90,13 @@ func _Login_Login0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) erro
 	}
 }
 
-func _Login_Trash0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) error {
+func _LoginService_Trash0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.user.v1.Login/Trash")
+		http.SetOperation(ctx, "/api.user.v1.LoginService/Trash")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Trash(ctx, req.(*emptypb.Empty))
 		})
@@ -109,26 +109,26 @@ func _Login_Trash0_HTTP_Handler(srv LoginHTTPServer) func(ctx http.Context) erro
 	}
 }
 
-type LoginHTTPClient interface {
+type LoginServiceHTTPClient interface {
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	PreEmail(ctx context.Context, req *LoginPreEmailRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	PrePhone(ctx context.Context, req *LoginPrePhoneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	Trash(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *TrashReply, err error)
 }
 
-type LoginHTTPClientImpl struct {
+type LoginServiceHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewLoginHTTPClient(client *http.Client) LoginHTTPClient {
-	return &LoginHTTPClientImpl{client}
+func NewLoginServiceHTTPClient(client *http.Client) LoginServiceHTTPClient {
+	return &LoginServiceHTTPClientImpl{client}
 }
 
-func (c *LoginHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
+func (c *LoginServiceHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
 	var out LoginReply
 	pattern := "/user/v1/login/login"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.user.v1.Login/Login"))
+	opts = append(opts, http.Operation("/api.user.v1.LoginService/Login"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -137,11 +137,11 @@ func (c *LoginHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts 
 	return &out, err
 }
 
-func (c *LoginHTTPClientImpl) PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *LoginServiceHTTPClientImpl) PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/user/v1/login/pre_email"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.user.v1.Login/PreEmail"))
+	opts = append(opts, http.Operation("/api.user.v1.LoginService/PreEmail"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -150,11 +150,11 @@ func (c *LoginHTTPClientImpl) PreEmail(ctx context.Context, in *LoginPreEmailReq
 	return &out, err
 }
 
-func (c *LoginHTTPClientImpl) PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *LoginServiceHTTPClientImpl) PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/user/v1/login/pre_phone"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.user.v1.Login/PrePhone"))
+	opts = append(opts, http.Operation("/api.user.v1.LoginService/PrePhone"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -163,11 +163,11 @@ func (c *LoginHTTPClientImpl) PrePhone(ctx context.Context, in *LoginPrePhoneReq
 	return &out, err
 }
 
-func (c *LoginHTTPClientImpl) Trash(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*TrashReply, error) {
+func (c *LoginServiceHTTPClientImpl) Trash(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*TrashReply, error) {
 	var out TrashReply
 	pattern := "/user/v1/login/trash"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.user.v1.Login/Trash"))
+	opts = append(opts, http.Operation("/api.user.v1.LoginService/Trash"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

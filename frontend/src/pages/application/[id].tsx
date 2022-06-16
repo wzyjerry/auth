@@ -1,7 +1,9 @@
 import styles from './new.less';
 import { Layout } from 'antd';
 import { ApplicationDetail } from '@/components';
-import { useParams } from 'umi';
+import { useDispatch, useParams } from 'umi';
+import { useEffect } from 'react';
+
 const { Content } = Layout;
 
 interface Params {
@@ -9,11 +11,18 @@ interface Params {
 }
 
 const Detail: React.FC = () => {
+  const dispatch = useDispatch();
   const { id } = useParams<Params>();
+  useEffect(() => {
+    dispatch({
+      type: 'application/setup',
+      payload: { id },
+    })
+  }, [id])
   return (
     <Layout className={styles.application}>
       <Content className={styles.main}>
-        <ApplicationDetail id={id}></ApplicationDetail>
+        <ApplicationDetail></ApplicationDetail>
       </Content>
     </Layout>
   );

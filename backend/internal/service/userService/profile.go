@@ -12,7 +12,7 @@ import (
 )
 
 type ProfileService struct {
-	v1.UnimplementedProfileServer
+	v1.UnimplementedProfileServiceServer
 
 	uc     *userBiz.ProfileUsecase
 	conf   *conf.Security

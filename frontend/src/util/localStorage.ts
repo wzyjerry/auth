@@ -1,4 +1,16 @@
-import { Err, Resolve, Reject } from '.';
+import { Resolve, Reject } from '.';
+export class Err extends Error {
+  constructor(name: string, message?: string) {
+    super(message);
+    this.name = name;
+  }
+}
+
+export class Throw extends Err {
+  constructor(error: Err) {
+    super(error.name, error.message);
+  }
+}
 
 export const ErrSetLocalstorage = new Err('SetLocalstorageError');
 export const ErrGetLocalstorage = new Err('GetLocalstorageError');

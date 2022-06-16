@@ -25,7 +25,19 @@ export interface Secret {
   id: string;
   lastUsed?: Date | undefined;
   description: string;
-  maskedSecret: string;
+  masked: boolean;
+  secret: string;
+}
+
+export interface Application {
+  id: string;
+  name: string;
+  clientId: string;
+  clientSecrets: Secret[];
+  avatar?: string | undefined;
+  homepage: string;
+  description?: string | undefined;
+  callback: string;
 }
 
 export interface RetrieveReply {
@@ -245,7 +257,13 @@ export const RetrieveRequest = {
 };
 
 function createBaseSecret(): Secret {
-  return { id: '', lastUsed: undefined, description: '', maskedSecret: '' };
+  return {
+    id: '',
+    lastUsed: undefined,
+    description: '',
+    masked: false,
+    secret: '',
+  };
 }
 
 export const Secret = {
@@ -265,8 +283,11 @@ export const Secret = {
     if (message.description !== '') {
       writer.uint32(26).string(message.description);
     }
-    if (message.maskedSecret !== '') {
-      writer.uint32(34).string(message.maskedSecret);
+    if (message.masked === true) {
+      writer.uint32(32).bool(message.masked);
+    }
+    if (message.secret !== '') {
+      writer.uint32(42).string(message.secret);
     }
     return writer;
   },
@@ -290,7 +311,10 @@ export const Secret = {
           message.description = reader.string();
           break;
         case 4:
-          message.maskedSecret = reader.string();
+          message.masked = reader.bool();
+          break;
+        case 5:
+          message.secret = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -307,9 +331,8 @@ export const Secret = {
         ? fromJsonTimestamp(object.lastUsed)
         : undefined,
       description: isSet(object.description) ? String(object.description) : '',
-      maskedSecret: isSet(object.maskedSecret)
-        ? String(object.maskedSecret)
-        : '',
+      masked: isSet(object.masked) ? Boolean(object.masked) : false,
+      secret: isSet(object.secret) ? String(object.secret) : '',
     };
   },
 
@@ -320,8 +343,8 @@ export const Secret = {
       (obj.lastUsed = message.lastUsed.toISOString());
     message.description !== undefined &&
       (obj.description = message.description);
-    message.maskedSecret !== undefined &&
-      (obj.maskedSecret = message.maskedSecret);
+    message.masked !== undefined && (obj.masked = message.masked);
+    message.secret !== undefined && (obj.secret = message.secret);
     return obj;
   },
 
@@ -330,7 +353,146 @@ export const Secret = {
     message.id = object.id ?? '';
     message.lastUsed = object.lastUsed ?? undefined;
     message.description = object.description ?? '';
-    message.maskedSecret = object.maskedSecret ?? '';
+    message.masked = object.masked ?? false;
+    message.secret = object.secret ?? '';
+    return message;
+  },
+};
+
+function createBaseApplication(): Application {
+  return {
+    id: '',
+    name: '',
+    clientId: '',
+    clientSecrets: [],
+    avatar: undefined,
+    homepage: '',
+    description: undefined,
+    callback: '',
+  };
+}
+
+export const Application = {
+  encode(
+    message: Application,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== '') {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.clientId !== '') {
+      writer.uint32(26).string(message.clientId);
+    }
+    for (const v of message.clientSecrets) {
+      Secret.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.avatar !== undefined) {
+      writer.uint32(42).string(message.avatar);
+    }
+    if (message.homepage !== '') {
+      writer.uint32(50).string(message.homepage);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(58).string(message.description);
+    }
+    if (message.callback !== '') {
+      writer.uint32(66).string(message.callback);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Application {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApplication();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.clientId = reader.string();
+          break;
+        case 4:
+          message.clientSecrets.push(Secret.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.avatar = reader.string();
+          break;
+        case 6:
+          message.homepage = reader.string();
+          break;
+        case 7:
+          message.description = reader.string();
+          break;
+        case 8:
+          message.callback = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Application {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      clientId: isSet(object.clientId) ? String(object.clientId) : '',
+      clientSecrets: Array.isArray(object?.clientSecrets)
+        ? object.clientSecrets.map((e: any) => Secret.fromJSON(e))
+        : [],
+      avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
+      homepage: isSet(object.homepage) ? String(object.homepage) : '',
+      description: isSet(object.description)
+        ? String(object.description)
+        : undefined,
+      callback: isSet(object.callback) ? String(object.callback) : '',
+    };
+  },
+
+  toJSON(message: Application): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    message.clientId !== undefined && (obj.clientId = message.clientId);
+    if (message.clientSecrets) {
+      obj.clientSecrets = message.clientSecrets.map((e) =>
+        e ? Secret.toJSON(e) : undefined,
+      );
+    } else {
+      obj.clientSecrets = [];
+    }
+    message.avatar !== undefined && (obj.avatar = message.avatar);
+    message.homepage !== undefined && (obj.homepage = message.homepage);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.callback !== undefined && (obj.callback = message.callback);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Application>, I>>(
+    object: I,
+  ): Application {
+    const message = createBaseApplication();
+    message.id = object.id ?? '';
+    message.name = object.name ?? '';
+    message.clientId = object.clientId ?? '';
+    message.clientSecrets =
+      object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
+    message.avatar = object.avatar ?? undefined;
+    message.homepage = object.homepage ?? '';
+    message.description = object.description ?? undefined;
+    message.callback = object.callback ?? '';
     return message;
   },
 };
@@ -657,7 +819,7 @@ export const RevokeClientSecretRequest = {
   },
 };
 
-export interface Application {
+export interface ApplicationService {
   Create(request: CreateRequest): Promise<CreateReply>;
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
   GenerateClientSecret(
@@ -666,7 +828,7 @@ export interface Application {
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
 }
 
-export class ApplicationClientImpl implements Application {
+export class ApplicationServiceClientImpl implements ApplicationService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
@@ -678,7 +840,7 @@ export class ApplicationClientImpl implements Application {
   Create(request: CreateRequest): Promise<CreateReply> {
     const data = CreateRequest.encode(request).finish();
     const promise = this.rpc.request(
-      'api.application.v1.Application',
+      'api.application.v1.ApplicationService',
       'Create',
       data,
     );
@@ -688,7 +850,7 @@ export class ApplicationClientImpl implements Application {
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply> {
     const data = RetrieveRequest.encode(request).finish();
     const promise = this.rpc.request(
-      'api.application.v1.Application',
+      'api.application.v1.ApplicationService',
       'Retrieve',
       data,
     );
@@ -700,7 +862,7 @@ export class ApplicationClientImpl implements Application {
   ): Promise<GenerateClientSecretReply> {
     const data = GenerateClientSecretRequest.encode(request).finish();
     const promise = this.rpc.request(
-      'api.application.v1.Application',
+      'api.application.v1.ApplicationService',
       'GenerateClientSecret',
       data,
     );
@@ -712,7 +874,7 @@ export class ApplicationClientImpl implements Application {
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty> {
     const data = RevokeClientSecretRequest.encode(request).finish();
     const promise = this.rpc.request(
-      'api.application.v1.Application',
+      'api.application.v1.ApplicationService',
       'RevokeClientSecret',
       data,
     );

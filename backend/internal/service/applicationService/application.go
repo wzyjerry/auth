@@ -12,7 +12,7 @@ import (
 )
 
 type ApplicationService struct {
-	v1.UnimplementedApplicationServer
+	v1.UnimplementedApplicationServiceServer
 
 	uc     *applicationBiz.ApplicationUsecase
 	conf   *conf.Security

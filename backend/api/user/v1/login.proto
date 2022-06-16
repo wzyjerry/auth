@@ -52,7 +52,7 @@ message LoginPreEmailRequest {
     string email = 1 [(validate.rules).string.email = true];
 }
 
-service Login {
+service LoginService {
     rpc PrePhone(LoginPrePhoneRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
             post: "/user/v1/login/pre_phone"

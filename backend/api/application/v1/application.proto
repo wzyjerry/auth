@@ -46,7 +46,19 @@ message Secret {
     string id = 1;
     optional google.protobuf.Timestamp last_used = 2;
     string description = 3;
-    string masked_secret = 4;
+    bool masked = 4;
+    string secret = 5;
+}
+
+message Application {
+    string id = 1;
+    string name = 2;
+    string client_id = 3;
+    repeated Secret client_secrets = 4;
+    optional string avatar = 5;
+    string homepage = 6;
+    optional string description = 7;
+    string callback = 8;
 }
 
 message RetrieveReply {
@@ -73,7 +85,7 @@ message RevokeClientSecretRequest {
     string secret_id = 2;
 }
 
-service Application {
+service ApplicationService {
     rpc Create(CreateRequest) returns (CreateReply) {
         option (google.api.http) = {
             post: "/application/v1"

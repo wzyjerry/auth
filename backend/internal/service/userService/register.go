@@ -9,7 +9,7 @@ import (
 )
 
 type RegisterService struct {
-	v1.UnimplementedRegisterServer
+	v1.UnimplementedRegisterServiceServer
 
 	uc *userBiz.RegisterUsecase
 }

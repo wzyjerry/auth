@@ -29,7 +29,14 @@ message GetAvatarReply {
     string avatar = 1;
 }
 
-service Profile {
+message User {
+    string token = 1;
+    string id = 2;
+    string nickname = 3;
+    string avatar = 4;
+}
+
+service ProfileService {
     rpc GetAvatar(google.protobuf.Empty) returns (GetAvatarReply) {
         option (google.api.http) = {
             get: "/user/v1/profile/avatar"

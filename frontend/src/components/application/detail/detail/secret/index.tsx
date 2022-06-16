@@ -1,55 +1,31 @@
 import style from './index.less';
 import copy from 'copy-to-clipboard';
 import { Button, Popconfirm, message } from 'antd';
-import { Secret, RevokeClientSecretRequest } from '@/api/application/v1/application';
+import { Secret } from '@/api/application/v1/application';
 import { KeyOutlined, CopyOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { ObjectID } from 'bson';
-import { ApplicationClient } from '@/api';
-import { Go, Reject } from '@/util';
-import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'umi';
 interface SecretProp {
-  id: string
   secret: Secret
   only: boolean
-  isNew: boolean
-  refresh: ()=>void
 }
 const SecretItem: React.FC<SecretProp> = (prop) => {
-  const history = useHistory();
+  const dispatch = useDispatch();
   const copyClientSecret = (): void => {
-      copy(prop.secret.maskedSecret);
-      message.success(`已复制到剪切板: ${prop.secret.maskedSecret}`)
+      copy(prop.secret.secret);
+      message.success(`已复制到剪切板: ${prop.secret.secret}`)
   }
-  const onRevoke = async (): Promise<void> => {
-    const client = new ApplicationClient();
-    const request: RevokeClientSecretRequest = {
-      id: prop.id,
-      secretId: prop.secret.id,
-    }
-    const reply = await Go(client.RevokeClientSecret(request))
-    if (reply instanceof Reject) {
-      switch(reply.error.name) {
-        case 'FORBIDDEN':
-          case 'UNAUTHORIZED':
-            history.push(`/user/login?return_to=${encodeURIComponent(location.pathname+location.search+location.hash)}`);
-            break;
-          case 'APPLICATION_NOT_FOUND':
-            history.push(`/404`);
-            break;
-          case 'REVOKE_BAD_REQUEST':
-            message.error(`不能删除最后一个客户端密钥`);
-            break;
-          default:
-            console.log(reply.error);
-            message.error(`[${reply.error.name}]${reply.error.message}`);
+  const onRevoke = () => {
+    dispatch({
+      type: 'application/revokeClientSecret',
+      payload: {
+        secretId: prop.secret.id,
       }
-    }
-    message.success('客户端密钥已删除');
-    prop.refresh()
+    });
   }
   return (
-    <div className={style.secret+(prop.isNew?` ${style.new}`:'')}>
+    <div className={style.secret+(!prop.secret.masked?` ${style.new}`:'')}>
       <div className={style.iconArea}>
         <KeyOutlined className={style.icon} />
         <span className={style.label}>客户端密钥</span>
@@ -57,8 +33,8 @@ const SecretItem: React.FC<SecretProp> = (prop) => {
       <div className={style.infoArea}>
         <span className={style.description}>说明: {prop.secret.description}</span>
         <div>
-          <span className={style.clientSecret}>{prop.secret.maskedSecret}</span>
-          { prop.isNew && <Button type='link' shape='circle' icon={<CopyOutlined />} size='small' onClick={copyClientSecret}></Button> }
+          <span className={style.clientSecret}>{prop.secret.secret}</span>
+          { prop.secret.masked || <Button type='link' shape='circle' icon={<CopyOutlined />} size='small' onClick={copyClientSecret}></Button> }
         </div>
         <span className={style.generated}>生成于 {moment(new ObjectID(prop.secret.id).getTimestamp()).calendar()}</span>
         <span className={style.lastUsed}>最后使用时间: {prop.secret.lastUsed?moment(prop.secret.lastUsed).calendar():'从未使用'}</span>

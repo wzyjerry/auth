@@ -19,194 +19,194 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// LoginClient is the client API for Login service.
+// LoginServiceClient is the client API for LoginService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type LoginClient interface {
+type LoginServiceClient interface {
 	PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error)
 }
 
-type loginClient struct {
+type loginServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewLoginClient(cc grpc.ClientConnInterface) LoginClient {
-	return &loginClient{cc}
+func NewLoginServiceClient(cc grpc.ClientConnInterface) LoginServiceClient {
+	return &loginServiceClient{cc}
 }
 
-func (c *loginClient) PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *loginServiceClient) PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.user.v1.Login/PrePhone", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.LoginService/PrePhone", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *loginClient) PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *loginServiceClient) PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.user.v1.Login/PreEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.LoginService/PreEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *loginClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
 	out := new(LoginReply)
-	err := c.cc.Invoke(ctx, "/api.user.v1.Login/Login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.LoginService/Login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *loginClient) Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error) {
+func (c *loginServiceClient) Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error) {
 	out := new(TrashReply)
-	err := c.cc.Invoke(ctx, "/api.user.v1.Login/Trash", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.user.v1.LoginService/Trash", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// LoginServer is the server API for Login service.
-// All implementations must embed UnimplementedLoginServer
+// LoginServiceServer is the server API for LoginService service.
+// All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
-type LoginServer interface {
+type LoginServiceServer interface {
 	PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error)
 	PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	Trash(context.Context, *emptypb.Empty) (*TrashReply, error)
-	mustEmbedUnimplementedLoginServer()
+	mustEmbedUnimplementedLoginServiceServer()
 }
 
-// UnimplementedLoginServer must be embedded to have forward compatible implementations.
-type UnimplementedLoginServer struct {
+// UnimplementedLoginServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedLoginServiceServer struct {
 }
 
-func (UnimplementedLoginServer) PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error) {
+func (UnimplementedLoginServiceServer) PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PrePhone not implemented")
 }
-func (UnimplementedLoginServer) PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error) {
+func (UnimplementedLoginServiceServer) PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreEmail not implemented")
 }
-func (UnimplementedLoginServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
+func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedLoginServer) Trash(context.Context, *emptypb.Empty) (*TrashReply, error) {
+func (UnimplementedLoginServiceServer) Trash(context.Context, *emptypb.Empty) (*TrashReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Trash not implemented")
 }
-func (UnimplementedLoginServer) mustEmbedUnimplementedLoginServer() {}
+func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
-// UnsafeLoginServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to LoginServer will
+// UnsafeLoginServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to LoginServiceServer will
 // result in compilation errors.
-type UnsafeLoginServer interface {
-	mustEmbedUnimplementedLoginServer()
+type UnsafeLoginServiceServer interface {
+	mustEmbedUnimplementedLoginServiceServer()
 }
 
-func RegisterLoginServer(s grpc.ServiceRegistrar, srv LoginServer) {
-	s.RegisterService(&Login_ServiceDesc, srv)
+func RegisterLoginServiceServer(s grpc.ServiceRegistrar, srv LoginServiceServer) {
+	s.RegisterService(&LoginService_ServiceDesc, srv)
 }
 
-func _Login_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LoginService_PrePhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginPrePhoneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LoginServer).PrePhone(ctx, in)
+		return srv.(LoginServiceServer).PrePhone(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.user.v1.Login/PrePhone",
+		FullMethod: "/api.user.v1.LoginService/PrePhone",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).PrePhone(ctx, req.(*LoginPrePhoneRequest))
+		return srv.(LoginServiceServer).PrePhone(ctx, req.(*LoginPrePhoneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Login_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LoginService_PreEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginPreEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LoginServer).PreEmail(ctx, in)
+		return srv.(LoginServiceServer).PreEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.user.v1.Login/PreEmail",
+		FullMethod: "/api.user.v1.LoginService/PreEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).PreEmail(ctx, req.(*LoginPreEmailRequest))
+		return srv.(LoginServiceServer).PreEmail(ctx, req.(*LoginPreEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Login_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LoginServer).Login(ctx, in)
+		return srv.(LoginServiceServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.user.v1.Login/Login",
+		FullMethod: "/api.user.v1.LoginService/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).Login(ctx, req.(*LoginRequest))
+		return srv.(LoginServiceServer).Login(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Login_Trash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LoginService_Trash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LoginServer).Trash(ctx, in)
+		return srv.(LoginServiceServer).Trash(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.user.v1.Login/Trash",
+		FullMethod: "/api.user.v1.LoginService/Trash",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServer).Trash(ctx, req.(*emptypb.Empty))
+		return srv.(LoginServiceServer).Trash(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Login_ServiceDesc is the grpc.ServiceDesc for Login service.
+// LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Login_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.user.v1.Login",
-	HandlerType: (*LoginServer)(nil),
+var LoginService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.user.v1.LoginService",
+	HandlerType: (*LoginServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "PrePhone",
-			Handler:    _Login_PrePhone_Handler,
+			Handler:    _LoginService_PrePhone_Handler,
 		},
 		{
 			MethodName: "PreEmail",
-			Handler:    _Login_PreEmail_Handler,
+			Handler:    _LoginService_PreEmail_Handler,
 		},
 		{
 			MethodName: "Login",
-			Handler:    _Login_Login_Handler,
+			Handler:    _LoginService_Login_Handler,
 		},
 		{
 			MethodName: "Trash",
-			Handler:    _Login_Trash_Handler,
+			Handler:    _LoginService_Trash_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

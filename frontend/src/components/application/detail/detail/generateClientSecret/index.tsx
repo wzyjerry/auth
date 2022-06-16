@@ -1,27 +1,26 @@
 import style from './index.less';
 import { Modal, Form, Input, Button } from 'antd';
-import { GenerateClientSecretRequest, GenerateClientSecretReply } from '@/api/application/v1/application';
-import { ApplicationClient } from '@/api';
+import { useDispatch } from 'umi';
 interface GenerateClientSecretProp {
   id: string
   visiable: boolean
-  onClose: (promise?: Promise<GenerateClientSecretReply>) => void
+  onClose: () => void
 }
 interface generateClientSecretForm {
   description: string
 }
 const GenerateClientSecret: React.FC<GenerateClientSecretProp> = (prop) => {
-  const onGenerate = async (form: generateClientSecretForm): Promise<void> => {
-    const client = new ApplicationClient();
-    const request: GenerateClientSecretRequest = {
-      id: prop.id,
-      description: form.description
-    };
-    prop.onClose(client.GenerateClientSecret(request));
-  }
-  const onClose = () => {
+  const dispatch = useDispatch();
+  const onGenerate = (form: generateClientSecretForm) => {
+    dispatch({
+      type: 'application/generateClientSecret',
+      payload: {
+        description: form.description,
+      }
+    })
     prop.onClose();
   }
+  const onClose = () => prop.onClose();
   return (
     <Modal className={style.modal} destroyOnClose footer={null} visible={prop.visiable} onCancel={onClose}>
       <Form className={style.form} onFinish={onGenerate} name='new' size='large' layout='vertical'>

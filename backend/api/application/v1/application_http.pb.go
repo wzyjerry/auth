@@ -18,28 +18,28 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-type ApplicationHTTPServer interface {
+type ApplicationServiceHTTPServer interface {
 	Create(context.Context, *CreateRequest) (*CreateReply, error)
 	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
 	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
 }
 
-func RegisterApplicationHTTPServer(s *http.Server, srv ApplicationHTTPServer) {
+func RegisterApplicationServiceHTTPServer(s *http.Server, srv ApplicationServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/application/v1", _Application_Create0_HTTP_Handler(srv))
-	r.GET("/application/v1/{id}", _Application_Retrieve0_HTTP_Handler(srv))
-	r.POST("/application/v1/{id}/generateClientSecret", _Application_GenerateClientSecret0_HTTP_Handler(srv))
-	r.DELETE("/application/v1/{id}/{secret_id}", _Application_RevokeClientSecret0_HTTP_Handler(srv))
+	r.POST("/application/v1", _ApplicationService_Create0_HTTP_Handler(srv))
+	r.GET("/application/v1/{id}", _ApplicationService_Retrieve0_HTTP_Handler(srv))
+	r.POST("/application/v1/{id}/generateClientSecret", _ApplicationService_GenerateClientSecret0_HTTP_Handler(srv))
+	r.DELETE("/application/v1/{id}/{secret_id}", _ApplicationService_RevokeClientSecret0_HTTP_Handler(srv))
 }
 
-func _Application_Create0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+func _ApplicationService_Create0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.application.v1.Application/Create")
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/Create")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Create(ctx, req.(*CreateRequest))
 		})
@@ -52,7 +52,7 @@ func _Application_Create0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.
 	}
 }
 
-func _Application_Retrieve0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+func _ApplicationService_Retrieve0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in RetrieveRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -61,7 +61,7 @@ func _Application_Retrieve0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx htt
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.application.v1.Application/Retrieve")
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/Retrieve")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Retrieve(ctx, req.(*RetrieveRequest))
 		})
@@ -74,7 +74,7 @@ func _Application_Retrieve0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx htt
 	}
 }
 
-func _Application_GenerateClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+func _ApplicationService_GenerateClientSecret0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GenerateClientSecretRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -83,7 +83,7 @@ func _Application_GenerateClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) 
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.application.v1.Application/GenerateClientSecret")
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/GenerateClientSecret")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GenerateClientSecret(ctx, req.(*GenerateClientSecretRequest))
 		})
@@ -96,7 +96,7 @@ func _Application_GenerateClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) 
 	}
 }
 
-func _Application_RevokeClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) func(ctx http.Context) error {
+func _ApplicationService_RevokeClientSecret0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in RevokeClientSecretRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -105,7 +105,7 @@ func _Application_RevokeClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) fu
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.application.v1.Application/RevokeClientSecret")
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/RevokeClientSecret")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.RevokeClientSecret(ctx, req.(*RevokeClientSecretRequest))
 		})
@@ -118,26 +118,26 @@ func _Application_RevokeClientSecret0_HTTP_Handler(srv ApplicationHTTPServer) fu
 	}
 }
 
-type ApplicationHTTPClient interface {
+type ApplicationServiceHTTPClient interface {
 	Create(ctx context.Context, req *CreateRequest, opts ...http.CallOption) (rsp *CreateReply, err error)
 	GenerateClientSecret(ctx context.Context, req *GenerateClientSecretRequest, opts ...http.CallOption) (rsp *GenerateClientSecretReply, err error)
 	Retrieve(ctx context.Context, req *RetrieveRequest, opts ...http.CallOption) (rsp *RetrieveReply, err error)
 	RevokeClientSecret(ctx context.Context, req *RevokeClientSecretRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
-type ApplicationHTTPClientImpl struct {
+type ApplicationServiceHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewApplicationHTTPClient(client *http.Client) ApplicationHTTPClient {
-	return &ApplicationHTTPClientImpl{client}
+func NewApplicationServiceHTTPClient(client *http.Client) ApplicationServiceHTTPClient {
+	return &ApplicationServiceHTTPClientImpl{client}
 }
 
-func (c *ApplicationHTTPClientImpl) Create(ctx context.Context, in *CreateRequest, opts ...http.CallOption) (*CreateReply, error) {
+func (c *ApplicationServiceHTTPClientImpl) Create(ctx context.Context, in *CreateRequest, opts ...http.CallOption) (*CreateReply, error) {
 	var out CreateReply
 	pattern := "/application/v1"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.application.v1.Application/Create"))
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/Create"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -146,11 +146,11 @@ func (c *ApplicationHTTPClientImpl) Create(ctx context.Context, in *CreateReques
 	return &out, err
 }
 
-func (c *ApplicationHTTPClientImpl) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...http.CallOption) (*GenerateClientSecretReply, error) {
+func (c *ApplicationServiceHTTPClientImpl) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...http.CallOption) (*GenerateClientSecretReply, error) {
 	var out GenerateClientSecretReply
 	pattern := "/application/v1/{id}/generateClientSecret"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.application.v1.Application/GenerateClientSecret"))
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/GenerateClientSecret"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -159,11 +159,11 @@ func (c *ApplicationHTTPClientImpl) GenerateClientSecret(ctx context.Context, in
 	return &out, err
 }
 
-func (c *ApplicationHTTPClientImpl) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...http.CallOption) (*RetrieveReply, error) {
+func (c *ApplicationServiceHTTPClientImpl) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...http.CallOption) (*RetrieveReply, error) {
 	var out RetrieveReply
 	pattern := "/application/v1/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.application.v1.Application/Retrieve"))
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/Retrieve"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -172,11 +172,11 @@ func (c *ApplicationHTTPClientImpl) Retrieve(ctx context.Context, in *RetrieveRe
 	return &out, err
 }
 
-func (c *ApplicationHTTPClientImpl) RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *ApplicationServiceHTTPClientImpl) RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/application/v1/{id}/{secret_id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.application.v1.Application/RevokeClientSecret"))
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/RevokeClientSecret"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {

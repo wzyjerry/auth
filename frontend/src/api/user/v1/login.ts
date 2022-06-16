@@ -580,14 +580,14 @@ export const TrashReply = {
   },
 };
 
-export interface Login {
+export interface LoginService {
   PrePhone(request: LoginPrePhoneRequest): Promise<Empty>;
   PreEmail(request: LoginPreEmailRequest): Promise<Empty>;
   Login(request: LoginRequest): Promise<LoginReply>;
   Trash(request: Empty): Promise<TrashReply>;
 }
 
-export class LoginClientImpl implements Login {
+export class LoginServiceClientImpl implements LoginService {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
@@ -598,25 +598,33 @@ export class LoginClientImpl implements Login {
   }
   PrePhone(request: LoginPrePhoneRequest): Promise<Empty> {
     const data = LoginPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Login', 'PrePhone', data);
+    const promise = this.rpc.request(
+      'api.user.v1.LoginService',
+      'PrePhone',
+      data,
+    );
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   PreEmail(request: LoginPreEmailRequest): Promise<Empty> {
     const data = LoginPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Login', 'PreEmail', data);
+    const promise = this.rpc.request(
+      'api.user.v1.LoginService',
+      'PreEmail',
+      data,
+    );
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   Login(request: LoginRequest): Promise<LoginReply> {
     const data = LoginRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Login', 'Login', data);
+    const promise = this.rpc.request('api.user.v1.LoginService', 'Login', data);
     return promise.then((data) => LoginReply.decode(new _m0.Reader(data)));
   }
 
   Trash(request: Empty): Promise<TrashReply> {
     const data = Empty.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.Login', 'Trash', data);
+    const promise = this.rpc.request('api.user.v1.LoginService', 'Trash', data);
     return promise.then((data) => TrashReply.decode(new _m0.Reader(data)));
   }
 }

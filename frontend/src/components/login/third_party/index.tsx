@@ -7,7 +7,6 @@ interface ThirdPartyProp {
   returnTo: string
 }
 const ThirdParty: React.FC<ThirdPartyProp> = (prop) => {
-  console.log(prop.returnTo)
   return (
     <div className={prop.className}>
       <span className={style.title}>其他方式登录</span>

@@ -18,22 +18,22 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-type ProfileHTTPServer interface {
+type ProfileServiceHTTPServer interface {
 	GetAvatar(context.Context, *emptypb.Empty) (*GetAvatarReply, error)
 }
 
-func RegisterProfileHTTPServer(s *http.Server, srv ProfileHTTPServer) {
+func RegisterProfileServiceHTTPServer(s *http.Server, srv ProfileServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user/v1/profile/avatar", _Profile_GetAvatar0_HTTP_Handler(srv))
+	r.GET("/user/v1/profile/avatar", _ProfileService_GetAvatar0_HTTP_Handler(srv))
 }
 
-func _Profile_GetAvatar0_HTTP_Handler(srv ProfileHTTPServer) func(ctx http.Context) error {
+func _ProfileService_GetAvatar0_HTTP_Handler(srv ProfileServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.user.v1.Profile/GetAvatar")
+		http.SetOperation(ctx, "/api.user.v1.ProfileService/GetAvatar")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetAvatar(ctx, req.(*emptypb.Empty))
 		})
@@ -46,23 +46,23 @@ func _Profile_GetAvatar0_HTTP_Handler(srv ProfileHTTPServer) func(ctx http.Conte
 	}
 }
 
-type ProfileHTTPClient interface {
+type ProfileServiceHTTPClient interface {
 	GetAvatar(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *GetAvatarReply, err error)
 }
 
-type ProfileHTTPClientImpl struct {
+type ProfileServiceHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewProfileHTTPClient(client *http.Client) ProfileHTTPClient {
-	return &ProfileHTTPClientImpl{client}
+func NewProfileServiceHTTPClient(client *http.Client) ProfileServiceHTTPClient {
+	return &ProfileServiceHTTPClientImpl{client}
 }
 
-func (c *ProfileHTTPClientImpl) GetAvatar(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetAvatarReply, error) {
+func (c *ProfileServiceHTTPClientImpl) GetAvatar(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetAvatarReply, error) {
 	var out GetAvatarReply
 	pattern := "/user/v1/profile/avatar"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.user.v1.Profile/GetAvatar"))
+	opts = append(opts, http.Operation("/api.user.v1.ProfileService/GetAvatar"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

@@ -19,194 +19,194 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ApplicationClient is the client API for Application service.
+// ApplicationServiceClient is the client API for ApplicationService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ApplicationClient interface {
+type ApplicationServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error)
 	Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error)
 	GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error)
 	RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-type applicationClient struct {
+type applicationServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewApplicationClient(cc grpc.ClientConnInterface) ApplicationClient {
-	return &applicationClient{cc}
+func NewApplicationServiceClient(cc grpc.ClientConnInterface) ApplicationServiceClient {
+	return &applicationServiceClient{cc}
 }
 
-func (c *applicationClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error) {
+func (c *applicationServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error) {
 	out := new(CreateReply)
-	err := c.cc.Invoke(ctx, "/api.application.v1.Application/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *applicationClient) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error) {
+func (c *applicationServiceClient) Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error) {
 	out := new(RetrieveReply)
-	err := c.cc.Invoke(ctx, "/api.application.v1.Application/Retrieve", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/Retrieve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *applicationClient) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error) {
+func (c *applicationServiceClient) GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error) {
 	out := new(GenerateClientSecretReply)
-	err := c.cc.Invoke(ctx, "/api.application.v1.Application/GenerateClientSecret", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/GenerateClientSecret", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *applicationClient) RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *applicationServiceClient) RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.application.v1.Application/RevokeClientSecret", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/RevokeClientSecret", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ApplicationServer is the server API for Application service.
-// All implementations must embed UnimplementedApplicationServer
+// ApplicationServiceServer is the server API for ApplicationService service.
+// All implementations must embed UnimplementedApplicationServiceServer
 // for forward compatibility
-type ApplicationServer interface {
+type ApplicationServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateReply, error)
 	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
 	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
-	mustEmbedUnimplementedApplicationServer()
+	mustEmbedUnimplementedApplicationServiceServer()
 }
 
-// UnimplementedApplicationServer must be embedded to have forward compatible implementations.
-type UnimplementedApplicationServer struct {
+// UnimplementedApplicationServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedApplicationServiceServer struct {
 }
 
-func (UnimplementedApplicationServer) Create(context.Context, *CreateRequest) (*CreateReply, error) {
+func (UnimplementedApplicationServiceServer) Create(context.Context, *CreateRequest) (*CreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedApplicationServer) Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error) {
+func (UnimplementedApplicationServiceServer) Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Retrieve not implemented")
 }
-func (UnimplementedApplicationServer) GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error) {
+func (UnimplementedApplicationServiceServer) GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateClientSecret not implemented")
 }
-func (UnimplementedApplicationServer) RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error) {
+func (UnimplementedApplicationServiceServer) RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeClientSecret not implemented")
 }
-func (UnimplementedApplicationServer) mustEmbedUnimplementedApplicationServer() {}
+func (UnimplementedApplicationServiceServer) mustEmbedUnimplementedApplicationServiceServer() {}
 
-// UnsafeApplicationServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ApplicationServer will
+// UnsafeApplicationServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ApplicationServiceServer will
 // result in compilation errors.
-type UnsafeApplicationServer interface {
-	mustEmbedUnimplementedApplicationServer()
+type UnsafeApplicationServiceServer interface {
+	mustEmbedUnimplementedApplicationServiceServer()
 }
 
-func RegisterApplicationServer(s grpc.ServiceRegistrar, srv ApplicationServer) {
-	s.RegisterService(&Application_ServiceDesc, srv)
+func RegisterApplicationServiceServer(s grpc.ServiceRegistrar, srv ApplicationServiceServer) {
+	s.RegisterService(&ApplicationService_ServiceDesc, srv)
 }
 
-func _Application_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ApplicationService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApplicationServer).Create(ctx, in)
+		return srv.(ApplicationServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.application.v1.Application/Create",
+		FullMethod: "/api.application.v1.ApplicationService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApplicationServer).Create(ctx, req.(*CreateRequest))
+		return srv.(ApplicationServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Application_Retrieve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ApplicationService_Retrieve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RetrieveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApplicationServer).Retrieve(ctx, in)
+		return srv.(ApplicationServiceServer).Retrieve(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.application.v1.Application/Retrieve",
+		FullMethod: "/api.application.v1.ApplicationService/Retrieve",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApplicationServer).Retrieve(ctx, req.(*RetrieveRequest))
+		return srv.(ApplicationServiceServer).Retrieve(ctx, req.(*RetrieveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Application_GenerateClientSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ApplicationService_GenerateClientSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GenerateClientSecretRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApplicationServer).GenerateClientSecret(ctx, in)
+		return srv.(ApplicationServiceServer).GenerateClientSecret(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.application.v1.Application/GenerateClientSecret",
+		FullMethod: "/api.application.v1.ApplicationService/GenerateClientSecret",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApplicationServer).GenerateClientSecret(ctx, req.(*GenerateClientSecretRequest))
+		return srv.(ApplicationServiceServer).GenerateClientSecret(ctx, req.(*GenerateClientSecretRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Application_RevokeClientSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ApplicationService_RevokeClientSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RevokeClientSecretRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApplicationServer).RevokeClientSecret(ctx, in)
+		return srv.(ApplicationServiceServer).RevokeClientSecret(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.application.v1.Application/RevokeClientSecret",
+		FullMethod: "/api.application.v1.ApplicationService/RevokeClientSecret",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApplicationServer).RevokeClientSecret(ctx, req.(*RevokeClientSecretRequest))
+		return srv.(ApplicationServiceServer).RevokeClientSecret(ctx, req.(*RevokeClientSecretRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Application_ServiceDesc is the grpc.ServiceDesc for Application service.
+// ApplicationService_ServiceDesc is the grpc.ServiceDesc for ApplicationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Application_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.application.v1.Application",
-	HandlerType: (*ApplicationServer)(nil),
+var ApplicationService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.application.v1.ApplicationService",
+	HandlerType: (*ApplicationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _Application_Create_Handler,
+			Handler:    _ApplicationService_Create_Handler,
 		},
 		{
 			MethodName: "Retrieve",
-			Handler:    _Application_Retrieve_Handler,
+			Handler:    _ApplicationService_Retrieve_Handler,
 		},
 		{
 			MethodName: "GenerateClientSecret",
-			Handler:    _Application_GenerateClientSecret_Handler,
+			Handler:    _ApplicationService_GenerateClientSecret_Handler,
 		},
 		{
 			MethodName: "RevokeClientSecret",
-			Handler:    _Application_RevokeClientSecret_Handler,
+			Handler:    _ApplicationService_RevokeClientSecret_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
