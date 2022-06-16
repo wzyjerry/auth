@@ -5,7 +5,7 @@ const App = () => {
   return (
     <div>
       <h1 className={styles.title}>Auth frontend</h1>
-      <LoginNavbar></LoginNavbar>
+      <LoginNavbar />
     </div>
   );
 };

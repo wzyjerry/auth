@@ -1,11 +1,9 @@
-import { ResponseError } from 'umi-request';
+import type { ResponseError } from 'umi-request';
 import { message } from 'antd';
 import { history } from 'umi';
 import { Err } from './localStorage';
 
-export function Go<T, E = Error>(
-  promise: Promise<T>,
-): Promise<Resolve<T> | Reject<E>> {
+export function Go<T, E = Error>(promise: Promise<T>): Promise<Resolve<T> | Reject<E>> {
   return promise
     .then<Resolve<T>>((data: T) => new Resolve(data))
     .catch((err: E) => new Reject(err));
@@ -34,10 +32,14 @@ interface backendError {
 
 export function errorHandler(error: ResponseError<backendError>) {
   if (error.data) {
-    switch(error.data.reason) {
+    switch (error.data.reason) {
       case 'UNAUTHORIZED':
       case 'FORBIDDEN':
-        history.push(`/user/login?return_to=${encodeURIComponent(location.pathname + location.search + location.hash)}`);
+        history.push(
+          `/user/login?return_to=${encodeURIComponent(
+            location.pathname + location.search + location.hash,
+          )}`,
+        );
         return;
       case 'APPLICATION_NOT_FOUND':
         history.push(`/404`);
@@ -47,4 +49,4 @@ export function errorHandler(error: ResponseError<backendError>) {
     }
   }
   message.error(`[NETWORK_ERROR] ${error}`);
-};
+}

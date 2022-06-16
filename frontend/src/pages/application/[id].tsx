@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 const { Content } = Layout;
 
 interface Params {
-  id: string
+  id: string;
 }
 
 const Detail: React.FC = () => {
@@ -17,12 +17,12 @@ const Detail: React.FC = () => {
     dispatch({
       type: 'application/setup',
       payload: { id },
-    })
-  }, [id])
+    });
+  }, [dispatch, id]);
   return (
     <Layout className={styles.application}>
       <Content className={styles.main}>
-        <ApplicationDetail></ApplicationDetail>
+        <ApplicationDetail />
       </Content>
     </Layout>
   );

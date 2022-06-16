@@ -56,10 +56,7 @@ function createBaseRegisterAccountRequest(): RegisterAccountRequest {
 }
 
 export const RegisterAccountRequest = {
-  encode(
-    message: RegisterAccountRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterAccountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.username !== '') {
       writer.uint32(10).string(message.username);
     }
@@ -72,10 +69,7 @@ export const RegisterAccountRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RegisterAccountRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterAccountRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterAccountRequest();
@@ -131,10 +125,7 @@ function createBaseRegisterReply(): RegisterReply {
 }
 
 export const RegisterReply = {
-  encode(
-    message: RegisterReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
@@ -171,9 +162,7 @@ export const RegisterReply = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RegisterReply>, I>>(
-    object: I,
-  ): RegisterReply {
+  fromPartial<I extends Exact<DeepPartial<RegisterReply>, I>>(object: I): RegisterReply {
     const message = createBaseRegisterReply();
     message.id = object.id ?? '';
     return message;
@@ -185,20 +174,14 @@ function createBaseRegisterPreEmailRequest(): RegisterPreEmailRequest {
 }
 
 export const RegisterPreEmailRequest = {
-  encode(
-    message: RegisterPreEmailRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterPreEmailRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RegisterPreEmailRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterPreEmailRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterPreEmailRequest();
@@ -242,10 +225,7 @@ function createBaseRegisterEmailRequest(): RegisterEmailRequest {
 }
 
 export const RegisterEmailRequest = {
-  encode(
-    message: RegisterEmailRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterEmailRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
@@ -261,10 +241,7 @@ export const RegisterEmailRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RegisterEmailRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterEmailRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterEmailRequest();
@@ -326,20 +303,14 @@ function createBaseRegisterPrePhoneRequest(): RegisterPrePhoneRequest {
 }
 
 export const RegisterPrePhoneRequest = {
-  encode(
-    message: RegisterPrePhoneRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterPrePhoneRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.phone !== '') {
       writer.uint32(10).string(message.phone);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RegisterPrePhoneRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterPrePhoneRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterPrePhoneRequest();
@@ -383,10 +354,7 @@ function createBaseRegisterPhoneRequest(): RegisterPhoneRequest {
 }
 
 export const RegisterPhoneRequest = {
-  encode(
-    message: RegisterPhoneRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegisterPhoneRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.phone !== '') {
       writer.uint32(10).string(message.phone);
     }
@@ -402,10 +370,7 @@ export const RegisterPhoneRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RegisterPhoneRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterPhoneRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterPhoneRequest();
@@ -482,71 +447,40 @@ export class RegisterServiceClientImpl implements RegisterService {
   }
   Account(request: RegisterAccountRequest): Promise<RegisterReply> {
     const data = RegisterAccountRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.RegisterService',
-      'Account',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.RegisterService', 'Account', data);
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 
   PreEmail(request: RegisterPreEmailRequest): Promise<Empty> {
     const data = RegisterPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.RegisterService',
-      'PreEmail',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.RegisterService', 'PreEmail', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   Email(request: RegisterEmailRequest): Promise<RegisterReply> {
     const data = RegisterEmailRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.RegisterService',
-      'Email',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.RegisterService', 'Email', data);
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 
   PrePhone(request: RegisterPrePhoneRequest): Promise<Empty> {
     const data = RegisterPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.RegisterService',
-      'PrePhone',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.RegisterService', 'PrePhone', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   Phone(request: RegisterPhoneRequest): Promise<RegisterReply> {
     const data = RegisterPhoneRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.RegisterService',
-      'Phone',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.RegisterService', 'Phone', data);
     return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -561,10 +495,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 // If you get a compile-error about 'Constructor<Long> and ... have no overlap',
 // add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.

@@ -7,7 +7,7 @@ const New: React.FC = () => {
   return (
     <Layout className={styles.application}>
       <Content className={styles.main}>
-        <NewApplication></NewApplication>
+        <NewApplication />
       </Content>
     </Layout>
   );

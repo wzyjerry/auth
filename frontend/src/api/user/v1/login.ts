@@ -141,10 +141,7 @@ function createBaseLoginRequest(): LoginRequest {
 }
 
 export const LoginRequest = {
-  encode(
-    message: LoginRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LoginRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.type !== 0) {
       writer.uint32(8).int32(message.type);
     }
@@ -205,9 +202,7 @@ export const LoginRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LoginRequest>, I>>(
-    object: I,
-  ): LoginRequest {
+  fromPartial<I extends Exact<DeepPartial<LoginRequest>, I>>(object: I): LoginRequest {
     const message = createBaseLoginRequest();
     message.type = object.type ?? 0;
     message.method = object.method ?? 0;
@@ -229,10 +224,7 @@ function createBaseOAuthLoginReply(): OAuthLoginReply {
 }
 
 export const OAuthLoginReply = {
-  encode(
-    message: OAuthLoginReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: OAuthLoginReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tokenType !== '') {
       writer.uint32(10).string(message.tokenType);
     }
@@ -293,9 +285,7 @@ export const OAuthLoginReply = {
       expiresIn: isSet(object.expiresIn) ? Number(object.expiresIn) : 0,
       scope: isSet(object.scope) ? String(object.scope) : '',
       accessToken: isSet(object.accessToken) ? String(object.accessToken) : '',
-      refreshToken: isSet(object.refreshToken)
-        ? String(object.refreshToken)
-        : undefined,
+      refreshToken: isSet(object.refreshToken) ? String(object.refreshToken) : undefined,
       idToken: isSet(object.idToken) ? String(object.idToken) : undefined,
     };
   },
@@ -303,20 +293,15 @@ export const OAuthLoginReply = {
   toJSON(message: OAuthLoginReply): unknown {
     const obj: any = {};
     message.tokenType !== undefined && (obj.tokenType = message.tokenType);
-    message.expiresIn !== undefined &&
-      (obj.expiresIn = Math.round(message.expiresIn));
+    message.expiresIn !== undefined && (obj.expiresIn = Math.round(message.expiresIn));
     message.scope !== undefined && (obj.scope = message.scope);
-    message.accessToken !== undefined &&
-      (obj.accessToken = message.accessToken);
-    message.refreshToken !== undefined &&
-      (obj.refreshToken = message.refreshToken);
+    message.accessToken !== undefined && (obj.accessToken = message.accessToken);
+    message.refreshToken !== undefined && (obj.refreshToken = message.refreshToken);
     message.idToken !== undefined && (obj.idToken = message.idToken);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<OAuthLoginReply>, I>>(
-    object: I,
-  ): OAuthLoginReply {
+  fromPartial<I extends Exact<DeepPartial<OAuthLoginReply>, I>>(object: I): OAuthLoginReply {
     const message = createBaseOAuthLoginReply();
     message.tokenType = object.tokenType ?? '';
     message.expiresIn = object.expiresIn ?? 0;
@@ -333,10 +318,7 @@ function createBaseLoginReply(): LoginReply {
 }
 
 export const LoginReply = {
-  encode(
-    message: LoginReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LoginReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.token !== '') {
       writer.uint32(10).string(message.token);
     }
@@ -373,9 +355,7 @@ export const LoginReply = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LoginReply>, I>>(
-    object: I,
-  ): LoginReply {
+  fromPartial<I extends Exact<DeepPartial<LoginReply>, I>>(object: I): LoginReply {
     const message = createBaseLoginReply();
     message.token = object.token ?? '';
     return message;
@@ -387,20 +367,14 @@ function createBaseLoginPrePhoneRequest(): LoginPrePhoneRequest {
 }
 
 export const LoginPrePhoneRequest = {
-  encode(
-    message: LoginPrePhoneRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LoginPrePhoneRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.phone !== '') {
       writer.uint32(10).string(message.phone);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LoginPrePhoneRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LoginPrePhoneRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLoginPrePhoneRequest();
@@ -444,20 +418,14 @@ function createBaseLoginPreEmailRequest(): LoginPreEmailRequest {
 }
 
 export const LoginPreEmailRequest = {
-  encode(
-    message: LoginPreEmailRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LoginPreEmailRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.email !== '') {
       writer.uint32(10).string(message.email);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LoginPreEmailRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LoginPreEmailRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLoginPreEmailRequest();
@@ -501,10 +469,7 @@ function createBaseTrashReply(): TrashReply {
 }
 
 export const TrashReply = {
-  encode(
-    message: TrashReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TrashReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authToken === true) {
       writer.uint32(8).bool(message.authToken);
     }
@@ -551,9 +516,7 @@ export const TrashReply = {
     return {
       authToken: isSet(object.authToken) ? Boolean(object.authToken) : false,
       userToken: isSet(object.userToken) ? Boolean(object.userToken) : false,
-      clientToken: isSet(object.clientToken)
-        ? Boolean(object.clientToken)
-        : false,
+      clientToken: isSet(object.clientToken) ? Boolean(object.clientToken) : false,
       sub: isSet(object.sub) ? String(object.sub) : '',
     };
   },
@@ -562,15 +525,12 @@ export const TrashReply = {
     const obj: any = {};
     message.authToken !== undefined && (obj.authToken = message.authToken);
     message.userToken !== undefined && (obj.userToken = message.userToken);
-    message.clientToken !== undefined &&
-      (obj.clientToken = message.clientToken);
+    message.clientToken !== undefined && (obj.clientToken = message.clientToken);
     message.sub !== undefined && (obj.sub = message.sub);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<TrashReply>, I>>(
-    object: I,
-  ): TrashReply {
+  fromPartial<I extends Exact<DeepPartial<TrashReply>, I>>(object: I): TrashReply {
     const message = createBaseTrashReply();
     message.authToken = object.authToken ?? false;
     message.userToken = object.userToken ?? false;
@@ -598,21 +558,13 @@ export class LoginServiceClientImpl implements LoginService {
   }
   PrePhone(request: LoginPrePhoneRequest): Promise<Empty> {
     const data = LoginPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.LoginService',
-      'PrePhone',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.LoginService', 'PrePhone', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
   PreEmail(request: LoginPreEmailRequest): Promise<Empty> {
     const data = LoginPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.LoginService',
-      'PreEmail',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.LoginService', 'PreEmail', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 
@@ -630,21 +582,10 @@ export class LoginServiceClientImpl implements LoginService {
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -659,10 +600,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 // If you get a compile-error about 'Constructor<Long> and ... have no overlap',
 // add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.

@@ -40,19 +40,19 @@ class helper {
 export class Token extends helper {
   static AUTH_TOKEN_KEY = 'AUTH_TOKEN';
   Save(token: string): void | Reject {
-    return super.Save(Token.AUTH_TOKEN_KEY, token)
+    return super.Save(Token.AUTH_TOKEN_KEY, token);
   }
   Load(): Resolve<string> | Reject<Error> {
-      return super.Load(Token.AUTH_TOKEN_KEY)
+    return super.Load(Token.AUTH_TOKEN_KEY);
   }
 }
 
 export class Avatar extends helper {
   static AVATAR_KEY = 'AVATAR';
   Save(avatar: string): void | Reject {
-    return super.Save(Avatar.AVATAR_KEY, avatar)
+    return super.Save(Avatar.AVATAR_KEY, avatar);
   }
   Load(): Resolve<string> | Reject<Error> {
-      return super.Load(Avatar.AVATAR_KEY)
+    return super.Load(Avatar.AVATAR_KEY);
   }
 }

@@ -1038,10 +1038,7 @@ function createBaseFieldRules(): FieldRules {
 }
 
 export const FieldRules = {
-  encode(
-    message: FieldRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: FieldRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.message !== undefined) {
       MessageRules.encode(message.message, writer.uint32(138).fork()).ldelim();
     }
@@ -1094,10 +1091,7 @@ export const FieldRules = {
       EnumRules.encode(message.enum, writer.uint32(130).fork()).ldelim();
     }
     if (message.repeated !== undefined) {
-      RepeatedRules.encode(
-        message.repeated,
-        writer.uint32(146).fork(),
-      ).ldelim();
+      RepeatedRules.encode(message.repeated, writer.uint32(146).fork()).ldelim();
     }
     if (message.map !== undefined) {
       MapRules.encode(message.map, writer.uint32(154).fork()).ldelim();
@@ -1106,16 +1100,10 @@ export const FieldRules = {
       AnyRules.encode(message.any, writer.uint32(162).fork()).ldelim();
     }
     if (message.duration !== undefined) {
-      DurationRules.encode(
-        message.duration,
-        writer.uint32(170).fork(),
-      ).ldelim();
+      DurationRules.encode(message.duration, writer.uint32(170).fork()).ldelim();
     }
     if (message.timestamp !== undefined) {
-      TimestampRules.encode(
-        message.timestamp,
-        writer.uint32(178).fork(),
-      ).ldelim();
+      TimestampRules.encode(message.timestamp, writer.uint32(178).fork()).ldelim();
     }
     return writer;
   },
@@ -1203,155 +1191,79 @@ export const FieldRules = {
 
   fromJSON(object: any): FieldRules {
     return {
-      message: isSet(object.message)
-        ? MessageRules.fromJSON(object.message)
-        : undefined,
-      float: isSet(object.float)
-        ? FloatRules.fromJSON(object.float)
-        : undefined,
-      double: isSet(object.double)
-        ? DoubleRules.fromJSON(object.double)
-        : undefined,
-      int32: isSet(object.int32)
-        ? Int32Rules.fromJSON(object.int32)
-        : undefined,
-      int64: isSet(object.int64)
-        ? Int64Rules.fromJSON(object.int64)
-        : undefined,
-      uint32: isSet(object.uint32)
-        ? UInt32Rules.fromJSON(object.uint32)
-        : undefined,
-      uint64: isSet(object.uint64)
-        ? UInt64Rules.fromJSON(object.uint64)
-        : undefined,
-      sint32: isSet(object.sint32)
-        ? SInt32Rules.fromJSON(object.sint32)
-        : undefined,
-      sint64: isSet(object.sint64)
-        ? SInt64Rules.fromJSON(object.sint64)
-        : undefined,
-      fixed32: isSet(object.fixed32)
-        ? Fixed32Rules.fromJSON(object.fixed32)
-        : undefined,
-      fixed64: isSet(object.fixed64)
-        ? Fixed64Rules.fromJSON(object.fixed64)
-        : undefined,
-      sfixed32: isSet(object.sfixed32)
-        ? SFixed32Rules.fromJSON(object.sfixed32)
-        : undefined,
-      sfixed64: isSet(object.sfixed64)
-        ? SFixed64Rules.fromJSON(object.sfixed64)
-        : undefined,
+      message: isSet(object.message) ? MessageRules.fromJSON(object.message) : undefined,
+      float: isSet(object.float) ? FloatRules.fromJSON(object.float) : undefined,
+      double: isSet(object.double) ? DoubleRules.fromJSON(object.double) : undefined,
+      int32: isSet(object.int32) ? Int32Rules.fromJSON(object.int32) : undefined,
+      int64: isSet(object.int64) ? Int64Rules.fromJSON(object.int64) : undefined,
+      uint32: isSet(object.uint32) ? UInt32Rules.fromJSON(object.uint32) : undefined,
+      uint64: isSet(object.uint64) ? UInt64Rules.fromJSON(object.uint64) : undefined,
+      sint32: isSet(object.sint32) ? SInt32Rules.fromJSON(object.sint32) : undefined,
+      sint64: isSet(object.sint64) ? SInt64Rules.fromJSON(object.sint64) : undefined,
+      fixed32: isSet(object.fixed32) ? Fixed32Rules.fromJSON(object.fixed32) : undefined,
+      fixed64: isSet(object.fixed64) ? Fixed64Rules.fromJSON(object.fixed64) : undefined,
+      sfixed32: isSet(object.sfixed32) ? SFixed32Rules.fromJSON(object.sfixed32) : undefined,
+      sfixed64: isSet(object.sfixed64) ? SFixed64Rules.fromJSON(object.sfixed64) : undefined,
       bool: isSet(object.bool) ? BoolRules.fromJSON(object.bool) : undefined,
-      string: isSet(object.string)
-        ? StringRules.fromJSON(object.string)
-        : undefined,
-      bytes: isSet(object.bytes)
-        ? BytesRules.fromJSON(object.bytes)
-        : undefined,
+      string: isSet(object.string) ? StringRules.fromJSON(object.string) : undefined,
+      bytes: isSet(object.bytes) ? BytesRules.fromJSON(object.bytes) : undefined,
       enum: isSet(object.enum) ? EnumRules.fromJSON(object.enum) : undefined,
-      repeated: isSet(object.repeated)
-        ? RepeatedRules.fromJSON(object.repeated)
-        : undefined,
+      repeated: isSet(object.repeated) ? RepeatedRules.fromJSON(object.repeated) : undefined,
       map: isSet(object.map) ? MapRules.fromJSON(object.map) : undefined,
       any: isSet(object.any) ? AnyRules.fromJSON(object.any) : undefined,
-      duration: isSet(object.duration)
-        ? DurationRules.fromJSON(object.duration)
-        : undefined,
-      timestamp: isSet(object.timestamp)
-        ? TimestampRules.fromJSON(object.timestamp)
-        : undefined,
+      duration: isSet(object.duration) ? DurationRules.fromJSON(object.duration) : undefined,
+      timestamp: isSet(object.timestamp) ? TimestampRules.fromJSON(object.timestamp) : undefined,
     };
   },
 
   toJSON(message: FieldRules): unknown {
     const obj: any = {};
     message.message !== undefined &&
-      (obj.message = message.message
-        ? MessageRules.toJSON(message.message)
-        : undefined);
+      (obj.message = message.message ? MessageRules.toJSON(message.message) : undefined);
     message.float !== undefined &&
-      (obj.float = message.float
-        ? FloatRules.toJSON(message.float)
-        : undefined);
+      (obj.float = message.float ? FloatRules.toJSON(message.float) : undefined);
     message.double !== undefined &&
-      (obj.double = message.double
-        ? DoubleRules.toJSON(message.double)
-        : undefined);
+      (obj.double = message.double ? DoubleRules.toJSON(message.double) : undefined);
     message.int32 !== undefined &&
-      (obj.int32 = message.int32
-        ? Int32Rules.toJSON(message.int32)
-        : undefined);
+      (obj.int32 = message.int32 ? Int32Rules.toJSON(message.int32) : undefined);
     message.int64 !== undefined &&
-      (obj.int64 = message.int64
-        ? Int64Rules.toJSON(message.int64)
-        : undefined);
+      (obj.int64 = message.int64 ? Int64Rules.toJSON(message.int64) : undefined);
     message.uint32 !== undefined &&
-      (obj.uint32 = message.uint32
-        ? UInt32Rules.toJSON(message.uint32)
-        : undefined);
+      (obj.uint32 = message.uint32 ? UInt32Rules.toJSON(message.uint32) : undefined);
     message.uint64 !== undefined &&
-      (obj.uint64 = message.uint64
-        ? UInt64Rules.toJSON(message.uint64)
-        : undefined);
+      (obj.uint64 = message.uint64 ? UInt64Rules.toJSON(message.uint64) : undefined);
     message.sint32 !== undefined &&
-      (obj.sint32 = message.sint32
-        ? SInt32Rules.toJSON(message.sint32)
-        : undefined);
+      (obj.sint32 = message.sint32 ? SInt32Rules.toJSON(message.sint32) : undefined);
     message.sint64 !== undefined &&
-      (obj.sint64 = message.sint64
-        ? SInt64Rules.toJSON(message.sint64)
-        : undefined);
+      (obj.sint64 = message.sint64 ? SInt64Rules.toJSON(message.sint64) : undefined);
     message.fixed32 !== undefined &&
-      (obj.fixed32 = message.fixed32
-        ? Fixed32Rules.toJSON(message.fixed32)
-        : undefined);
+      (obj.fixed32 = message.fixed32 ? Fixed32Rules.toJSON(message.fixed32) : undefined);
     message.fixed64 !== undefined &&
-      (obj.fixed64 = message.fixed64
-        ? Fixed64Rules.toJSON(message.fixed64)
-        : undefined);
+      (obj.fixed64 = message.fixed64 ? Fixed64Rules.toJSON(message.fixed64) : undefined);
     message.sfixed32 !== undefined &&
-      (obj.sfixed32 = message.sfixed32
-        ? SFixed32Rules.toJSON(message.sfixed32)
-        : undefined);
+      (obj.sfixed32 = message.sfixed32 ? SFixed32Rules.toJSON(message.sfixed32) : undefined);
     message.sfixed64 !== undefined &&
-      (obj.sfixed64 = message.sfixed64
-        ? SFixed64Rules.toJSON(message.sfixed64)
-        : undefined);
+      (obj.sfixed64 = message.sfixed64 ? SFixed64Rules.toJSON(message.sfixed64) : undefined);
     message.bool !== undefined &&
       (obj.bool = message.bool ? BoolRules.toJSON(message.bool) : undefined);
     message.string !== undefined &&
-      (obj.string = message.string
-        ? StringRules.toJSON(message.string)
-        : undefined);
+      (obj.string = message.string ? StringRules.toJSON(message.string) : undefined);
     message.bytes !== undefined &&
-      (obj.bytes = message.bytes
-        ? BytesRules.toJSON(message.bytes)
-        : undefined);
+      (obj.bytes = message.bytes ? BytesRules.toJSON(message.bytes) : undefined);
     message.enum !== undefined &&
       (obj.enum = message.enum ? EnumRules.toJSON(message.enum) : undefined);
     message.repeated !== undefined &&
-      (obj.repeated = message.repeated
-        ? RepeatedRules.toJSON(message.repeated)
-        : undefined);
-    message.map !== undefined &&
-      (obj.map = message.map ? MapRules.toJSON(message.map) : undefined);
-    message.any !== undefined &&
-      (obj.any = message.any ? AnyRules.toJSON(message.any) : undefined);
+      (obj.repeated = message.repeated ? RepeatedRules.toJSON(message.repeated) : undefined);
+    message.map !== undefined && (obj.map = message.map ? MapRules.toJSON(message.map) : undefined);
+    message.any !== undefined && (obj.any = message.any ? AnyRules.toJSON(message.any) : undefined);
     message.duration !== undefined &&
-      (obj.duration = message.duration
-        ? DurationRules.toJSON(message.duration)
-        : undefined);
+      (obj.duration = message.duration ? DurationRules.toJSON(message.duration) : undefined);
     message.timestamp !== undefined &&
-      (obj.timestamp = message.timestamp
-        ? TimestampRules.toJSON(message.timestamp)
-        : undefined);
+      (obj.timestamp = message.timestamp ? TimestampRules.toJSON(message.timestamp) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FieldRules>, I>>(
-    object: I,
-  ): FieldRules {
+  fromPartial<I extends Exact<DeepPartial<FieldRules>, I>>(object: I): FieldRules {
     const message = createBaseFieldRules();
     message.message =
       object.message !== undefined && object.message !== null
@@ -1459,10 +1371,7 @@ function createBaseFloatRules(): FloatRules {
 }
 
 export const FloatRules = {
-  encode(
-    message: FloatRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: FloatRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(13).float(message.const);
     }
@@ -1555,12 +1464,8 @@ export const FloatRules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -1581,14 +1486,11 @@ export const FloatRules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FloatRules>, I>>(
-    object: I,
-  ): FloatRules {
+  fromPartial<I extends Exact<DeepPartial<FloatRules>, I>>(object: I): FloatRules {
     const message = createBaseFloatRules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -1616,10 +1518,7 @@ function createBaseDoubleRules(): DoubleRules {
 }
 
 export const DoubleRules = {
-  encode(
-    message: DoubleRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DoubleRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(9).double(message.const);
     }
@@ -1712,12 +1611,8 @@ export const DoubleRules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -1738,14 +1633,11 @@ export const DoubleRules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DoubleRules>, I>>(
-    object: I,
-  ): DoubleRules {
+  fromPartial<I extends Exact<DeepPartial<DoubleRules>, I>>(object: I): DoubleRules {
     const message = createBaseDoubleRules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -1773,10 +1665,7 @@ function createBaseInt32Rules(): Int32Rules {
 }
 
 export const Int32Rules = {
-  encode(
-    message: Int32Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Int32Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).int32(message.const);
     }
@@ -1869,12 +1758,8 @@ export const Int32Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -1895,14 +1780,11 @@ export const Int32Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Int32Rules>, I>>(
-    object: I,
-  ): Int32Rules {
+  fromPartial<I extends Exact<DeepPartial<Int32Rules>, I>>(object: I): Int32Rules {
     const message = createBaseInt32Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -1930,10 +1812,7 @@ function createBaseInt64Rules(): Int64Rules {
 }
 
 export const Int64Rules = {
-  encode(
-    message: Int64Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Int64Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).int64(message.const);
     }
@@ -2026,12 +1905,8 @@ export const Int64Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2052,14 +1927,11 @@ export const Int64Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Int64Rules>, I>>(
-    object: I,
-  ): Int64Rules {
+  fromPartial<I extends Exact<DeepPartial<Int64Rules>, I>>(object: I): Int64Rules {
     const message = createBaseInt64Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2087,10 +1959,7 @@ function createBaseUInt32Rules(): UInt32Rules {
 }
 
 export const UInt32Rules = {
-  encode(
-    message: UInt32Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: UInt32Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).uint32(message.const);
     }
@@ -2183,12 +2052,8 @@ export const UInt32Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2209,14 +2074,11 @@ export const UInt32Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UInt32Rules>, I>>(
-    object: I,
-  ): UInt32Rules {
+  fromPartial<I extends Exact<DeepPartial<UInt32Rules>, I>>(object: I): UInt32Rules {
     const message = createBaseUInt32Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2244,10 +2106,7 @@ function createBaseUInt64Rules(): UInt64Rules {
 }
 
 export const UInt64Rules = {
-  encode(
-    message: UInt64Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: UInt64Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).uint64(message.const);
     }
@@ -2340,12 +2199,8 @@ export const UInt64Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2366,14 +2221,11 @@ export const UInt64Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UInt64Rules>, I>>(
-    object: I,
-  ): UInt64Rules {
+  fromPartial<I extends Exact<DeepPartial<UInt64Rules>, I>>(object: I): UInt64Rules {
     const message = createBaseUInt64Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2401,10 +2253,7 @@ function createBaseSInt32Rules(): SInt32Rules {
 }
 
 export const SInt32Rules = {
-  encode(
-    message: SInt32Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SInt32Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).sint32(message.const);
     }
@@ -2497,12 +2346,8 @@ export const SInt32Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2523,14 +2368,11 @@ export const SInt32Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SInt32Rules>, I>>(
-    object: I,
-  ): SInt32Rules {
+  fromPartial<I extends Exact<DeepPartial<SInt32Rules>, I>>(object: I): SInt32Rules {
     const message = createBaseSInt32Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2558,10 +2400,7 @@ function createBaseSInt64Rules(): SInt64Rules {
 }
 
 export const SInt64Rules = {
-  encode(
-    message: SInt64Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SInt64Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).sint64(message.const);
     }
@@ -2654,12 +2493,8 @@ export const SInt64Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2680,14 +2515,11 @@ export const SInt64Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SInt64Rules>, I>>(
-    object: I,
-  ): SInt64Rules {
+  fromPartial<I extends Exact<DeepPartial<SInt64Rules>, I>>(object: I): SInt64Rules {
     const message = createBaseSInt64Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2715,10 +2547,7 @@ function createBaseFixed32Rules(): Fixed32Rules {
 }
 
 export const Fixed32Rules = {
-  encode(
-    message: Fixed32Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Fixed32Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(13).fixed32(message.const);
     }
@@ -2811,12 +2640,8 @@ export const Fixed32Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2837,14 +2662,11 @@ export const Fixed32Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Fixed32Rules>, I>>(
-    object: I,
-  ): Fixed32Rules {
+  fromPartial<I extends Exact<DeepPartial<Fixed32Rules>, I>>(object: I): Fixed32Rules {
     const message = createBaseFixed32Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -2872,10 +2694,7 @@ function createBaseFixed64Rules(): Fixed64Rules {
 }
 
 export const Fixed64Rules = {
-  encode(
-    message: Fixed64Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Fixed64Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(9).fixed64(message.const);
     }
@@ -2968,12 +2787,8 @@ export const Fixed64Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -2994,14 +2809,11 @@ export const Fixed64Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Fixed64Rules>, I>>(
-    object: I,
-  ): Fixed64Rules {
+  fromPartial<I extends Exact<DeepPartial<Fixed64Rules>, I>>(object: I): Fixed64Rules {
     const message = createBaseFixed64Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -3029,10 +2841,7 @@ function createBaseSFixed32Rules(): SFixed32Rules {
 }
 
 export const SFixed32Rules = {
-  encode(
-    message: SFixed32Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SFixed32Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(13).sfixed32(message.const);
     }
@@ -3125,12 +2934,8 @@ export const SFixed32Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -3151,14 +2956,11 @@ export const SFixed32Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SFixed32Rules>, I>>(
-    object: I,
-  ): SFixed32Rules {
+  fromPartial<I extends Exact<DeepPartial<SFixed32Rules>, I>>(object: I): SFixed32Rules {
     const message = createBaseSFixed32Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -3186,10 +2988,7 @@ function createBaseSFixed64Rules(): SFixed64Rules {
 }
 
 export const SFixed64Rules = {
-  encode(
-    message: SFixed64Rules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SFixed64Rules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(9).sfixed64(message.const);
     }
@@ -3282,12 +3081,8 @@ export const SFixed64Rules = {
       gt: isSet(object.gt) ? Number(object.gt) : 0,
       gte: isSet(object.gte) ? Number(object.gte) : 0,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -3308,14 +3103,11 @@ export const SFixed64Rules = {
     } else {
       obj.notIn = [];
     }
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SFixed64Rules>, I>>(
-    object: I,
-  ): SFixed64Rules {
+  fromPartial<I extends Exact<DeepPartial<SFixed64Rules>, I>>(object: I): SFixed64Rules {
     const message = createBaseSFixed64Rules();
     message.const = object.const ?? 0;
     message.lt = object.lt ?? 0;
@@ -3334,10 +3126,7 @@ function createBaseBoolRules(): BoolRules {
 }
 
 export const BoolRules = {
-  encode(
-    message: BoolRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: BoolRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const === true) {
       writer.uint32(8).bool(message.const);
     }
@@ -3374,9 +3163,7 @@ export const BoolRules = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<BoolRules>, I>>(
-    object: I,
-  ): BoolRules {
+  fromPartial<I extends Exact<DeepPartial<BoolRules>, I>>(object: I): BoolRules {
     const message = createBaseBoolRules();
     message.const = object.const ?? false;
     return message;
@@ -3415,10 +3202,7 @@ function createBaseStringRules(): StringRules {
 }
 
 export const StringRules = {
-  encode(
-    message: StringRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: StringRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== '') {
       writer.uint32(10).string(message.const);
     }
@@ -3608,9 +3392,7 @@ export const StringRules = {
       contains: isSet(object.contains) ? String(object.contains) : '',
       notContains: isSet(object.notContains) ? String(object.notContains) : '',
       in: Array.isArray(object?.in) ? object.in.map((e: any) => String(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => String(e))
-        : [],
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => String(e)) : [],
       email: isSet(object.email) ? Boolean(object.email) : undefined,
       hostname: isSet(object.hostname) ? Boolean(object.hostname) : undefined,
       ip: isSet(object.ip) ? Boolean(object.ip) : undefined,
@@ -3624,9 +3406,7 @@ export const StringRules = {
         ? knownRegexFromJSON(object.wellKnownRegex)
         : undefined,
       strict: isSet(object.strict) ? Boolean(object.strict) : false,
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
@@ -3636,18 +3416,14 @@ export const StringRules = {
     message.len !== undefined && (obj.len = Math.round(message.len));
     message.minLen !== undefined && (obj.minLen = Math.round(message.minLen));
     message.maxLen !== undefined && (obj.maxLen = Math.round(message.maxLen));
-    message.lenBytes !== undefined &&
-      (obj.lenBytes = Math.round(message.lenBytes));
-    message.minBytes !== undefined &&
-      (obj.minBytes = Math.round(message.minBytes));
-    message.maxBytes !== undefined &&
-      (obj.maxBytes = Math.round(message.maxBytes));
+    message.lenBytes !== undefined && (obj.lenBytes = Math.round(message.lenBytes));
+    message.minBytes !== undefined && (obj.minBytes = Math.round(message.minBytes));
+    message.maxBytes !== undefined && (obj.maxBytes = Math.round(message.maxBytes));
     message.pattern !== undefined && (obj.pattern = message.pattern);
     message.prefix !== undefined && (obj.prefix = message.prefix);
     message.suffix !== undefined && (obj.suffix = message.suffix);
     message.contains !== undefined && (obj.contains = message.contains);
-    message.notContains !== undefined &&
-      (obj.notContains = message.notContains);
+    message.notContains !== undefined && (obj.notContains = message.notContains);
     if (message.in) {
       obj.in = message.in.map((e) => e);
     } else {
@@ -3673,14 +3449,11 @@ export const StringRules = {
           ? knownRegexToJSON(message.wellKnownRegex)
           : undefined);
     message.strict !== undefined && (obj.strict = message.strict);
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StringRules>, I>>(
-    object: I,
-  ): StringRules {
+  fromPartial<I extends Exact<DeepPartial<StringRules>, I>>(object: I): StringRules {
     const message = createBaseStringRules();
     message.const = object.const ?? '';
     message.len = object.len ?? 0;
@@ -3732,10 +3505,7 @@ function createBaseBytesRules(): BytesRules {
 }
 
 export const BytesRules = {
-  encode(
-    message: BytesRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: BytesRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const.length !== 0) {
       writer.uint32(10).bytes(message.const);
     }
@@ -3840,43 +3610,27 @@ export const BytesRules = {
 
   fromJSON(object: any): BytesRules {
     return {
-      const: isSet(object.const)
-        ? bytesFromBase64(object.const)
-        : new Uint8Array(),
+      const: isSet(object.const) ? bytesFromBase64(object.const) : new Uint8Array(),
       len: isSet(object.len) ? Number(object.len) : 0,
       minLen: isSet(object.minLen) ? Number(object.minLen) : 0,
       maxLen: isSet(object.maxLen) ? Number(object.maxLen) : 0,
       pattern: isSet(object.pattern) ? String(object.pattern) : '',
-      prefix: isSet(object.prefix)
-        ? bytesFromBase64(object.prefix)
-        : new Uint8Array(),
-      suffix: isSet(object.suffix)
-        ? bytesFromBase64(object.suffix)
-        : new Uint8Array(),
-      contains: isSet(object.contains)
-        ? bytesFromBase64(object.contains)
-        : new Uint8Array(),
-      in: Array.isArray(object?.in)
-        ? object.in.map((e: any) => bytesFromBase64(e))
-        : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => bytesFromBase64(e))
-        : [],
+      prefix: isSet(object.prefix) ? bytesFromBase64(object.prefix) : new Uint8Array(),
+      suffix: isSet(object.suffix) ? bytesFromBase64(object.suffix) : new Uint8Array(),
+      contains: isSet(object.contains) ? bytesFromBase64(object.contains) : new Uint8Array(),
+      in: Array.isArray(object?.in) ? object.in.map((e: any) => bytesFromBase64(e)) : [],
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => bytesFromBase64(e)) : [],
       ip: isSet(object.ip) ? Boolean(object.ip) : undefined,
       ipv4: isSet(object.ipv4) ? Boolean(object.ipv4) : undefined,
       ipv6: isSet(object.ipv6) ? Boolean(object.ipv6) : undefined,
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
   toJSON(message: BytesRules): unknown {
     const obj: any = {};
     message.const !== undefined &&
-      (obj.const = base64FromBytes(
-        message.const !== undefined ? message.const : new Uint8Array(),
-      ));
+      (obj.const = base64FromBytes(message.const !== undefined ? message.const : new Uint8Array()));
     message.len !== undefined && (obj.len = Math.round(message.len));
     message.minLen !== undefined && (obj.minLen = Math.round(message.minLen));
     message.maxLen !== undefined && (obj.maxLen = Math.round(message.maxLen));
@@ -3894,30 +3648,23 @@ export const BytesRules = {
         message.contains !== undefined ? message.contains : new Uint8Array(),
       ));
     if (message.in) {
-      obj.in = message.in.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array()),
-      );
+      obj.in = message.in.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
     } else {
       obj.in = [];
     }
     if (message.notIn) {
-      obj.notIn = message.notIn.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array()),
-      );
+      obj.notIn = message.notIn.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
     } else {
       obj.notIn = [];
     }
     message.ip !== undefined && (obj.ip = message.ip);
     message.ipv4 !== undefined && (obj.ipv4 = message.ipv4);
     message.ipv6 !== undefined && (obj.ipv6 = message.ipv6);
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<BytesRules>, I>>(
-    object: I,
-  ): BytesRules {
+  fromPartial<I extends Exact<DeepPartial<BytesRules>, I>>(object: I): BytesRules {
     const message = createBaseBytesRules();
     message.const = object.const ?? new Uint8Array();
     message.len = object.len ?? 0;
@@ -3942,10 +3689,7 @@ function createBaseEnumRules(): EnumRules {
 }
 
 export const EnumRules = {
-  encode(
-    message: EnumRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: EnumRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.const !== 0) {
       writer.uint32(8).int32(message.const);
     }
@@ -4009,21 +3753,16 @@ export const EnumRules = {
   fromJSON(object: any): EnumRules {
     return {
       const: isSet(object.const) ? Number(object.const) : 0,
-      definedOnly: isSet(object.definedOnly)
-        ? Boolean(object.definedOnly)
-        : false,
+      definedOnly: isSet(object.definedOnly) ? Boolean(object.definedOnly) : false,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => Number(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Number(e))
-        : [],
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Number(e)) : [],
     };
   },
 
   toJSON(message: EnumRules): unknown {
     const obj: any = {};
     message.const !== undefined && (obj.const = Math.round(message.const));
-    message.definedOnly !== undefined &&
-      (obj.definedOnly = message.definedOnly);
+    message.definedOnly !== undefined && (obj.definedOnly = message.definedOnly);
     if (message.in) {
       obj.in = message.in.map((e) => Math.round(e));
     } else {
@@ -4037,9 +3776,7 @@ export const EnumRules = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<EnumRules>, I>>(
-    object: I,
-  ): EnumRules {
+  fromPartial<I extends Exact<DeepPartial<EnumRules>, I>>(object: I): EnumRules {
     const message = createBaseEnumRules();
     message.const = object.const ?? 0;
     message.definedOnly = object.definedOnly ?? false;
@@ -4054,10 +3791,7 @@ function createBaseMessageRules(): MessageRules {
 }
 
 export const MessageRules = {
-  encode(
-    message: MessageRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MessageRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.skip === true) {
       writer.uint32(8).bool(message.skip);
     }
@@ -4102,9 +3836,7 @@ export const MessageRules = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MessageRules>, I>>(
-    object: I,
-  ): MessageRules {
+  fromPartial<I extends Exact<DeepPartial<MessageRules>, I>>(object: I): MessageRules {
     const message = createBaseMessageRules();
     message.skip = object.skip ?? false;
     message.required = object.required ?? false;
@@ -4123,10 +3855,7 @@ function createBaseRepeatedRules(): RepeatedRules {
 }
 
 export const RepeatedRules = {
-  encode(
-    message: RepeatedRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RepeatedRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.minItems !== 0) {
       writer.uint32(8).uint64(message.minItems);
     }
@@ -4180,34 +3909,23 @@ export const RepeatedRules = {
       minItems: isSet(object.minItems) ? Number(object.minItems) : 0,
       maxItems: isSet(object.maxItems) ? Number(object.maxItems) : 0,
       unique: isSet(object.unique) ? Boolean(object.unique) : false,
-      items: isSet(object.items)
-        ? FieldRules.fromJSON(object.items)
-        : undefined,
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      items: isSet(object.items) ? FieldRules.fromJSON(object.items) : undefined,
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
   toJSON(message: RepeatedRules): unknown {
     const obj: any = {};
-    message.minItems !== undefined &&
-      (obj.minItems = Math.round(message.minItems));
-    message.maxItems !== undefined &&
-      (obj.maxItems = Math.round(message.maxItems));
+    message.minItems !== undefined && (obj.minItems = Math.round(message.minItems));
+    message.maxItems !== undefined && (obj.maxItems = Math.round(message.maxItems));
     message.unique !== undefined && (obj.unique = message.unique);
     message.items !== undefined &&
-      (obj.items = message.items
-        ? FieldRules.toJSON(message.items)
-        : undefined);
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+      (obj.items = message.items ? FieldRules.toJSON(message.items) : undefined);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RepeatedRules>, I>>(
-    object: I,
-  ): RepeatedRules {
+  fromPartial<I extends Exact<DeepPartial<RepeatedRules>, I>>(object: I): RepeatedRules {
     const message = createBaseRepeatedRules();
     message.minItems = object.minItems ?? 0;
     message.maxItems = object.maxItems ?? 0;
@@ -4233,10 +3951,7 @@ function createBaseMapRules(): MapRules {
 }
 
 export const MapRules = {
-  encode(
-    message: MapRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MapRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.minPairs !== 0) {
       writer.uint32(8).uint64(message.minPairs);
     }
@@ -4297,30 +4012,21 @@ export const MapRules = {
       maxPairs: isSet(object.maxPairs) ? Number(object.maxPairs) : 0,
       noSparse: isSet(object.noSparse) ? Boolean(object.noSparse) : false,
       keys: isSet(object.keys) ? FieldRules.fromJSON(object.keys) : undefined,
-      values: isSet(object.values)
-        ? FieldRules.fromJSON(object.values)
-        : undefined,
-      ignoreEmpty: isSet(object.ignoreEmpty)
-        ? Boolean(object.ignoreEmpty)
-        : false,
+      values: isSet(object.values) ? FieldRules.fromJSON(object.values) : undefined,
+      ignoreEmpty: isSet(object.ignoreEmpty) ? Boolean(object.ignoreEmpty) : false,
     };
   },
 
   toJSON(message: MapRules): unknown {
     const obj: any = {};
-    message.minPairs !== undefined &&
-      (obj.minPairs = Math.round(message.minPairs));
-    message.maxPairs !== undefined &&
-      (obj.maxPairs = Math.round(message.maxPairs));
+    message.minPairs !== undefined && (obj.minPairs = Math.round(message.minPairs));
+    message.maxPairs !== undefined && (obj.maxPairs = Math.round(message.maxPairs));
     message.noSparse !== undefined && (obj.noSparse = message.noSparse);
     message.keys !== undefined &&
       (obj.keys = message.keys ? FieldRules.toJSON(message.keys) : undefined);
     message.values !== undefined &&
-      (obj.values = message.values
-        ? FieldRules.toJSON(message.values)
-        : undefined);
-    message.ignoreEmpty !== undefined &&
-      (obj.ignoreEmpty = message.ignoreEmpty);
+      (obj.values = message.values ? FieldRules.toJSON(message.values) : undefined);
+    message.ignoreEmpty !== undefined && (obj.ignoreEmpty = message.ignoreEmpty);
     return obj;
   },
 
@@ -4347,10 +4053,7 @@ function createBaseAnyRules(): AnyRules {
 }
 
 export const AnyRules = {
-  encode(
-    message: AnyRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: AnyRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.required === true) {
       writer.uint32(8).bool(message.required);
     }
@@ -4391,9 +4094,7 @@ export const AnyRules = {
     return {
       required: isSet(object.required) ? Boolean(object.required) : false,
       in: Array.isArray(object?.in) ? object.in.map((e: any) => String(e)) : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => String(e))
-        : [],
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => String(e)) : [],
     };
   },
 
@@ -4436,10 +4137,7 @@ function createBaseDurationRules(): DurationRules {
 }
 
 export const DurationRules = {
-  encode(
-    message: DurationRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DurationRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.required === true) {
       writer.uint32(8).bool(message.required);
     }
@@ -4514,12 +4212,8 @@ export const DurationRules = {
       lte: isSet(object.lte) ? Duration.fromJSON(object.lte) : undefined,
       gt: isSet(object.gt) ? Duration.fromJSON(object.gt) : undefined,
       gte: isSet(object.gte) ? Duration.fromJSON(object.gte) : undefined,
-      in: Array.isArray(object?.in)
-        ? object.in.map((e: any) => Duration.fromJSON(e))
-        : [],
-      notIn: Array.isArray(object?.notIn)
-        ? object.notIn.map((e: any) => Duration.fromJSON(e))
-        : [],
+      in: Array.isArray(object?.in) ? object.in.map((e: any) => Duration.fromJSON(e)) : [],
+      notIn: Array.isArray(object?.notIn) ? object.notIn.map((e: any) => Duration.fromJSON(e)) : [],
     };
   },
 
@@ -4528,32 +4222,24 @@ export const DurationRules = {
     message.required !== undefined && (obj.required = message.required);
     message.const !== undefined &&
       (obj.const = message.const ? Duration.toJSON(message.const) : undefined);
-    message.lt !== undefined &&
-      (obj.lt = message.lt ? Duration.toJSON(message.lt) : undefined);
-    message.lte !== undefined &&
-      (obj.lte = message.lte ? Duration.toJSON(message.lte) : undefined);
-    message.gt !== undefined &&
-      (obj.gt = message.gt ? Duration.toJSON(message.gt) : undefined);
-    message.gte !== undefined &&
-      (obj.gte = message.gte ? Duration.toJSON(message.gte) : undefined);
+    message.lt !== undefined && (obj.lt = message.lt ? Duration.toJSON(message.lt) : undefined);
+    message.lte !== undefined && (obj.lte = message.lte ? Duration.toJSON(message.lte) : undefined);
+    message.gt !== undefined && (obj.gt = message.gt ? Duration.toJSON(message.gt) : undefined);
+    message.gte !== undefined && (obj.gte = message.gte ? Duration.toJSON(message.gte) : undefined);
     if (message.in) {
       obj.in = message.in.map((e) => (e ? Duration.toJSON(e) : undefined));
     } else {
       obj.in = [];
     }
     if (message.notIn) {
-      obj.notIn = message.notIn.map((e) =>
-        e ? Duration.toJSON(e) : undefined,
-      );
+      obj.notIn = message.notIn.map((e) => (e ? Duration.toJSON(e) : undefined));
     } else {
       obj.notIn = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DurationRules>, I>>(
-    object: I,
-  ): DurationRules {
+  fromPartial<I extends Exact<DeepPartial<DurationRules>, I>>(object: I): DurationRules {
     const message = createBaseDurationRules();
     message.required = object.required ?? false;
     message.const =
@@ -4561,17 +4247,13 @@ export const DurationRules = {
         ? Duration.fromPartial(object.const)
         : undefined;
     message.lt =
-      object.lt !== undefined && object.lt !== null
-        ? Duration.fromPartial(object.lt)
-        : undefined;
+      object.lt !== undefined && object.lt !== null ? Duration.fromPartial(object.lt) : undefined;
     message.lte =
       object.lte !== undefined && object.lte !== null
         ? Duration.fromPartial(object.lte)
         : undefined;
     message.gt =
-      object.gt !== undefined && object.gt !== null
-        ? Duration.fromPartial(object.gt)
-        : undefined;
+      object.gt !== undefined && object.gt !== null ? Duration.fromPartial(object.gt) : undefined;
     message.gte =
       object.gte !== undefined && object.gte !== null
         ? Duration.fromPartial(object.gte)
@@ -4597,42 +4279,24 @@ function createBaseTimestampRules(): TimestampRules {
 }
 
 export const TimestampRules = {
-  encode(
-    message: TimestampRules,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TimestampRules, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.required === true) {
       writer.uint32(8).bool(message.required);
     }
     if (message.const !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.const),
-        writer.uint32(18).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.const), writer.uint32(18).fork()).ldelim();
     }
     if (message.lt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lt),
-        writer.uint32(26).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lt), writer.uint32(26).fork()).ldelim();
     }
     if (message.lte !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lte),
-        writer.uint32(34).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lte), writer.uint32(34).fork()).ldelim();
     }
     if (message.gt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.gt),
-        writer.uint32(42).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.gt), writer.uint32(42).fork()).ldelim();
     }
     if (message.gte !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.gte),
-        writer.uint32(50).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.gte), writer.uint32(50).fork()).ldelim();
     }
     if (message.ltNow === true) {
       writer.uint32(56).bool(message.ltNow);
@@ -4657,25 +4321,19 @@ export const TimestampRules = {
           message.required = reader.bool();
           break;
         case 2:
-          message.const = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.const = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 3:
           message.lt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.lte = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.lte = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 5:
           message.gt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 6:
-          message.gte = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.gte = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 7:
           message.ltNow = reader.bool();
@@ -4704,9 +4362,7 @@ export const TimestampRules = {
       gte: isSet(object.gte) ? fromJsonTimestamp(object.gte) : undefined,
       ltNow: isSet(object.ltNow) ? Boolean(object.ltNow) : false,
       gtNow: isSet(object.gtNow) ? Boolean(object.gtNow) : false,
-      within: isSet(object.within)
-        ? Duration.fromJSON(object.within)
-        : undefined,
+      within: isSet(object.within) ? Duration.fromJSON(object.within) : undefined,
     };
   },
 
@@ -4721,15 +4377,11 @@ export const TimestampRules = {
     message.ltNow !== undefined && (obj.ltNow = message.ltNow);
     message.gtNow !== undefined && (obj.gtNow = message.gtNow);
     message.within !== undefined &&
-      (obj.within = message.within
-        ? Duration.toJSON(message.within)
-        : undefined);
+      (obj.within = message.within ? Duration.toJSON(message.within) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<TimestampRules>, I>>(
-    object: I,
-  ): TimestampRules {
+  fromPartial<I extends Exact<DeepPartial<TimestampRules>, I>>(object: I): TimestampRules {
     const message = createBaseTimestampRules();
     message.required = object.required ?? false;
     message.const = object.const ?? undefined;
@@ -4759,8 +4411,7 @@ var globalThis: any = (() => {
 })();
 
 const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, 'base64').toString('binary'));
+  globalThis.atob || ((b64) => globalThis.Buffer.from(b64, 'base64').toString('binary'));
 function bytesFromBase64(b64: string): Uint8Array {
   const bin = atob(b64);
   const arr = new Uint8Array(bin.length);
@@ -4771,8 +4422,7 @@ function bytesFromBase64(b64: string): Uint8Array {
 }
 
 const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
+  globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
 function base64FromBytes(arr: Uint8Array): string {
   const bin: string[] = [];
   arr.forEach((byte) => {
@@ -4781,14 +4431,7 @@ function base64FromBytes(arr: Uint8Array): string {
   return btoa(bin.join(''));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -4803,10 +4446,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = date.getTime() / 1_000;

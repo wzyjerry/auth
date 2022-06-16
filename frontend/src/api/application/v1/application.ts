@@ -69,10 +69,7 @@ function createBaseCreateRequest(): CreateRequest {
 }
 
 export const CreateRequest = {
-  encode(
-    message: CreateRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: CreateRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
@@ -119,9 +116,7 @@ export const CreateRequest = {
     return {
       name: isSet(object.name) ? String(object.name) : '',
       homepage: isSet(object.homepage) ? String(object.homepage) : '',
-      description: isSet(object.description)
-        ? String(object.description)
-        : undefined,
+      description: isSet(object.description) ? String(object.description) : undefined,
       callback: isSet(object.callback) ? String(object.callback) : '',
     };
   },
@@ -130,15 +125,12 @@ export const CreateRequest = {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
     message.homepage !== undefined && (obj.homepage = message.homepage);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.callback !== undefined && (obj.callback = message.callback);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CreateRequest>, I>>(
-    object: I,
-  ): CreateRequest {
+  fromPartial<I extends Exact<DeepPartial<CreateRequest>, I>>(object: I): CreateRequest {
     const message = createBaseCreateRequest();
     message.name = object.name ?? '';
     message.homepage = object.homepage ?? '';
@@ -153,10 +145,7 @@ function createBaseCreateReply(): CreateReply {
 }
 
 export const CreateReply = {
-  encode(
-    message: CreateReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: CreateReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
@@ -193,9 +182,7 @@ export const CreateReply = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CreateReply>, I>>(
-    object: I,
-  ): CreateReply {
+  fromPartial<I extends Exact<DeepPartial<CreateReply>, I>>(object: I): CreateReply {
     const message = createBaseCreateReply();
     message.id = object.id ?? '';
     return message;
@@ -207,10 +194,7 @@ function createBaseRetrieveRequest(): RetrieveRequest {
 }
 
 export const RetrieveRequest = {
-  encode(
-    message: RetrieveRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RetrieveRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
@@ -247,9 +231,7 @@ export const RetrieveRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RetrieveRequest>, I>>(
-    object: I,
-  ): RetrieveRequest {
+  fromPartial<I extends Exact<DeepPartial<RetrieveRequest>, I>>(object: I): RetrieveRequest {
     const message = createBaseRetrieveRequest();
     message.id = object.id ?? '';
     return message;
@@ -267,18 +249,12 @@ function createBaseSecret(): Secret {
 }
 
 export const Secret = {
-  encode(
-    message: Secret,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Secret, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
     if (message.lastUsed !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastUsed),
-        writer.uint32(18).fork(),
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lastUsed), writer.uint32(18).fork()).ldelim();
     }
     if (message.description !== '') {
       writer.uint32(26).string(message.description);
@@ -303,9 +279,7 @@ export const Secret = {
           message.id = reader.string();
           break;
         case 2:
-          message.lastUsed = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32()),
-          );
+          message.lastUsed = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 3:
           message.description = reader.string();
@@ -327,9 +301,7 @@ export const Secret = {
   fromJSON(object: any): Secret {
     return {
       id: isSet(object.id) ? String(object.id) : '',
-      lastUsed: isSet(object.lastUsed)
-        ? fromJsonTimestamp(object.lastUsed)
-        : undefined,
+      lastUsed: isSet(object.lastUsed) ? fromJsonTimestamp(object.lastUsed) : undefined,
       description: isSet(object.description) ? String(object.description) : '',
       masked: isSet(object.masked) ? Boolean(object.masked) : false,
       secret: isSet(object.secret) ? String(object.secret) : '',
@@ -339,10 +311,8 @@ export const Secret = {
   toJSON(message: Secret): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.lastUsed !== undefined &&
-      (obj.lastUsed = message.lastUsed.toISOString());
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.lastUsed !== undefined && (obj.lastUsed = message.lastUsed.toISOString());
+    message.description !== undefined && (obj.description = message.description);
     message.masked !== undefined && (obj.masked = message.masked);
     message.secret !== undefined && (obj.secret = message.secret);
     return obj;
@@ -373,10 +343,7 @@ function createBaseApplication(): Application {
 }
 
 export const Application = {
-  encode(
-    message: Application,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Application, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
@@ -453,9 +420,7 @@ export const Application = {
         : [],
       avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
       homepage: isSet(object.homepage) ? String(object.homepage) : '',
-      description: isSet(object.description)
-        ? String(object.description)
-        : undefined,
+      description: isSet(object.description) ? String(object.description) : undefined,
       callback: isSet(object.callback) ? String(object.callback) : '',
     };
   },
@@ -466,29 +431,23 @@ export const Application = {
     message.name !== undefined && (obj.name = message.name);
     message.clientId !== undefined && (obj.clientId = message.clientId);
     if (message.clientSecrets) {
-      obj.clientSecrets = message.clientSecrets.map((e) =>
-        e ? Secret.toJSON(e) : undefined,
-      );
+      obj.clientSecrets = message.clientSecrets.map((e) => (e ? Secret.toJSON(e) : undefined));
     } else {
       obj.clientSecrets = [];
     }
     message.avatar !== undefined && (obj.avatar = message.avatar);
     message.homepage !== undefined && (obj.homepage = message.homepage);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.callback !== undefined && (obj.callback = message.callback);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Application>, I>>(
-    object: I,
-  ): Application {
+  fromPartial<I extends Exact<DeepPartial<Application>, I>>(object: I): Application {
     const message = createBaseApplication();
     message.id = object.id ?? '';
     message.name = object.name ?? '';
     message.clientId = object.clientId ?? '';
-    message.clientSecrets =
-      object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
+    message.clientSecrets = object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
     message.avatar = object.avatar ?? undefined;
     message.homepage = object.homepage ?? '';
     message.description = object.description ?? undefined;
@@ -510,10 +469,7 @@ function createBaseRetrieveReply(): RetrieveReply {
 }
 
 export const RetrieveReply = {
-  encode(
-    message: RetrieveReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RetrieveReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
@@ -583,9 +539,7 @@ export const RetrieveReply = {
         : [],
       avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
       homepage: isSet(object.homepage) ? String(object.homepage) : '',
-      description: isSet(object.description)
-        ? String(object.description)
-        : undefined,
+      description: isSet(object.description) ? String(object.description) : undefined,
       callback: isSet(object.callback) ? String(object.callback) : '',
     };
   },
@@ -595,28 +549,22 @@ export const RetrieveReply = {
     message.name !== undefined && (obj.name = message.name);
     message.clientId !== undefined && (obj.clientId = message.clientId);
     if (message.clientSecrets) {
-      obj.clientSecrets = message.clientSecrets.map((e) =>
-        e ? Secret.toJSON(e) : undefined,
-      );
+      obj.clientSecrets = message.clientSecrets.map((e) => (e ? Secret.toJSON(e) : undefined));
     } else {
       obj.clientSecrets = [];
     }
     message.avatar !== undefined && (obj.avatar = message.avatar);
     message.homepage !== undefined && (obj.homepage = message.homepage);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.callback !== undefined && (obj.callback = message.callback);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RetrieveReply>, I>>(
-    object: I,
-  ): RetrieveReply {
+  fromPartial<I extends Exact<DeepPartial<RetrieveReply>, I>>(object: I): RetrieveReply {
     const message = createBaseRetrieveReply();
     message.name = object.name ?? '';
     message.clientId = object.clientId ?? '';
-    message.clientSecrets =
-      object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
+    message.clientSecrets = object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
     message.avatar = object.avatar ?? undefined;
     message.homepage = object.homepage ?? '';
     message.description = object.description ?? undefined;
@@ -643,10 +591,7 @@ export const GenerateClientSecretRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): GenerateClientSecretRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenerateClientSecretRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGenerateClientSecretRequest();
@@ -677,8 +622,7 @@ export const GenerateClientSecretRequest = {
   toJSON(message: GenerateClientSecretRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     return obj;
   },
 
@@ -697,20 +641,14 @@ function createBaseGenerateClientSecretReply(): GenerateClientSecretReply {
 }
 
 export const GenerateClientSecretReply = {
-  encode(
-    message: GenerateClientSecretReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenerateClientSecretReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.secret !== undefined) {
       Secret.encode(message.secret, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): GenerateClientSecretReply {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenerateClientSecretReply {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGenerateClientSecretReply();
@@ -758,10 +696,7 @@ function createBaseRevokeClientSecretRequest(): RevokeClientSecretRequest {
 }
 
 export const RevokeClientSecretRequest = {
-  encode(
-    message: RevokeClientSecretRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RevokeClientSecretRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
@@ -771,10 +706,7 @@ export const RevokeClientSecretRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): RevokeClientSecretRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RevokeClientSecretRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRevokeClientSecretRequest();
@@ -822,9 +754,7 @@ export const RevokeClientSecretRequest = {
 export interface ApplicationService {
   Create(request: CreateRequest): Promise<CreateReply>;
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
-  GenerateClientSecret(
-    request: GenerateClientSecretRequest,
-  ): Promise<GenerateClientSecretReply>;
+  GenerateClientSecret(request: GenerateClientSecretRequest): Promise<GenerateClientSecretReply>;
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
 }
 
@@ -839,36 +769,24 @@ export class ApplicationServiceClientImpl implements ApplicationService {
   }
   Create(request: CreateRequest): Promise<CreateReply> {
     const data = CreateRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.application.v1.ApplicationService',
-      'Create',
-      data,
-    );
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Create', data);
     return promise.then((data) => CreateReply.decode(new _m0.Reader(data)));
   }
 
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply> {
     const data = RetrieveRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.application.v1.ApplicationService',
-      'Retrieve',
-      data,
-    );
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Retrieve', data);
     return promise.then((data) => RetrieveReply.decode(new _m0.Reader(data)));
   }
 
-  GenerateClientSecret(
-    request: GenerateClientSecretRequest,
-  ): Promise<GenerateClientSecretReply> {
+  GenerateClientSecret(request: GenerateClientSecretRequest): Promise<GenerateClientSecretReply> {
     const data = GenerateClientSecretRequest.encode(request).finish();
     const promise = this.rpc.request(
       'api.application.v1.ApplicationService',
       'GenerateClientSecret',
       data,
     );
-    return promise.then((data) =>
-      GenerateClientSecretReply.decode(new _m0.Reader(data)),
-    );
+    return promise.then((data) => GenerateClientSecretReply.decode(new _m0.Reader(data)));
   }
 
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty> {
@@ -883,21 +801,10 @@ export class ApplicationServiceClientImpl implements ApplicationService {
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -912,10 +819,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = date.getTime() / 1_000;

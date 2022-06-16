@@ -1,4 +1,4 @@
-import { RequestConfig } from 'umi';
+import type { RequestConfig } from 'umi';
 import { errorHandler } from '@/util';
 import moment from 'moment';
 moment.locale('zh-cn');
@@ -9,5 +9,5 @@ export const request: RequestConfig = {
   headers: {
     'x-md-global-ip': '76.54.32.10',
   },
-  errorHandler
+  errorHandler,
 };

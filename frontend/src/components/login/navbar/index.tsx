@@ -10,16 +10,16 @@ export function IsLogin(): boolean {
   if (token instanceof Reject) {
     switch (token.error) {
       case ErrKeyNotExists:
-        return false
+        return false;
       default:
-        console.error(token.error)
-        return false
+        console.error(token.error);
+        return false;
     }
   }
   return true;
 }
 
-export async function FetchAvatar():Promise<string> {
+export async function FetchAvatar(): Promise<string> {
   const helper = new AvatarHelper();
   if (!IsLogin()) {
     return '';
@@ -27,32 +27,30 @@ export async function FetchAvatar():Promise<string> {
   const avatar = helper.Load();
   if (avatar instanceof Reject) {
     switch (avatar.error) {
-    case ErrKeyNotExists:
-      const client = new ProfileClient()
-      const reply = await Go(client.GetAvatar())
-      if (reply instanceof Reject) {
+      case ErrKeyNotExists:
+        const client = new ProfileClient();
+        const reply = await Go(client.GetAvatar());
+        if (reply instanceof Reject) {
+          return '';
+        }
+        helper.Save(reply.val.avatar);
+        return reply.val.avatar;
+      default:
+        console.error(avatar.error);
         return '';
-      }
-      helper.Save(reply.val.avatar);
-      return reply.val.avatar;
-    default:
-      console.error(avatar.error)
-      return '';
     }
   }
-  return avatar.val
+  return avatar.val;
 }
 
 const Navbar: React.FC = () => {
-  const [ avatar, setAvatar ] = useState<string>();
-  (async() => {
+  const [avatar, setAvatar] = useState<string>();
+  (async () => {
     const avatar = await FetchAvatar();
-    console.log(avatar)
+    console.log(avatar);
     setAvatar(avatar);
-  })()
-  return (
-    <Avatar size='large' src={avatar}></Avatar>
-  )
-}
+  })();
+  return <Avatar size="large" src={avatar} />;
+};
 
 export default Navbar;

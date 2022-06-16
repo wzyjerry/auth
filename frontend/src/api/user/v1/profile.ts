@@ -21,10 +21,7 @@ function createBaseGetAvatarReply(): GetAvatarReply {
 }
 
 export const GetAvatarReply = {
-  encode(
-    message: GetAvatarReply,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GetAvatarReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.avatar !== '') {
       writer.uint32(10).string(message.avatar);
     }
@@ -61,9 +58,7 @@ export const GetAvatarReply = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetAvatarReply>, I>>(
-    object: I,
-  ): GetAvatarReply {
+  fromPartial<I extends Exact<DeepPartial<GetAvatarReply>, I>>(object: I): GetAvatarReply {
     const message = createBaseGetAvatarReply();
     message.avatar = object.avatar ?? '';
     return message;
@@ -158,31 +153,16 @@ export class ProfileServiceClientImpl implements ProfileService {
   }
   GetAvatar(request: Empty): Promise<GetAvatarReply> {
     const data = Empty.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.user.v1.ProfileService',
-      'GetAvatar',
-      data,
-    );
+    const promise = this.rpc.request('api.user.v1.ProfileService', 'GetAvatar', data);
     return promise.then((data) => GetAvatarReply.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -197,10 +177,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 // If you get a compile-error about 'Constructor<Long> and ... have no overlap',
 // add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
