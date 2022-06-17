@@ -2040,13 +2040,7 @@ export const OneofDescriptorProto = {
 };
 
 function createBaseEnumDescriptorProto(): EnumDescriptorProto {
-  return {
-    name: '',
-    value: [],
-    options: undefined,
-    reservedRange: [],
-    reservedName: [],
-  };
+  return { name: '', value: [], options: undefined, reservedRange: [], reservedName: [] };
 }
 
 export const EnumDescriptorProto = {

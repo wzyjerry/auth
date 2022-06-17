@@ -18,13 +18,14 @@ func NewProfileUsecase(
 	}
 }
 
-func (uc *ProfileUsecase) GetAvatar(ctx context.Context, id string) (string, error) {
+func (uc *ProfileUsecase) GetAvatar(ctx context.Context, id string) (*string, error) {
 	avatar, err := uc.repo.GetAvatar(ctx, id)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return "", ErrNotFound
+			return nil, nil
+		} else {
+			return nil, err
 		}
-		return "", err
 	}
 	return avatar, nil
 }

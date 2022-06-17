@@ -6,23 +6,23 @@ import { Empty } from '../../google/protobuf/empty';
 export const protobufPackage = 'api.user.v1';
 
 export interface GetAvatarReply {
-  avatar: string;
+  avatar?: string | undefined;
 }
 
 export interface User {
   token: string;
   id: string;
   nickname: string;
-  avatar: string;
+  avatar?: string | undefined;
 }
 
 function createBaseGetAvatarReply(): GetAvatarReply {
-  return { avatar: '' };
+  return { avatar: undefined };
 }
 
 export const GetAvatarReply = {
   encode(message: GetAvatarReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.avatar !== '') {
+    if (message.avatar !== undefined) {
       writer.uint32(10).string(message.avatar);
     }
     return writer;
@@ -48,7 +48,7 @@ export const GetAvatarReply = {
 
   fromJSON(object: any): GetAvatarReply {
     return {
-      avatar: isSet(object.avatar) ? String(object.avatar) : '',
+      avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
     };
   },
 
@@ -60,13 +60,13 @@ export const GetAvatarReply = {
 
   fromPartial<I extends Exact<DeepPartial<GetAvatarReply>, I>>(object: I): GetAvatarReply {
     const message = createBaseGetAvatarReply();
-    message.avatar = object.avatar ?? '';
+    message.avatar = object.avatar ?? undefined;
     return message;
   },
 };
 
 function createBaseUser(): User {
-  return { token: '', id: '', nickname: '', avatar: '' };
+  return { token: '', id: '', nickname: '', avatar: undefined };
 }
 
 export const User = {
@@ -80,7 +80,7 @@ export const User = {
     if (message.nickname !== '') {
       writer.uint32(26).string(message.nickname);
     }
-    if (message.avatar !== '') {
+    if (message.avatar !== undefined) {
       writer.uint32(34).string(message.avatar);
     }
     return writer;
@@ -118,7 +118,7 @@ export const User = {
       token: isSet(object.token) ? String(object.token) : '',
       id: isSet(object.id) ? String(object.id) : '',
       nickname: isSet(object.nickname) ? String(object.nickname) : '',
-      avatar: isSet(object.avatar) ? String(object.avatar) : '',
+      avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
     };
   },
 
@@ -136,7 +136,7 @@ export const User = {
     message.token = object.token ?? '';
     message.id = object.id ?? '';
     message.nickname = object.nickname ?? '';
-    message.avatar = object.avatar ?? '';
+    message.avatar = object.avatar ?? undefined;
     return message;
   },
 };

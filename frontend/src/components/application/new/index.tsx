@@ -1,9 +1,8 @@
 import style from './index.less';
-import { useHistory, useLocation } from 'react-router-dom';
-import { Form, Input, Button, message } from 'antd';
+import { history, useDispatch } from 'umi';
+import { Form, Input, Button } from 'antd';
 import type { CreateRequest } from '@/api/application/v1/application';
-import { ApplicationClient } from '@/api';
-import { Go, Reject } from '@/util';
+
 interface registerForm {
   name: string;
   homepage: string;
@@ -11,10 +10,8 @@ interface registerForm {
   callback: string;
 }
 const New: React.FC = () => {
-  const history = useHistory();
-  const location = useLocation();
+  const dispatch = useDispatch();
   const onRegister = async (form: registerForm): Promise<void> => {
-    const client = new ApplicationClient();
     const request: CreateRequest = {
       name: form.name,
       homepage: form.homepage,
@@ -23,24 +20,10 @@ const New: React.FC = () => {
     if (form.description !== undefined) {
       request.description = form.description;
     }
-    const reply = await Go(client.Create(request));
-    if (reply instanceof Reject) {
-      switch (reply.error.name) {
-        case 'FORBIDDEN':
-        case 'UNAUTHORIZED':
-          history.push(
-            `/user/login?return_to=${encodeURIComponent(
-              location.pathname + location.search + location.hash,
-            )}`,
-          );
-          break;
-        default:
-          console.log(reply.error);
-          message.error(`[${reply.error.name}]${reply.error.message}`);
-      }
-      return;
-    }
-    history.push(`/application/${reply.val.id}`);
+    dispatch({
+      type: 'application/create',
+      payload: request,
+    });
   };
   const onCancelClick = (): void => {
     history.push('/application');

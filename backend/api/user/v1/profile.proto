@@ -26,14 +26,14 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
   
 message GetAvatarReply {
-    string avatar = 1;
+    optional string avatar = 1;
 }
 
 message User {
     string token = 1;
     string id = 2;
     string nickname = 3;
-    string avatar = 4;
+    optional string avatar = 4;
 }
 
 service ProfileService {

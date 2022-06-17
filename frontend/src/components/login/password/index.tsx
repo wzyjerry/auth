@@ -1,17 +1,16 @@
 import style from './index.less';
-import { Form, Input, Button, message } from 'antd';
-import { LoginClient } from '@/api';
+import { Form, Input, Button } from 'antd';
 import type { LoginRequest } from '@/api/user/v1/login';
 import { Type, Method } from '@/api/user/v1/login';
-import type { LoginForm } from '..';
-import { Go, Reject } from '@/util';
+import type { LoginProp } from '..';
+import { useDispatch } from 'umi';
 interface passwordForm {
   account: string;
   password: string;
 }
-const Password: React.FC<LoginForm> = (props) => {
+const Password: React.FC<LoginProp> = (prop) => {
+  const dispatch = useDispatch();
   const onLogin = async (form: passwordForm): Promise<void> => {
-    const client = new LoginClient();
     const request: LoginRequest = {
       method: Method.METHOD_PASSWORD,
       secret: form.password,
@@ -24,18 +23,13 @@ const Password: React.FC<LoginForm> = (props) => {
       request.type = Type.TYPE_PHONE;
       request.unique = `+86${form.account}`;
     }
-    const reply = await Go(client.Login(request));
-    if (reply instanceof Reject) {
-      switch (reply.error.name) {
-        case 'PASSWORD_LOGIN':
-          message.error('用户名或密码错误');
-          break;
-        default:
-          message.error(`[${reply.error.name}]${reply.error.message}`);
-      }
-    } else {
-      props.onSuccess(reply.val.token);
-    }
+    dispatch({
+      type: 'user/login',
+      payload: {
+        request: request,
+        returnTo: prop.returnTo,
+      },
+    });
   };
   return (
     <Form name="password" className={style.form} onFinish={onLogin} size="large">

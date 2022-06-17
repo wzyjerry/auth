@@ -57,7 +57,9 @@ func (m *GetAvatarReply) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Avatar
+	if m.Avatar != nil {
+		// no validation rules for Avatar
+	}
 
 	if len(errors) > 0 {
 		return GetAvatarReplyMultiError(errors)
@@ -164,7 +166,9 @@ func (m *User) validate(all bool) error {
 
 	// no validation rules for Nickname
 
-	// no validation rules for Avatar
+	if m.Avatar != nil {
+		// no validation rules for Avatar
+	}
 
 	if len(errors) > 0 {
 		return UserMultiError(errors)

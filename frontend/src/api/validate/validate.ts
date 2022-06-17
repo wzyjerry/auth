@@ -1358,16 +1358,7 @@ export const FieldRules = {
 };
 
 function createBaseFloatRules(): FloatRules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const FloatRules = {
@@ -1505,16 +1496,7 @@ export const FloatRules = {
 };
 
 function createBaseDoubleRules(): DoubleRules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const DoubleRules = {
@@ -1652,16 +1634,7 @@ export const DoubleRules = {
 };
 
 function createBaseInt32Rules(): Int32Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const Int32Rules = {
@@ -1799,16 +1772,7 @@ export const Int32Rules = {
 };
 
 function createBaseInt64Rules(): Int64Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const Int64Rules = {
@@ -1946,16 +1910,7 @@ export const Int64Rules = {
 };
 
 function createBaseUInt32Rules(): UInt32Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const UInt32Rules = {
@@ -2093,16 +2048,7 @@ export const UInt32Rules = {
 };
 
 function createBaseUInt64Rules(): UInt64Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const UInt64Rules = {
@@ -2240,16 +2186,7 @@ export const UInt64Rules = {
 };
 
 function createBaseSInt32Rules(): SInt32Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const SInt32Rules = {
@@ -2387,16 +2324,7 @@ export const SInt32Rules = {
 };
 
 function createBaseSInt64Rules(): SInt64Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const SInt64Rules = {
@@ -2534,16 +2462,7 @@ export const SInt64Rules = {
 };
 
 function createBaseFixed32Rules(): Fixed32Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const Fixed32Rules = {
@@ -2681,16 +2600,7 @@ export const Fixed32Rules = {
 };
 
 function createBaseFixed64Rules(): Fixed64Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const Fixed64Rules = {
@@ -2828,16 +2738,7 @@ export const Fixed64Rules = {
 };
 
 function createBaseSFixed32Rules(): SFixed32Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const SFixed32Rules = {
@@ -2975,16 +2876,7 @@ export const SFixed32Rules = {
 };
 
 function createBaseSFixed64Rules(): SFixed64Rules {
-  return {
-    const: 0,
-    lt: 0,
-    lte: 0,
-    gt: 0,
-    gte: 0,
-    in: [],
-    notIn: [],
-    ignoreEmpty: false,
-  };
+  return { const: 0, lt: 0, lte: 0, gt: 0, gte: 0, in: [], notIn: [], ignoreEmpty: false };
 }
 
 export const SFixed64Rules = {
@@ -3845,13 +3737,7 @@ export const MessageRules = {
 };
 
 function createBaseRepeatedRules(): RepeatedRules {
-  return {
-    minItems: 0,
-    maxItems: 0,
-    unique: false,
-    items: undefined,
-    ignoreEmpty: false,
-  };
+  return { minItems: 0, maxItems: 0, unique: false, items: undefined, ignoreEmpty: false };
 }
 
 export const RepeatedRules = {

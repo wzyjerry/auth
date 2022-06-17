@@ -2,6 +2,7 @@ import { useHistory } from 'react-router-dom';
 import { Type, Method } from '@/api/user/v1/login';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useDispatch } from 'umi';
+import { LoginRequest } from '@/api/user/v1/login';
 
 const Microsoft = () => {
   const dispatch = useDispatch();
@@ -18,14 +19,15 @@ const Microsoft = () => {
       if (code === null) {
         history.push(`/user/login?error=invalid_code&return_to=${encodeURIComponent(returnTo)}`);
       } else {
+        const request: LoginRequest = {
+          type: Type.TYPE_MICROSOFT,
+          method: Method.METHOD_CODE,
+          secret: code,
+        };
         dispatch({
           type: 'user/login',
           payload: {
-            request: {
-              type: Type.TYPE_MICROSOFT,
-              method: Method.METHOD_CODE,
-              secret: code,
-            },
+            request: request,
             returnTo: returnTo,
           },
         });

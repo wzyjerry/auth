@@ -1,6 +1,8 @@
 import type { ImmerReducer } from 'umi';
 import type { EffectsCommandMap } from 'dva';
 import type {
+  CreateRequest,
+  CreateReply,
   RetrieveRequest,
   RetrieveReply,
   GenerateClientSecretRequest,
@@ -11,10 +13,12 @@ import type {
 import { Application } from '@/api/application/v1/application';
 import { ApplicationClient } from '@/api/request';
 import type { Empty } from '@/api/google/protobuf/empty';
+import { history } from 'umi';
 export { Application };
 export interface ApplicationModelType {
   state: Application;
   effects: {
+    create: (action: { payload: CreateRequest }, effects: EffectsCommandMap) => void;
     setup: (action: { payload: RetrieveRequest }, effects: EffectsCommandMap) => void;
     generateClientSecret: (
       action: { payload: Omit<GenerateClientSecretRequest, 'id'> },
@@ -66,6 +70,17 @@ const ApplicationModel: ApplicationModelType = {
   state: Application.fromJSON({}),
 
   effects: {
+    *create({ payload }, { call }) {
+      const { response, error }: { response: CreateReply; error: Error } = yield call(
+        ApplicationClient.Create,
+        payload,
+      );
+      if (response) {
+        history.push(`/application/${response.id}`);
+      } else if (error) {
+        throw error;
+      }
+    },
     *setup({ payload }, { call, put }) {
       const { response, error }: { response: RetrieveReply; error: Error } = yield call(
         ApplicationClient.Retrieve,

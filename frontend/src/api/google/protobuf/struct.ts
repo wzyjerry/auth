@@ -129,12 +129,13 @@ export const Struct = {
   fromJSON(object: any): Struct {
     return {
       fields: isObject(object.fields)
-        ? Object.entries(object.fields).reduce<{
-            [key: string]: any | undefined;
-          }>((acc, [key, value]) => {
-            acc[key] = value as any | undefined;
-            return acc;
-          }, {})
+        ? Object.entries(object.fields).reduce<{ [key: string]: any | undefined }>(
+            (acc, [key, value]) => {
+              acc[key] = value as any | undefined;
+              return acc;
+            },
+            {},
+          )
         : {},
     };
   },
@@ -152,14 +153,15 @@ export const Struct = {
 
   fromPartial<I extends Exact<DeepPartial<Struct>, I>>(object: I): Struct {
     const message = createBaseStruct();
-    message.fields = Object.entries(object.fields ?? {}).reduce<{
-      [key: string]: any | undefined;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
+    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: any | undefined }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 

@@ -34,5 +34,5 @@ type UserRepo interface {
 	CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string) (string, error)
 	CreateAvatar(ctx context.Context, id string, base64 string)
 	GetUser(ctx context.Context, id string) (*ent.User, error)
-	GetAvatar(ctx context.Context, id string) (string, error)
+	GetAvatar(ctx context.Context, id string) (*string, error)
 }

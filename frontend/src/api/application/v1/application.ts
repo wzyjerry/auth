@@ -239,13 +239,7 @@ export const RetrieveRequest = {
 };
 
 function createBaseSecret(): Secret {
-  return {
-    id: '',
-    lastUsed: undefined,
-    description: '',
-    masked: false,
-    secret: '',
-  };
+  return { id: '', lastUsed: undefined, description: '', masked: false, secret: '' };
 }
 
 export const Secret = {

@@ -1,8 +1,8 @@
 import style from './index.less';
 import { Form, Input, Select, Button } from 'antd';
-import type { LoginForm } from '..';
+import type { LoginProp } from '..';
 
-const SMS: React.FC<LoginForm> = (props) => {
+const SMS: React.FC<LoginProp> = () => {
   return (
     <Form name="sms" className={style.form} size="large">
       <Form.Item className={style.telLine}>

@@ -179,12 +179,12 @@ func (r *userRepo) CreateAvatar(ctx context.Context, id string, base64 string) {
 	r.data.db.Avatar.Create().SetID(r.data.db.GenerateId()).SetKind(int32(avatarNested.Kind_KIND_USER)).SetRelID(id).SetAvatar(base64).Exec(ctx)
 }
 
-func (r *userRepo) GetAvatar(ctx context.Context, id string) (string, error) {
+func (r *userRepo) GetAvatar(ctx context.Context, id string) (*string, error) {
 	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Only(ctx)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return *avatar.Avatar, nil
+	return avatar.Avatar, nil
 }
 
 func NewUserRepo(
