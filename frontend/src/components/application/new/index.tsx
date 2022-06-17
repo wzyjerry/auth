@@ -3,7 +3,7 @@ import { history, useDispatch } from 'umi';
 import { Form, Input, Button } from 'antd';
 import type { CreateRequest } from '@/api/application/v1/application';
 
-interface registerForm {
+interface applicationForm {
   name: string;
   homepage: string;
   description?: string;
@@ -11,14 +11,15 @@ interface registerForm {
 }
 const New: React.FC = () => {
   const dispatch = useDispatch();
-  const onRegister = async (form: registerForm): Promise<void> => {
+  const create = async (form: applicationForm): Promise<void> => {
     const request: CreateRequest = {
       name: form.name,
       homepage: form.homepage,
+      description: form.description,
       callback: form.callback,
     };
-    if (form.description !== undefined) {
-      request.description = form.description;
+    if (request.description === '') {
+      request.description = undefined;
     }
     dispatch({
       type: 'application/create',
@@ -34,7 +35,7 @@ const New: React.FC = () => {
         <span>注册新的OAuth应用程序</span>
       </div>
       <hr className={style.line} />
-      <Form className={style.form} onFinish={onRegister} name="new" size="large" layout="vertical">
+      <Form className={style.form} onFinish={create} size="large" layout="vertical">
         <Form.Item
           label="应用名称"
           name="name"
@@ -49,8 +50,8 @@ const New: React.FC = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item label="应用简介" name="description">
-          <Input.TextArea placeholder="应用简介是可选的" />
+        <Form.Item label="应用描述" name="description">
+          <Input.TextArea placeholder="应用描述是可选的" />
         </Form.Item>
         <Form.Item
           label="授权回调地址"
@@ -61,7 +62,7 @@ const New: React.FC = () => {
         </Form.Item>
         <hr className={style.line} />
         <Form.Item className={style.submitLine}>
-          <Button className={style.register} htmlType="submit" type="primary">
+          <Button className={style.create} htmlType="submit" type="primary">
             注册应用
           </Button>
           <Button className={style.cancel} onClick={onCancelClick}>

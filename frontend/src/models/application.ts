@@ -1,4 +1,5 @@
 import type { ImmerReducer } from 'umi';
+import { message } from 'antd';
 import type { EffectsCommandMap } from 'dva';
 import type {
   CreateRequest,
@@ -9,6 +10,8 @@ import type {
   GenerateClientSecretReply,
   RevokeClientSecretRequest,
   Secret,
+  UploadLogoRequest,
+  UpdateRequest,
 } from '@/api/application/v1/application';
 import { Application } from '@/api/application/v1/application';
 import { ApplicationClient } from '@/api/request';
@@ -19,6 +22,7 @@ export interface ApplicationModelType {
   state: Application;
   effects: {
     create: (action: { payload: CreateRequest }, effects: EffectsCommandMap) => void;
+    update: (action: { payload: Omit<UpdateRequest, 'id'> }, effects: EffectsCommandMap) => void;
     setup: (action: { payload: RetrieveRequest }, effects: EffectsCommandMap) => void;
     generateClientSecret: (
       action: { payload: Omit<GenerateClientSecretRequest, 'id'> },
@@ -26,6 +30,10 @@ export interface ApplicationModelType {
     ) => void;
     revokeClientSecret: (
       action: { payload: Omit<RevokeClientSecretRequest, 'id'> },
+      effects: EffectsCommandMap,
+    ) => void;
+    uploadLogo: (
+      action: { payload: Omit<UploadLogoRequest, 'id'> },
       effects: EffectsCommandMap,
     ) => void;
   };
@@ -48,6 +56,13 @@ export interface ApplicationModelType {
       Application,
       {
         type: 'removeClientSecret';
+        payload: string;
+      }
+    >;
+    setLogo: ImmerReducer<
+      Application,
+      {
+        type: 'setLogo';
         payload: string;
       }
     >;
@@ -77,6 +92,23 @@ const ApplicationModel: ApplicationModelType = {
       );
       if (response) {
         history.push(`/application/${response.id}`);
+      } else if (error) {
+        throw error;
+      }
+    },
+    *update({ payload }, { call, put, select }) {
+      const { id } = yield select(({ application }: { application: Application }) => application);
+      const request: UpdateRequest = { id, ...payload };
+      const { response, error }: { response: GenerateClientSecretReply; error: Error } = yield call(
+        ApplicationClient.Update,
+        request,
+      );
+      if (response) {
+        yield put({
+          type: 'set',
+          payload: payload,
+        });
+        message.success('应用更新成功');
       } else if (error) {
         throw error;
       }
@@ -131,6 +163,22 @@ const ApplicationModel: ApplicationModelType = {
         throw error;
       }
     },
+    *uploadLogo({ payload }, { call, put, select }) {
+      const { id } = yield select(({ application }: { application: Application }) => application);
+      const request: UploadLogoRequest = { id, ...payload };
+      const { response, error }: { response: Empty; error: Error } = yield call(
+        ApplicationClient.UploadLogo,
+        request,
+      );
+      if (response) {
+        yield put({
+          type: 'setLogo',
+          payload: payload.logo,
+        });
+      } else if (error) {
+        throw error;
+      }
+    },
   },
   reducers: {
     set(state, { payload }) {
@@ -144,6 +192,9 @@ const ApplicationModel: ApplicationModelType = {
       state.clientSecrets = adjustClientSecrets(state.clientSecrets).filter(
         (secret) => secret.id != payload,
       );
+    },
+    setLogo(state, { payload }) {
+      state.logo = payload;
     },
   },
   subscriptions: {},

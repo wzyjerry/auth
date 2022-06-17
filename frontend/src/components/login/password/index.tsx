@@ -32,7 +32,7 @@ const Password: React.FC<LoginProp> = (prop) => {
     });
   };
   return (
-    <Form name="password" className={style.form} onFinish={onLogin} size="large">
+    <Form className={style.form} onFinish={onLogin} size="large">
       <Form.Item className={style.accountLine}>
         <Input.Group compact>
           <span className={style.accountLabel}>账号</span>

@@ -23,6 +23,8 @@ type ApplicationServiceHTTPServer interface {
 	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
 	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
+	Update(context.Context, *UpdateRequest) (*emptypb.Empty, error)
+	UploadLogo(context.Context, *UploadLogoRequest) (*emptypb.Empty, error)
 }
 
 func RegisterApplicationServiceHTTPServer(s *http.Server, srv ApplicationServiceHTTPServer) {
@@ -31,6 +33,8 @@ func RegisterApplicationServiceHTTPServer(s *http.Server, srv ApplicationService
 	r.GET("/application/v1/{id}", _ApplicationService_Retrieve0_HTTP_Handler(srv))
 	r.POST("/application/v1/{id}/generateClientSecret", _ApplicationService_GenerateClientSecret0_HTTP_Handler(srv))
 	r.DELETE("/application/v1/{id}/{secret_id}", _ApplicationService_RevokeClientSecret0_HTTP_Handler(srv))
+	r.PUT("/application/v1/{id}/uploadLogo", _ApplicationService_UploadLogo0_HTTP_Handler(srv))
+	r.PUT("/application/v1/{id}", _ApplicationService_Update0_HTTP_Handler(srv))
 }
 
 func _ApplicationService_Create0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
@@ -118,11 +122,57 @@ func _ApplicationService_RevokeClientSecret0_HTTP_Handler(srv ApplicationService
 	}
 }
 
+func _ApplicationService_UploadLogo0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UploadLogoRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/UploadLogo")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UploadLogo(ctx, req.(*UploadLogoRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ApplicationService_Update0_HTTP_Handler(srv ApplicationServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.application.v1.ApplicationService/Update")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Update(ctx, req.(*UpdateRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ApplicationServiceHTTPClient interface {
 	Create(ctx context.Context, req *CreateRequest, opts ...http.CallOption) (rsp *CreateReply, err error)
 	GenerateClientSecret(ctx context.Context, req *GenerateClientSecretRequest, opts ...http.CallOption) (rsp *GenerateClientSecretReply, err error)
 	Retrieve(ctx context.Context, req *RetrieveRequest, opts ...http.CallOption) (rsp *RetrieveReply, err error)
 	RevokeClientSecret(ctx context.Context, req *RevokeClientSecretRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	Update(ctx context.Context, req *UpdateRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UploadLogo(ctx context.Context, req *UploadLogoRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type ApplicationServiceHTTPClientImpl struct {
@@ -179,6 +229,32 @@ func (c *ApplicationServiceHTTPClientImpl) RevokeClientSecret(ctx context.Contex
 	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/RevokeClientSecret"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ApplicationServiceHTTPClientImpl) Update(ctx context.Context, in *UpdateRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/application/v1/{id}"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/Update"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ApplicationServiceHTTPClientImpl) UploadLogo(ctx context.Context, in *UploadLogoRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/application/v1/{id}/uploadLogo"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.application.v1.ApplicationService/UploadLogo"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

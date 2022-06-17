@@ -16,6 +16,42 @@ type applicationRepo struct {
 	data *Data
 }
 
+func (r *applicationRepo) Update(ctx context.Context, admin string, id string, name string, homepage string, description *string, callback string) error {
+	application, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldID).Only(ctx)
+	if err != nil {
+		return err
+	}
+	update := application.Update().SetName(name).SetHomepage(homepage).SetCallback(callback)
+	if description == nil {
+		update.ClearDescription()
+	} else {
+		update.SetNillableDescription(description)
+	}
+	return update.Exec(ctx)
+}
+
+func (r *applicationRepo) SetLogo(ctx context.Context, admin string, id string, logo string) error {
+	exist, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldID).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return applicationBiz.ErrApplicationNotFound
+	}
+	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return r.data.db.Avatar.Create().
+				SetID(r.data.db.GenerateId()).
+				SetKind(int32(avatarNested.Kind_KIND_APPLICATION)).
+				SetRelID(id).
+				SetAvatar(logo).Exec(ctx)
+		}
+		return err
+	}
+	return avatar.Update().SetAvatar(logo).Exec(ctx)
+}
+
 func (r *applicationRepo) RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error {
 	application, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldClientSecrets).Only(ctx)
 	if err != nil {
@@ -52,7 +88,7 @@ func (r *applicationRepo) GenerateClientSecret(ctx context.Context, admin string
 	return secret, nil
 }
 
-func (r *applicationRepo) GetAvatar(ctx context.Context, id string) (string, error) {
+func (r *applicationRepo) GetLogo(ctx context.Context, id string) (string, error) {
 	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Only(ctx)
 	if err != nil {
 		return "", err

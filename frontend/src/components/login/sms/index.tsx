@@ -4,7 +4,7 @@ import type { LoginProp } from '..';
 
 const SMS: React.FC<LoginProp> = () => {
   return (
-    <Form name="sms" className={style.form} size="large">
+    <Form className={style.form} size="large">
       <Form.Item className={style.telLine}>
         <Input.Group compact>
           <Form.Item name="area">

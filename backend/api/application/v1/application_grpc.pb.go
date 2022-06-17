@@ -27,6 +27,8 @@ type ApplicationServiceClient interface {
 	Retrieve(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveReply, error)
 	GenerateClientSecret(ctx context.Context, in *GenerateClientSecretRequest, opts ...grpc.CallOption) (*GenerateClientSecretReply, error)
 	RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UploadLogo(ctx context.Context, in *UploadLogoRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type applicationServiceClient struct {
@@ -73,6 +75,24 @@ func (c *applicationServiceClient) RevokeClientSecret(ctx context.Context, in *R
 	return out, nil
 }
 
+func (c *applicationServiceClient) UploadLogo(ctx context.Context, in *UploadLogoRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/UploadLogo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApplicationServiceServer is the server API for ApplicationService service.
 // All implementations must embed UnimplementedApplicationServiceServer
 // for forward compatibility
@@ -81,6 +101,8 @@ type ApplicationServiceServer interface {
 	Retrieve(context.Context, *RetrieveRequest) (*RetrieveReply, error)
 	GenerateClientSecret(context.Context, *GenerateClientSecretRequest) (*GenerateClientSecretReply, error)
 	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
+	UploadLogo(context.Context, *UploadLogoRequest) (*emptypb.Empty, error)
+	Update(context.Context, *UpdateRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedApplicationServiceServer()
 }
 
@@ -99,6 +121,12 @@ func (UnimplementedApplicationServiceServer) GenerateClientSecret(context.Contex
 }
 func (UnimplementedApplicationServiceServer) RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeClientSecret not implemented")
+}
+func (UnimplementedApplicationServiceServer) UploadLogo(context.Context, *UploadLogoRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadLogo not implemented")
+}
+func (UnimplementedApplicationServiceServer) Update(context.Context, *UpdateRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedApplicationServiceServer) mustEmbedUnimplementedApplicationServiceServer() {}
 
@@ -185,6 +213,42 @@ func _ApplicationService_RevokeClientSecret_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ApplicationService_UploadLogo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadLogoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).UploadLogo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.ApplicationService/UploadLogo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).UploadLogo(ctx, req.(*UploadLogoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.ApplicationService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).Update(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ApplicationService_ServiceDesc is the grpc.ServiceDesc for ApplicationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -207,6 +271,14 @@ var ApplicationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeClientSecret",
 			Handler:    _ApplicationService_RevokeClientSecret_Handler,
+		},
+		{
+			MethodName: "UploadLogo",
+			Handler:    _ApplicationService_UploadLogo_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ApplicationService_Update_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

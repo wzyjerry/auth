@@ -31,7 +31,7 @@ func NewHTTPServer(
 			validate.Validator(),
 		),
 		http.Filter(handlers.CORS(
-			handlers.AllowedMethods([]string{"GET", "POST", "DELETE"}),
+			handlers.AllowedMethods([]string{"POST", "PUT", "GET", "DELETE"}),
 			handlers.AllowedOrigins([]string{"*"}),
 			handlers.AllowedHeaders([]string{"Content-Type", "x-md-global-ip", "Authorization"}),
 		)),

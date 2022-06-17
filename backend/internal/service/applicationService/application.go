@@ -68,3 +68,19 @@ func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.Revo
 	}
 	return nil, s.uc.RevokeClientSecret(ctx, (*token).Subject(), in.Id, in.SecretId)
 }
+
+func (s *ApplicationService) UploadLogo(ctx context.Context, in *v1.UploadLogoRequest) (*emptypb.Empty, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return nil, s.uc.UploadLogo(ctx, (*token).Subject(), in.Id, in.Logo)
+}
+
+func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (*emptypb.Empty, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return nil, s.uc.Update(ctx, (*token).Subject(), in.Id, in.Name, in.Homepage, in.Description, in.Callback)
+}

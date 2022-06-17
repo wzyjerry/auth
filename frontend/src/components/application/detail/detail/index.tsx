@@ -1,14 +1,17 @@
 import style from './index.less';
 import copy from 'copy-to-clipboard';
 import { CopyOutlined } from '@ant-design/icons';
-import { Button, message, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import { useState } from 'react';
 import SecretItem from './secret';
+import Logo from './logo';
+import UpdateForm from './update';
 import GenerateClientSecret from './generateClientSecret';
 import type { Application } from 'umi';
 import { useSelector } from 'umi';
 
 const Detail: React.FC = () => {
+  const [visible, setVisible] = useState(false);
   const application: Application = useSelector(
     ({ application }: { application: Application }) => application,
   );
@@ -39,7 +42,6 @@ const Detail: React.FC = () => {
       return <span>您需要一个客户端密钥来验证应用程序。</span>;
     }
   };
-  const [visible, setVisible] = useState(false);
   return (
     <div className={style.detail}>
       <div className={style.title}>
@@ -69,25 +71,11 @@ const Detail: React.FC = () => {
         />
       </div>
       {renderClientSecrets()}
-      {/* <Form className={style.form} onFinish={onRegister} name='new' size='large' layout='vertical'>
-        <Form.Item label='应用名称' name='name' rules={[{ required: true, message: '请输入可以被用户识别和信任的应用名称'}]}>
-          <Input></Input>
-        </Form.Item>
-        <Form.Item label='应用主页' name='homepage' rules={[{ required: true, type: 'url', message: '请输入应用的完整主页'}]}>
-          <Input></Input>
-        </Form.Item>
-        <Form.Item label='应用简介' name='description'>
-          <Input.TextArea placeholder='应用简介是可选的'></Input.TextArea>
-        </Form.Item>
-        <Form.Item label='授权回调地址' name='callback' rules={[{ required: true, type: 'url', message: '请输入应用的回调地址'}]}>
-          <Input></Input>
-        </Form.Item>
-        <hr className={style.line}></hr>
-        <Form.Item className={style.submitLine}>
-          <Button className={style.register} htmlType='submit' type='primary'>注册应用</Button>
-          <Button className={style.cancel} onClick={onCancelClick}>取消</Button>
-        </Form.Item>
-      </Form> */}
+      <div className={style.logoLine}>
+        <span className={style.logoLabel}>应用程序图标</span>
+        <Logo />
+      </div>
+      <UpdateForm />
     </div>
   );
 };

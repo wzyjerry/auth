@@ -2,7 +2,7 @@ import { useHistory } from 'react-router-dom';
 import { Type, Method } from '@/api/user/v1/login';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useDispatch } from 'umi';
-import { LoginRequest } from '@/api/user/v1/login';
+import type { LoginRequest } from '@/api/user/v1/login';
 
 const Microsoft = () => {
   const dispatch = useDispatch();

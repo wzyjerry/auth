@@ -14,9 +14,11 @@ type ApplicationRepo interface {
 	// db部分
 	Create(ctx context.Context, admin string, name string, homepage string, description *string, callback string) (string, error)
 	Retrieve(ctx context.Context, admin string, id string) (*ent.Application, error)
-	GetAvatar(ctx context.Context, id string) (string, error)
+	GetLogo(ctx context.Context, id string) (string, error)
 	GenerateClientSecret(ctx context.Context, admin string, id string, description string) (*applicationNested.ClientSecret, error)
 	RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error
+	SetLogo(ctx context.Context, admin string, id string, logo string) error
+	Update(ctx context.Context, admin string, id string, iname string, homepage string, description *string, callback string) error
 }
 
 type ApplicationUsecase struct {
@@ -56,9 +58,9 @@ func (uc *ApplicationUsecase) Retrieve(ctx context.Context, admin string, id str
 		Description:   application.Description,
 		Callback:      *application.Callback,
 	}
-	avatar, err := uc.repo.GetAvatar(ctx, id)
+	logo, err := uc.repo.GetLogo(ctx, id)
 	if err == nil {
-		reply.Avatar = &avatar
+		reply.Logo = &logo
 	} else if !ent.IsNotFound(err) {
 		return nil, err
 	}
@@ -101,4 +103,16 @@ func (uc *ApplicationUsecase) RevokeClientSecret(ctx context.Context, admin stri
 		return ErrApplicationNotFound
 	}
 	return err
+}
+
+func (uc *ApplicationUsecase) UploadLogo(ctx context.Context, admin string, id string, logo string) error {
+	err := uc.repo.SetLogo(ctx, admin, id, logo)
+	if ent.IsNotFound(err) {
+		return ErrApplicationNotFound
+	}
+	return err
+}
+
+func (uc *ApplicationUsecase) Update(ctx context.Context, admin string, id string, name string, homepage string, description *string, callback string) error {
+	return uc.repo.Update(ctx, admin, id, name, homepage, description, callback)
 }

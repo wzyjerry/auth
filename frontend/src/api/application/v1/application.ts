@@ -34,7 +34,7 @@ export interface Application {
   name: string;
   clientId: string;
   clientSecrets: Secret[];
-  avatar?: string | undefined;
+  logo?: string | undefined;
   homepage: string;
   description?: string | undefined;
   callback: string;
@@ -44,7 +44,7 @@ export interface RetrieveReply {
   name: string;
   clientId: string;
   clientSecrets: Secret[];
-  avatar?: string | undefined;
+  logo?: string | undefined;
   homepage: string;
   description?: string | undefined;
   callback: string;
@@ -62,6 +62,19 @@ export interface GenerateClientSecretReply {
 export interface RevokeClientSecretRequest {
   id: string;
   secretId: string;
+}
+
+export interface UploadLogoRequest {
+  id: string;
+  logo: string;
+}
+
+export interface UpdateRequest {
+  id: string;
+  name: string;
+  homepage: string;
+  description?: string | undefined;
+  callback: string;
 }
 
 function createBaseCreateRequest(): CreateRequest {
@@ -329,7 +342,7 @@ function createBaseApplication(): Application {
     name: '',
     clientId: '',
     clientSecrets: [],
-    avatar: undefined,
+    logo: undefined,
     homepage: '',
     description: undefined,
     callback: '',
@@ -350,8 +363,8 @@ export const Application = {
     for (const v of message.clientSecrets) {
       Secret.encode(v!, writer.uint32(34).fork()).ldelim();
     }
-    if (message.avatar !== undefined) {
-      writer.uint32(42).string(message.avatar);
+    if (message.logo !== undefined) {
+      writer.uint32(42).string(message.logo);
     }
     if (message.homepage !== '') {
       writer.uint32(50).string(message.homepage);
@@ -385,7 +398,7 @@ export const Application = {
           message.clientSecrets.push(Secret.decode(reader, reader.uint32()));
           break;
         case 5:
-          message.avatar = reader.string();
+          message.logo = reader.string();
           break;
         case 6:
           message.homepage = reader.string();
@@ -412,7 +425,7 @@ export const Application = {
       clientSecrets: Array.isArray(object?.clientSecrets)
         ? object.clientSecrets.map((e: any) => Secret.fromJSON(e))
         : [],
-      avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
+      logo: isSet(object.logo) ? String(object.logo) : undefined,
       homepage: isSet(object.homepage) ? String(object.homepage) : '',
       description: isSet(object.description) ? String(object.description) : undefined,
       callback: isSet(object.callback) ? String(object.callback) : '',
@@ -429,7 +442,7 @@ export const Application = {
     } else {
       obj.clientSecrets = [];
     }
-    message.avatar !== undefined && (obj.avatar = message.avatar);
+    message.logo !== undefined && (obj.logo = message.logo);
     message.homepage !== undefined && (obj.homepage = message.homepage);
     message.description !== undefined && (obj.description = message.description);
     message.callback !== undefined && (obj.callback = message.callback);
@@ -442,7 +455,7 @@ export const Application = {
     message.name = object.name ?? '';
     message.clientId = object.clientId ?? '';
     message.clientSecrets = object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
-    message.avatar = object.avatar ?? undefined;
+    message.logo = object.logo ?? undefined;
     message.homepage = object.homepage ?? '';
     message.description = object.description ?? undefined;
     message.callback = object.callback ?? '';
@@ -455,7 +468,7 @@ function createBaseRetrieveReply(): RetrieveReply {
     name: '',
     clientId: '',
     clientSecrets: [],
-    avatar: undefined,
+    logo: undefined,
     homepage: '',
     description: undefined,
     callback: '',
@@ -473,8 +486,8 @@ export const RetrieveReply = {
     for (const v of message.clientSecrets) {
       Secret.encode(v!, writer.uint32(26).fork()).ldelim();
     }
-    if (message.avatar !== undefined) {
-      writer.uint32(34).string(message.avatar);
+    if (message.logo !== undefined) {
+      writer.uint32(34).string(message.logo);
     }
     if (message.homepage !== '') {
       writer.uint32(42).string(message.homepage);
@@ -505,7 +518,7 @@ export const RetrieveReply = {
           message.clientSecrets.push(Secret.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.avatar = reader.string();
+          message.logo = reader.string();
           break;
         case 5:
           message.homepage = reader.string();
@@ -531,7 +544,7 @@ export const RetrieveReply = {
       clientSecrets: Array.isArray(object?.clientSecrets)
         ? object.clientSecrets.map((e: any) => Secret.fromJSON(e))
         : [],
-      avatar: isSet(object.avatar) ? String(object.avatar) : undefined,
+      logo: isSet(object.logo) ? String(object.logo) : undefined,
       homepage: isSet(object.homepage) ? String(object.homepage) : '',
       description: isSet(object.description) ? String(object.description) : undefined,
       callback: isSet(object.callback) ? String(object.callback) : '',
@@ -547,7 +560,7 @@ export const RetrieveReply = {
     } else {
       obj.clientSecrets = [];
     }
-    message.avatar !== undefined && (obj.avatar = message.avatar);
+    message.logo !== undefined && (obj.logo = message.logo);
     message.homepage !== undefined && (obj.homepage = message.homepage);
     message.description !== undefined && (obj.description = message.description);
     message.callback !== undefined && (obj.callback = message.callback);
@@ -559,7 +572,7 @@ export const RetrieveReply = {
     message.name = object.name ?? '';
     message.clientId = object.clientId ?? '';
     message.clientSecrets = object.clientSecrets?.map((e) => Secret.fromPartial(e)) || [];
-    message.avatar = object.avatar ?? undefined;
+    message.logo = object.logo ?? undefined;
     message.homepage = object.homepage ?? '';
     message.description = object.description ?? undefined;
     message.callback = object.callback ?? '';
@@ -745,11 +758,156 @@ export const RevokeClientSecretRequest = {
   },
 };
 
+function createBaseUploadLogoRequest(): UploadLogoRequest {
+  return { id: '', logo: '' };
+}
+
+export const UploadLogoRequest = {
+  encode(message: UploadLogoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.logo !== '') {
+      writer.uint32(18).string(message.logo);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadLogoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUploadLogoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.logo = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UploadLogoRequest {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+      logo: isSet(object.logo) ? String(object.logo) : '',
+    };
+  },
+
+  toJSON(message: UploadLogoRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.logo !== undefined && (obj.logo = message.logo);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UploadLogoRequest>, I>>(object: I): UploadLogoRequest {
+    const message = createBaseUploadLogoRequest();
+    message.id = object.id ?? '';
+    message.logo = object.logo ?? '';
+    return message;
+  },
+};
+
+function createBaseUpdateRequest(): UpdateRequest {
+  return { id: '', name: '', homepage: '', description: undefined, callback: '' };
+}
+
+export const UpdateRequest = {
+  encode(message: UpdateRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== '') {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.homepage !== '') {
+      writer.uint32(26).string(message.homepage);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.callback !== '') {
+      writer.uint32(42).string(message.callback);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.homepage = reader.string();
+          break;
+        case 4:
+          message.description = reader.string();
+          break;
+        case 5:
+          message.callback = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateRequest {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      homepage: isSet(object.homepage) ? String(object.homepage) : '',
+      description: isSet(object.description) ? String(object.description) : undefined,
+      callback: isSet(object.callback) ? String(object.callback) : '',
+    };
+  },
+
+  toJSON(message: UpdateRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    message.homepage !== undefined && (obj.homepage = message.homepage);
+    message.description !== undefined && (obj.description = message.description);
+    message.callback !== undefined && (obj.callback = message.callback);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UpdateRequest>, I>>(object: I): UpdateRequest {
+    const message = createBaseUpdateRequest();
+    message.id = object.id ?? '';
+    message.name = object.name ?? '';
+    message.homepage = object.homepage ?? '';
+    message.description = object.description ?? undefined;
+    message.callback = object.callback ?? '';
+    return message;
+  },
+};
+
 export interface ApplicationService {
   Create(request: CreateRequest): Promise<CreateReply>;
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
   GenerateClientSecret(request: GenerateClientSecretRequest): Promise<GenerateClientSecretReply>;
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
+  UploadLogo(request: UploadLogoRequest): Promise<Empty>;
+  Update(request: UpdateRequest): Promise<Empty>;
 }
 
 export class ApplicationServiceClientImpl implements ApplicationService {
@@ -760,6 +918,8 @@ export class ApplicationServiceClientImpl implements ApplicationService {
     this.Retrieve = this.Retrieve.bind(this);
     this.GenerateClientSecret = this.GenerateClientSecret.bind(this);
     this.RevokeClientSecret = this.RevokeClientSecret.bind(this);
+    this.UploadLogo = this.UploadLogo.bind(this);
+    this.Update = this.Update.bind(this);
   }
   Create(request: CreateRequest): Promise<CreateReply> {
     const data = CreateRequest.encode(request).finish();
@@ -790,6 +950,18 @@ export class ApplicationServiceClientImpl implements ApplicationService {
       'RevokeClientSecret',
       data,
     );
+    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
+  }
+
+  UploadLogo(request: UploadLogoRequest): Promise<Empty> {
+    const data = UploadLogoRequest.encode(request).finish();
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'UploadLogo', data);
+    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
+  }
+
+  Update(request: UpdateRequest): Promise<Empty> {
+    const data = UpdateRequest.encode(request).finish();
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Update', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
   }
 }

@@ -8,6 +8,8 @@ import type {
   GenerateClientSecretRequest,
   GenerateClientSecretReply,
   RevokeClientSecretRequest,
+  UploadLogoRequest,
+  UpdateRequest,
 } from '../application/v1/application';
 import { go, getBearer } from '.';
 
@@ -32,6 +34,7 @@ export async function Retrieve(bm: RetrieveRequest) {
     }),
   );
 }
+
 export async function GenerateClientSecret(bm: GenerateClientSecretRequest) {
   return go<GenerateClientSecretReply>(
     request(`/application/v1/${bm.id}/generateClientSecret`, {
@@ -43,6 +46,7 @@ export async function GenerateClientSecret(bm: GenerateClientSecretRequest) {
     }),
   );
 }
+
 export async function RevokeClientSecret(bm: RevokeClientSecretRequest) {
   return go<Empty>(
     request(`/application/v1/${bm.id}/${bm.secretId}`, {
@@ -50,6 +54,30 @@ export async function RevokeClientSecret(bm: RevokeClientSecretRequest) {
       headers: {
         Authorization: getBearer(),
       },
+    }),
+  );
+}
+
+export async function UploadLogo(bm: UploadLogoRequest) {
+  return go<Empty>(
+    request(`/application/v1/${bm.id}/uploadLogo`, {
+      method: 'PUT',
+      headers: {
+        Authorization: getBearer(),
+      },
+      data: bm,
+    }),
+  );
+}
+
+export async function Update(bm: UpdateRequest) {
+  return go<Empty>(
+    request(`/application/v1/${bm.id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: getBearer(),
+      },
+      data: bm,
     }),
   );
 }

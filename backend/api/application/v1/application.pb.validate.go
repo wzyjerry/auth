@@ -600,8 +600,8 @@ func (m *Application) validate(all bool) error {
 
 	// no validation rules for Callback
 
-	if m.Avatar != nil {
-		// no validation rules for Avatar
+	if m.Logo != nil {
+		// no validation rules for Logo
 	}
 
 	if m.Description != nil {
@@ -749,8 +749,8 @@ func (m *RetrieveReply) validate(all bool) error {
 
 	// no validation rules for Callback
 
-	if m.Avatar != nil {
-		// no validation rules for Avatar
+	if m.Logo != nil {
+		// no validation rules for Logo
 	}
 
 	if m.Description != nil {
@@ -1178,3 +1178,268 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = RevokeClientSecretRequestValidationError{}
+
+// Validate checks the field values on UploadLogoRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *UploadLogoRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UploadLogoRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UploadLogoRequestMultiError, or nil if none found.
+func (m *UploadLogoRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UploadLogoRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Logo
+
+	if len(errors) > 0 {
+		return UploadLogoRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UploadLogoRequestMultiError is an error wrapping multiple validation errors
+// returned by UploadLogoRequest.ValidateAll() if the designated constraints
+// aren't met.
+type UploadLogoRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UploadLogoRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UploadLogoRequestMultiError) AllErrors() []error { return m }
+
+// UploadLogoRequestValidationError is the validation error returned by
+// UploadLogoRequest.Validate if the designated constraints aren't met.
+type UploadLogoRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UploadLogoRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UploadLogoRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UploadLogoRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UploadLogoRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UploadLogoRequestValidationError) ErrorName() string {
+	return "UploadLogoRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UploadLogoRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUploadLogoRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UploadLogoRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UploadLogoRequestValidationError{}
+
+// Validate checks the field values on UpdateRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *UpdateRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in UpdateRequestMultiError, or
+// nil if none found.
+func (m *UpdateRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if utf8.RuneCountInString(m.GetName()) < 1 {
+		err := UpdateRequestValidationError{
+			field:  "Name",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if uri, err := url.Parse(m.GetHomepage()); err != nil {
+		err = UpdateRequestValidationError{
+			field:  "Homepage",
+			reason: "value must be a valid URI",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	} else if !uri.IsAbs() {
+		err := UpdateRequestValidationError{
+			field:  "Homepage",
+			reason: "value must be absolute",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if uri, err := url.Parse(m.GetCallback()); err != nil {
+		err = UpdateRequestValidationError{
+			field:  "Callback",
+			reason: "value must be a valid URI",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	} else if !uri.IsAbs() {
+		err := UpdateRequestValidationError{
+			field:  "Callback",
+			reason: "value must be absolute",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if len(errors) > 0 {
+		return UpdateRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateRequestMultiError is an error wrapping multiple validation errors
+// returned by UpdateRequest.ValidateAll() if the designated constraints
+// aren't met.
+type UpdateRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateRequestMultiError) AllErrors() []error { return m }
+
+// UpdateRequestValidationError is the validation error returned by
+// UpdateRequest.Validate if the designated constraints aren't met.
+type UpdateRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateRequestValidationError) ErrorName() string { return "UpdateRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e UpdateRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateRequestValidationError{}

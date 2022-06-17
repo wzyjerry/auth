@@ -55,7 +55,7 @@ message Application {
     string name = 2;
     string client_id = 3;
     repeated Secret client_secrets = 4;
-    optional string avatar = 5;
+    optional string logo = 5;
     string homepage = 6;
     optional string description = 7;
     string callback = 8;
@@ -65,7 +65,7 @@ message RetrieveReply {
     string name = 1;
     string client_id = 2;
     repeated Secret client_secrets = 3;
-    optional string avatar = 4;
+    optional string logo = 4;
     string homepage = 5;
     optional string description = 6;
     string callback = 7;
@@ -83,6 +83,19 @@ message GenerateClientSecretReply {
 message RevokeClientSecretRequest {
     string id = 1;
     string secret_id = 2;
+}
+
+message UploadLogoRequest {
+    string id = 1;
+    string logo = 2;
+}
+
+message UpdateRequest {
+    string id = 1;
+    string name = 2 [(validate.rules).string.min_len = 1];
+    string homepage = 3 [(validate.rules).string.uri = true];
+    optional string description = 4;
+    string callback = 5 [(validate.rules).string.uri = true];
 }
 
 service ApplicationService {
@@ -106,6 +119,18 @@ service ApplicationService {
     rpc RevokeClientSecret(RevokeClientSecretRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
             delete: "/application/v1/{id}/{secret_id}"
+        };
+    }
+    rpc UploadLogo(UploadLogoRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            put: "/application/v1/{id}/uploadLogo"
+            body: "*"
+        };
+    }
+    rpc Update(UpdateRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            put: "/application/v1/{id}"
+            body:"*"
         };
     }
 }
