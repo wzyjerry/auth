@@ -77,6 +77,21 @@ export interface UpdateRequest {
   callback: string;
 }
 
+export interface DeleteRequest {
+  id: string;
+}
+
+export interface ApplicationOverview {
+  id: string;
+  name: string;
+  maskedDescription?: string | undefined;
+  logo?: string | undefined;
+}
+
+export interface GetAllReply {
+  applicationOverviews: ApplicationOverview[];
+}
+
 function createBaseCreateRequest(): CreateRequest {
   return { name: '', homepage: '', description: undefined, callback: '' };
 }
@@ -901,6 +916,193 @@ export const UpdateRequest = {
   },
 };
 
+function createBaseDeleteRequest(): DeleteRequest {
+  return { id: '' };
+}
+
+export const DeleteRequest = {
+  encode(message: DeleteRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteRequest {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+    };
+  },
+
+  toJSON(message: DeleteRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DeleteRequest>, I>>(object: I): DeleteRequest {
+    const message = createBaseDeleteRequest();
+    message.id = object.id ?? '';
+    return message;
+  },
+};
+
+function createBaseApplicationOverview(): ApplicationOverview {
+  return { id: '', name: '', maskedDescription: undefined, logo: undefined };
+}
+
+export const ApplicationOverview = {
+  encode(message: ApplicationOverview, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== '') {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== '') {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.maskedDescription !== undefined) {
+      writer.uint32(26).string(message.maskedDescription);
+    }
+    if (message.logo !== undefined) {
+      writer.uint32(34).string(message.logo);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ApplicationOverview {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApplicationOverview();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.maskedDescription = reader.string();
+          break;
+        case 4:
+          message.logo = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApplicationOverview {
+    return {
+      id: isSet(object.id) ? String(object.id) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      maskedDescription: isSet(object.maskedDescription)
+        ? String(object.maskedDescription)
+        : undefined,
+      logo: isSet(object.logo) ? String(object.logo) : undefined,
+    };
+  },
+
+  toJSON(message: ApplicationOverview): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    message.maskedDescription !== undefined && (obj.maskedDescription = message.maskedDescription);
+    message.logo !== undefined && (obj.logo = message.logo);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ApplicationOverview>, I>>(
+    object: I,
+  ): ApplicationOverview {
+    const message = createBaseApplicationOverview();
+    message.id = object.id ?? '';
+    message.name = object.name ?? '';
+    message.maskedDescription = object.maskedDescription ?? undefined;
+    message.logo = object.logo ?? undefined;
+    return message;
+  },
+};
+
+function createBaseGetAllReply(): GetAllReply {
+  return { applicationOverviews: [] };
+}
+
+export const GetAllReply = {
+  encode(message: GetAllReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.applicationOverviews) {
+      ApplicationOverview.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllReply {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetAllReply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.applicationOverviews.push(ApplicationOverview.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllReply {
+    return {
+      applicationOverviews: Array.isArray(object?.applicationOverviews)
+        ? object.applicationOverviews.map((e: any) => ApplicationOverview.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: GetAllReply): unknown {
+    const obj: any = {};
+    if (message.applicationOverviews) {
+      obj.applicationOverviews = message.applicationOverviews.map((e) =>
+        e ? ApplicationOverview.toJSON(e) : undefined,
+      );
+    } else {
+      obj.applicationOverviews = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GetAllReply>, I>>(object: I): GetAllReply {
+    const message = createBaseGetAllReply();
+    message.applicationOverviews =
+      object.applicationOverviews?.map((e) => ApplicationOverview.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface ApplicationService {
   Create(request: CreateRequest): Promise<CreateReply>;
   Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
@@ -908,6 +1110,8 @@ export interface ApplicationService {
   RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
   UploadLogo(request: UploadLogoRequest): Promise<Empty>;
   Update(request: UpdateRequest): Promise<Empty>;
+  Delete(request: DeleteRequest): Promise<Empty>;
+  GetAll(request: Empty): Promise<GetAllReply>;
 }
 
 export class ApplicationServiceClientImpl implements ApplicationService {
@@ -920,6 +1124,8 @@ export class ApplicationServiceClientImpl implements ApplicationService {
     this.RevokeClientSecret = this.RevokeClientSecret.bind(this);
     this.UploadLogo = this.UploadLogo.bind(this);
     this.Update = this.Update.bind(this);
+    this.Delete = this.Delete.bind(this);
+    this.GetAll = this.GetAll.bind(this);
   }
   Create(request: CreateRequest): Promise<CreateReply> {
     const data = CreateRequest.encode(request).finish();
@@ -963,6 +1169,18 @@ export class ApplicationServiceClientImpl implements ApplicationService {
     const data = UpdateRequest.encode(request).finish();
     const promise = this.rpc.request('api.application.v1.ApplicationService', 'Update', data);
     return promise.then((data) => Empty.decode(new _m0.Reader(data)));
+  }
+
+  Delete(request: DeleteRequest): Promise<Empty> {
+    const data = DeleteRequest.encode(request).finish();
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Delete', data);
+    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
+  }
+
+  GetAll(request: Empty): Promise<GetAllReply> {
+    const data = Empty.encode(request).finish();
+    const promise = this.rpc.request('api.application.v1.ApplicationService', 'GetAll', data);
+    return promise.then((data) => GetAllReply.decode(new _m0.Reader(data)));
   }
 }
 

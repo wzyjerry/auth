@@ -6,13 +6,13 @@ interface ThirdPartyProp {
   className?: string;
   returnTo: string;
 }
-const ThirdParty: React.FC<ThirdPartyProp> = (prop) => {
+const ThirdParty: React.FC<ThirdPartyProp> = ({ className, returnTo }) => {
   return (
-    <div className={prop.className}>
+    <div className={className}>
       <span className={style.title}>其他方式登录</span>
       <div className={style.list}>
-        <Github className={style.item} returnTo={prop.returnTo} />
-        <Microsoft className={style.item} returnTo={prop.returnTo} />
+        <Github className={style.item} returnTo={returnTo} />
+        <Microsoft className={style.item} returnTo={returnTo} />
       </div>
     </div>
   );

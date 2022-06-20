@@ -3,8 +3,12 @@ import type { User } from 'umi';
 import { Avatar } from 'antd';
 
 const Navbar: React.FC = () => {
-  const avatar = useSelector(({ user }: { user: User }) => user.avatar);
-  return <Avatar size="large" src={avatar} />;
+  const user = useSelector(({ user }: { user: User }) => user);
+  return (
+    <Avatar size="large" src={user.avatar}>
+      {user.nickname[0]}
+    </Avatar>
+  );
 };
 
 export default Navbar;

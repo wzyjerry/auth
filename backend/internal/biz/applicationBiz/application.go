@@ -8,6 +8,7 @@ import (
 	v1 "github.com/wzyjerry/auth/api/application/v1"
 	"github.com/wzyjerry/auth/internal/ent"
 	"github.com/wzyjerry/auth/internal/ent/schema/applicationNested"
+	"github.com/wzyjerry/auth/internal/util"
 )
 
 type ApplicationRepo interface {
@@ -19,6 +20,9 @@ type ApplicationRepo interface {
 	RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error
 	SetLogo(ctx context.Context, admin string, id string, logo string) error
 	Update(ctx context.Context, admin string, id string, iname string, homepage string, description *string, callback string) error
+	Delete(ctx context.Context, admin string, id string) error
+	GetAll(ctx context.Context, admin string) ([]*ent.Application, error)
+	GetLogoMap(ctx context.Context, ids []string) (map[string]string, error)
 }
 
 type ApplicationUsecase struct {
@@ -115,4 +119,44 @@ func (uc *ApplicationUsecase) UploadLogo(ctx context.Context, admin string, id s
 
 func (uc *ApplicationUsecase) Update(ctx context.Context, admin string, id string, name string, homepage string, description *string, callback string) error {
 	return uc.repo.Update(ctx, admin, id, name, homepage, description, callback)
+}
+
+func (uc *ApplicationUsecase) Delete(ctx context.Context, admin string, id string) error {
+	return uc.repo.Delete(ctx, admin, id)
+}
+
+func (uc *ApplicationUsecase) GetAll(ctx context.Context, admin string) (*v1.GetAllReply, error) {
+	applications, err := uc.repo.GetAll(ctx, admin)
+	if err != nil {
+		return nil, err
+	}
+	reply := &v1.GetAllReply{
+		ApplicationOverviews: make([]*v1.ApplicationOverview, 0, len(applications)),
+	}
+	ids := make([]string, 0, len(applications))
+	for _, item := range applications {
+		applicationOverview := &v1.ApplicationOverview{
+			Id:   item.ID,
+			Name: *item.Name,
+		}
+		if item.Description != nil {
+			if len(*item.Description) > 37 {
+				applicationOverview.MaskedDescription = util.P((*item.Description)[:37] + "...")
+			} else {
+				applicationOverview.MaskedDescription = item.Description
+			}
+		}
+		ids = append(ids, item.ID)
+		reply.ApplicationOverviews = append(reply.ApplicationOverviews, applicationOverview)
+	}
+	logoMap, err := uc.repo.GetLogoMap(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range reply.ApplicationOverviews {
+		if logo, ok := logoMap[item.Id]; ok {
+			item.Logo = &logo
+		}
+	}
+	return reply, nil
 }

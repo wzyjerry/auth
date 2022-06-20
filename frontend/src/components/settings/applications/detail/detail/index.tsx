@@ -19,7 +19,7 @@ const Detail: React.FC = () => {
     copy(application.clientId);
     message.success(`已复制到剪切板: ${application.clientId}`);
   };
-  const renderClientSecrets = (): JSX.Element => {
+  const renderClientSecrets = () => {
     if (application.clientSecrets.length > 0) {
       const only = application.clientSecrets.length === 1;
       return (

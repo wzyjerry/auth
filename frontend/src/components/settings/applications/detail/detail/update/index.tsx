@@ -37,29 +37,31 @@ const UpdateForm: React.FC = () => {
   };
   return (
     <Form className={style.form} size="large" layout="vertical" fields={fields} onFinish={update}>
-      <Form.Item
-        label="应用名称"
-        name="name"
-        rules={[{ required: true, message: '请输入可以被用户识别和信任的应用名称' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="应用主页"
-        name="homepage"
-        rules={[{ required: true, type: 'url', message: '请输入应用的完整主页' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item label="应用描述" name="description">
-        <Input.TextArea placeholder="应用描述是可选的" />
-      </Form.Item>
-      <Form.Item
-        label="授权回调地址"
-        name="callback"
-        rules={[{ required: true, type: 'url', message: '请输入应用的回调地址' }]}
-      >
-        <Input />
+      <Form.Item className={style.editArea}>
+        <Form.Item
+          label="应用名称"
+          name="name"
+          rules={[{ required: true, message: '请输入可以被用户识别和信任的应用名称' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="应用主页"
+          name="homepage"
+          rules={[{ required: true, type: 'url', message: '请输入应用的完整主页' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item label="应用描述" name="description">
+          <Input.TextArea placeholder="应用描述是可选的" />
+        </Form.Item>
+        <Form.Item
+          label="授权回调地址"
+          name="callback"
+          rules={[{ required: true, type: 'url', message: '请输入应用的回调地址' }]}
+        >
+          <Input />
+        </Form.Item>
       </Form.Item>
       <hr className={style.line} />
       <Form.Item className={style.submitLine}>

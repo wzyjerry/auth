@@ -16,6 +16,37 @@ type applicationRepo struct {
 	data *Data
 }
 
+func (r *applicationRepo) GetAll(ctx context.Context, admin string) ([]*ent.Application, error) {
+	return r.data.db.Application.Query().Where(application.AdminEQ(admin)).Select(
+		application.FieldID,
+		application.FieldName,
+		application.FieldDescription,
+	).Order(ent.Desc(application.FieldID)).All(ctx)
+}
+
+func (r *applicationRepo) GetLogoMap(ctx context.Context, ids []string) (map[string]string, error) {
+	result := make(map[string]string)
+	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDIn(ids...)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range avatar {
+		result[*item.RelID] = *item.Avatar
+	}
+	return result, nil
+}
+
+func (r *applicationRepo) Delete(ctx context.Context, admin string, id string) error {
+	_, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldID).Only(ctx)
+	if err != nil {
+		return err
+	}
+	go func() {
+		_, _ = r.data.db.Avatar.Delete().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Exec(ctx)
+	}()
+	return r.data.db.Application.DeleteOneID(id).Exec(ctx)
+}
+
 func (r *applicationRepo) Update(ctx context.Context, admin string, id string, name string, homepage string, description *string, callback string) error {
 	application, err := r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Select(application.FieldID).Only(ctx)
 	if err != nil {

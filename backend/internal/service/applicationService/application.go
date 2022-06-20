@@ -84,3 +84,19 @@ func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (
 	}
 	return nil, s.uc.Update(ctx, (*token).Subject(), in.Id, in.Name, in.Homepage, in.Description, in.Callback)
 }
+
+func (s *ApplicationService) Delete(ctx context.Context, in *v1.DeleteRequest) (*emptypb.Empty, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return nil, s.uc.Delete(ctx, (*token).Subject(), in.Id)
+}
+
+func (s *ApplicationService) GetAll(ctx context.Context, _ *emptypb.Empty) (*v1.GetAllReply, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	if err != nil {
+		return nil, err
+	}
+	return s.uc.GetAll(ctx, (*token).Subject())
+}

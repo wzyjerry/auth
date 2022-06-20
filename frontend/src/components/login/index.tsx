@@ -6,18 +6,18 @@ import ThirdParty from './third_party';
 export interface LoginProp {
   returnTo: string;
 }
-const Login: React.FC<LoginProp> = (prop) => {
+const Login: React.FC<LoginProp> = ({ returnTo }) => {
   return (
     <div className={style.login}>
       <Tabs className={style.tab} centered size="large">
         <Tabs.TabPane tab="密码登录" key="1">
-          <Password returnTo={prop.returnTo} />
+          <Password returnTo={returnTo} />
         </Tabs.TabPane>
         <Tabs.TabPane tab="短信登录" key="2">
-          <SMS returnTo={prop.returnTo} />
+          <SMS returnTo={returnTo} />
         </Tabs.TabPane>
       </Tabs>
-      <ThirdParty className={style.thirdParty} returnTo={prop.returnTo} />
+      <ThirdParty className={style.thirdParty} returnTo={returnTo} />
     </div>
   );
 };

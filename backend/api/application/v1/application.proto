@@ -98,6 +98,21 @@ message UpdateRequest {
     string callback = 5 [(validate.rules).string.uri = true];
 }
 
+message DeleteRequest {
+    string id = 1;
+}
+
+message ApplicationOverview {
+    string id = 1;
+    string name = 2;
+    optional string masked_description = 3;
+    optional string logo = 4;
+}
+
+message GetAllReply {
+    repeated ApplicationOverview application_overviews = 1;
+}
+
 service ApplicationService {
     rpc Create(CreateRequest) returns (CreateReply) {
         option (google.api.http) = {
@@ -131,6 +146,16 @@ service ApplicationService {
         option (google.api.http) = {
             put: "/application/v1/{id}"
             body:"*"
+        };
+    }
+    rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/application/v1/{id}"
+        };
+    }
+    rpc GetAll(google.protobuf.Empty) returns (GetAllReply) {
+        option (google.api.http) = {
+            get: "/application/v1"
         };
     }
 }

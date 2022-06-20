@@ -2,14 +2,13 @@ import style from './index.less';
 import { Modal, Form, Input, Button } from 'antd';
 import { useDispatch } from 'umi';
 interface GenerateClientSecretProp {
-  id: string;
   visiable: boolean;
   onClose: () => void;
 }
 interface generateClientSecretForm {
   description: string;
 }
-const GenerateClientSecret: React.FC<GenerateClientSecretProp> = (prop) => {
+const GenerateClientSecret: React.FC<GenerateClientSecretProp> = ({ visiable, onClose }) => {
   const dispatch = useDispatch();
   const onGenerate = (form: generateClientSecretForm) => {
     dispatch({
@@ -18,15 +17,14 @@ const GenerateClientSecret: React.FC<GenerateClientSecretProp> = (prop) => {
         description: form.description,
       },
     });
-    prop.onClose();
+    onClose();
   };
-  const onClose = () => prop.onClose();
   return (
     <Modal
       className={style.modal}
       destroyOnClose
       footer={null}
-      visible={prop.visiable}
+      visible={visiable}
       onCancel={onClose}
     >
       <Form className={style.form} onFinish={onGenerate} name="new" size="large" layout="vertical">

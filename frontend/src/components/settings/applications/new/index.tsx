@@ -27,7 +27,7 @@ const New: React.FC = () => {
     });
   };
   const onCancelClick = (): void => {
-    history.push('/application');
+    history.push('/settings/applications');
   };
   return (
     <div className={style.new}>

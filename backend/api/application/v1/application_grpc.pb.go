@@ -29,6 +29,8 @@ type ApplicationServiceClient interface {
 	RevokeClientSecret(ctx context.Context, in *RevokeClientSecretRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UploadLogo(ctx context.Context, in *UploadLogoRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllReply, error)
 }
 
 type applicationServiceClient struct {
@@ -93,6 +95,24 @@ func (c *applicationServiceClient) Update(ctx context.Context, in *UpdateRequest
 	return out, nil
 }
 
+func (c *applicationServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllReply, error) {
+	out := new(GetAllReply)
+	err := c.cc.Invoke(ctx, "/api.application.v1.ApplicationService/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApplicationServiceServer is the server API for ApplicationService service.
 // All implementations must embed UnimplementedApplicationServiceServer
 // for forward compatibility
@@ -103,6 +123,8 @@ type ApplicationServiceServer interface {
 	RevokeClientSecret(context.Context, *RevokeClientSecretRequest) (*emptypb.Empty, error)
 	UploadLogo(context.Context, *UploadLogoRequest) (*emptypb.Empty, error)
 	Update(context.Context, *UpdateRequest) (*emptypb.Empty, error)
+	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
+	GetAll(context.Context, *emptypb.Empty) (*GetAllReply, error)
 	mustEmbedUnimplementedApplicationServiceServer()
 }
 
@@ -127,6 +149,12 @@ func (UnimplementedApplicationServiceServer) UploadLogo(context.Context, *Upload
 }
 func (UnimplementedApplicationServiceServer) Update(context.Context, *UpdateRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedApplicationServiceServer) Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedApplicationServiceServer) GetAll(context.Context, *emptypb.Empty) (*GetAllReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedApplicationServiceServer) mustEmbedUnimplementedApplicationServiceServer() {}
 
@@ -249,6 +277,42 @@ func _ApplicationService_Update_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ApplicationService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.ApplicationService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).Delete(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.application.v1.ApplicationService/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).GetAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ApplicationService_ServiceDesc is the grpc.ServiceDesc for ApplicationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -279,6 +343,14 @@ var ApplicationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _ApplicationService_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _ApplicationService_Delete_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _ApplicationService_GetAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

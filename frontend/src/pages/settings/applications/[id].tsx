@@ -1,30 +1,15 @@
-import styles from './new.less';
-import { Layout } from 'antd';
 import { ApplicationDetail } from '@/components';
 import { useDispatch, useParams } from 'umi';
 import { useEffect } from 'react';
-
-const { Content } = Layout;
-
-interface Params {
-  id: string;
-}
-
 const Detail: React.FC = () => {
   const dispatch = useDispatch();
-  const { id } = useParams<Params>();
+  const { id } = useParams<{ id: string }>();
   useEffect(() => {
     dispatch({
       type: 'application/setup',
       payload: { id },
     });
   }, [dispatch, id]);
-  return (
-    <Layout className={styles.application}>
-      <Content className={styles.main}>
-        <ApplicationDetail />
-      </Content>
-    </Layout>
-  );
+  return <ApplicationDetail />;
 };
 export default Detail;

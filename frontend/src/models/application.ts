@@ -1,7 +1,7 @@
 import type { ImmerReducer } from 'umi';
 import { message } from 'antd';
-import type { EffectsCommandMap } from 'dva';
-import type {
+import type { EffectsCommandMap, Effect } from 'dva';
+import {
   CreateRequest,
   CreateReply,
   RetrieveRequest,
@@ -12,6 +12,8 @@ import type {
   Secret,
   UploadLogoRequest,
   UpdateRequest,
+  DeleteRequest,
+  GetAllReply,
 } from '@/api/application/v1/application';
 import { Application } from '@/api/application/v1/application';
 import { ApplicationClient } from '@/api/request';
@@ -19,11 +21,13 @@ import type { Empty } from '@/api/google/protobuf/empty';
 import { history } from 'umi';
 export { Application };
 export interface ApplicationModelType {
-  state: Application;
+  state: Application & GetAllReply;
   effects: {
     create: (action: { payload: CreateRequest }, effects: EffectsCommandMap) => void;
     update: (action: { payload: Omit<UpdateRequest, 'id'> }, effects: EffectsCommandMap) => void;
+    delete: Effect;
     setup: (action: { payload: RetrieveRequest }, effects: EffectsCommandMap) => void;
+    setupAll: Effect;
     generateClientSecret: (
       action: { payload: Omit<GenerateClientSecretRequest, 'id'> },
       effects: EffectsCommandMap,
@@ -39,10 +43,10 @@ export interface ApplicationModelType {
   };
   reducers: {
     set: ImmerReducer<
-      Application,
+      Application & GetAllReply,
       {
         type: 'set';
-        payload: Application;
+        payload: Application & GetAllReply & { clear?: boolean };
       }
     >;
     pushFrontClientSecret: ImmerReducer<
@@ -56,13 +60,6 @@ export interface ApplicationModelType {
       Application,
       {
         type: 'removeClientSecret';
-        payload: string;
-      }
-    >;
-    setLogo: ImmerReducer<
-      Application,
-      {
-        type: 'setLogo';
         payload: string;
       }
     >;
@@ -82,7 +79,7 @@ const adjustClientSecrets = (secrets: Secret[]): Secret[] => {
 };
 
 const ApplicationModel: ApplicationModelType = {
-  state: Application.fromJSON({}),
+  state: Object.assign(Application.fromJSON({}), GetAllReply.fromJSON({})),
 
   effects: {
     *create({ payload }, { call }) {
@@ -91,7 +88,7 @@ const ApplicationModel: ApplicationModelType = {
         payload,
       );
       if (response) {
-        history.push(`/application/${response.id}`);
+        history.push(`/settings/applications/${response.id}`);
       } else if (error) {
         throw error;
       }
@@ -106,9 +103,25 @@ const ApplicationModel: ApplicationModelType = {
       if (response) {
         yield put({
           type: 'set',
-          payload: payload,
+          payload: {
+            ...payload,
+            clear: false,
+          },
         });
         message.success('应用更新成功');
+      } else if (error) {
+        throw error;
+      }
+    },
+    *delete(_, { call, select }) {
+      const { id } = yield select(({ application }: { application: Application }) => application);
+      const request: DeleteRequest = { id };
+      const { response, error }: { response: Empty; error: Error } = yield call(
+        ApplicationClient.Delete,
+        request,
+      );
+      if (response) {
+        history.push(`/settings/applications`);
       } else if (error) {
         throw error;
       }
@@ -125,7 +138,26 @@ const ApplicationModel: ApplicationModelType = {
       if (response) {
         yield put({
           type: 'set',
-          payload: application,
+          payload: {
+            ...application,
+            clear: true,
+          },
+        });
+      } else if (error) {
+        throw error;
+      }
+    },
+    *setupAll(_, { call, put }) {
+      const { response, error }: { response: GetAllReply; error: Error } = yield call(
+        ApplicationClient.GetAll,
+      );
+      if (response) {
+        yield put({
+          type: 'set',
+          payload: {
+            ...response,
+            clear: true,
+          },
         });
       } else if (error) {
         throw error;
@@ -172,8 +204,11 @@ const ApplicationModel: ApplicationModelType = {
       );
       if (response) {
         yield put({
-          type: 'setLogo',
-          payload: payload.logo,
+          type: 'set',
+          payload: {
+            logo: payload.logo,
+            clear: false,
+          },
         });
       } else if (error) {
         throw error;
@@ -182,6 +217,11 @@ const ApplicationModel: ApplicationModelType = {
   },
   reducers: {
     set(state, { payload }) {
+      const { clear } = payload;
+      delete payload.clear;
+      if (clear) {
+        Object.assign(state, Object.assign(Application.fromJSON({}), GetAllReply.fromJSON({})));
+      }
       Object.assign(state, payload);
     },
     pushFrontClientSecret(state, { payload }) {
@@ -192,9 +232,6 @@ const ApplicationModel: ApplicationModelType = {
       state.clientSecrets = adjustClientSecrets(state.clientSecrets).filter(
         (secret) => secret.id != payload,
       );
-    },
-    setLogo(state, { payload }) {
-      state.logo = payload;
     },
   },
   subscriptions: {},

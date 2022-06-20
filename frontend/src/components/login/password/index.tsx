@@ -8,7 +8,7 @@ interface passwordForm {
   account: string;
   password: string;
 }
-const Password: React.FC<LoginProp> = (prop) => {
+const Password: React.FC<LoginProp> = ({ returnTo }) => {
   const dispatch = useDispatch();
   const onLogin = async (form: passwordForm): Promise<void> => {
     const request: LoginRequest = {
@@ -27,7 +27,7 @@ const Password: React.FC<LoginProp> = (prop) => {
       type: 'user/login',
       payload: {
         request: request,
-        returnTo: prop.returnTo,
+        returnTo: returnTo,
       },
     });
   };
