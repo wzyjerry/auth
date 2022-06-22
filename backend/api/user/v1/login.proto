@@ -71,16 +71,4 @@ service LoginService {
             body: "*"
         };
     }
-    rpc Trash (google.protobuf.Empty) returns (TrashReply) {
-        option (google.api.http) = {
-            get: "/user/v1/login/trash"
-        };
-    }
-}
-
-message TrashReply {
-    bool authToken = 1;
-    bool userToken = 2;
-    bool clientToken = 3;
-    string sub = 4;
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/biz/applicationBiz"
+	"github.com/wzyjerry/auth/internal/biz/oauth2Biz"
 	"github.com/wzyjerry/auth/internal/biz/userBiz"
 	"github.com/wzyjerry/auth/internal/biz/userBiz/third_party/github"
 	"github.com/wzyjerry/auth/internal/biz/userBiz/third_party/microsoft"
@@ -17,6 +18,7 @@ import (
 	"github.com/wzyjerry/auth/internal/data"
 	"github.com/wzyjerry/auth/internal/server"
 	"github.com/wzyjerry/auth/internal/service/applicationService"
+	"github.com/wzyjerry/auth/internal/service/oauth2Service"
 	"github.com/wzyjerry/auth/internal/service/userService"
 	"github.com/wzyjerry/auth/internal/util"
 )
@@ -29,7 +31,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Securi
 	if err != nil {
 		return nil, nil, err
 	}
-	userRepo := data.NewUserRepo(dataData, security, logger)
+	userRepo := data.NewUserRepo(dataData)
 	aliyunHelper := util.NewAliyunHelper(logger, security)
 	registerUsecase := userBiz.NewRegisterUsecase(userRepo, security, aliyunHelper, logger)
 	registerService := userService.NewRegisterService(registerUsecase)
@@ -43,9 +45,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, security *conf.Securi
 	profileService := userService.NewProfileService(profileUsecase, security, tokenHelper)
 	applicationRepo := data.NewApplicationRepo(dataData)
 	applicationUsecase := applicationBiz.NewApplicationUsecase(applicationRepo)
-	applicationServiceApplicationService := applicationService.NewApplicationService(applicationUsecase, security, tokenHelper)
-	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService)
-	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService)
+	applicationServiceApplicationService := applicationService.NewApplicationService(applicationUsecase, tokenHelper)
+	oAuth2Repo := data.NewOAuth2Repo(dataData)
+	oAuth2Usecase := oauth2Biz.NewOAuth2Usecase(oAuth2Repo, security, tokenHelper)
+	oAuth2Service := oauth2Service.NewOAuth2Service(oAuth2Usecase, security, tokenHelper)
+	httpServer := server.NewHTTPServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService, oAuth2Service)
+	grpcServer := server.NewGRPCServer(confServer, logger, registerService, loginService, profileService, applicationServiceApplicationService, oAuth2Service)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
 		cleanup()

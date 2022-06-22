@@ -25,8 +25,9 @@ const (
 	accessTokenHashKey = "at_hash"
 	ipAddressKey       = "ipaddr"
 	nicknameKey        = "nickname"
-	avatarKey          = "avatar"
+	hasAvatarKey       = "avatar"
 	idTypeKey          = "idtyp"
+	scopeKey           = "scope"
 	appWord            = "app"
 )
 
@@ -69,7 +70,7 @@ func (h *TokenHelper) IsUserToken(token *jwt.Token) bool {
 	return !h.IsClientToken(token)
 }
 
-func (h *TokenHelper) GenerateAccessToken(
+func (h *TokenHelper) GenerateBasicToken(
 	clientId string,
 	subject string,
 ) jwt.Token {
@@ -89,16 +90,25 @@ func (h *TokenHelper) GenerateAccessToken(
 	return token
 }
 
+func (h *TokenHelper) GenerateAccessToken(
+	basicToken jwt.Token,
+	scopes []string,
+) jwt.Token {
+	token := basicToken
+	token.Set(scopeKey, scopes)
+	return token
+}
+
 func (h *TokenHelper) GenerateIdToken(
-	accessToken jwt.Token,
+	basicToken jwt.Token,
 	nonce string,
 	codeHash *string,
 	accessTokenHash *string,
 	ip string,
 	nickname string,
-	avatar *string,
+	hasAvatar bool,
 ) jwt.Token {
-	token := accessToken
+	token := basicToken
 	token.Set(nonceKey, nonce)
 	if codeHash != nil {
 		token.Set(codeHashKey, *codeHash)
@@ -108,9 +118,7 @@ func (h *TokenHelper) GenerateIdToken(
 	}
 	token.Set(ipAddressKey, ip)
 	token.Set(nicknameKey, nickname)
-	if avatar != nil {
-		token.Set(avatarKey, avatar)
-	}
+	token.Set(hasAvatarKey, hasAvatar)
 	return token
 }
 

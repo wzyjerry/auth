@@ -26,7 +26,6 @@ type LoginServiceClient interface {
 	PrePhone(ctx context.Context, in *LoginPrePhoneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PreEmail(ctx context.Context, in *LoginPreEmailRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
-	Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error)
 }
 
 type loginServiceClient struct {
@@ -64,15 +63,6 @@ func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 	return out, nil
 }
 
-func (c *loginServiceClient) Trash(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TrashReply, error) {
-	out := new(TrashReply)
-	err := c.cc.Invoke(ctx, "/api.user.v1.LoginService/Trash", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // LoginServiceServer is the server API for LoginService service.
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
@@ -80,7 +70,6 @@ type LoginServiceServer interface {
 	PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error)
 	PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
-	Trash(context.Context, *emptypb.Empty) (*TrashReply, error)
 	mustEmbedUnimplementedLoginServiceServer()
 }
 
@@ -96,9 +85,6 @@ func (UnimplementedLoginServiceServer) PreEmail(context.Context, *LoginPreEmailR
 }
 func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (UnimplementedLoginServiceServer) Trash(context.Context, *emptypb.Empty) (*TrashReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Trash not implemented")
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
@@ -167,24 +153,6 @@ func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LoginService_Trash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LoginServiceServer).Trash(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.user.v1.LoginService/Trash",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServiceServer).Trash(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -203,10 +171,6 @@ var LoginService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _LoginService_Login_Handler,
-		},
-		{
-			MethodName: "Trash",
-			Handler:    _LoginService_Trash_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

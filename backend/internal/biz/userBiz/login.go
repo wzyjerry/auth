@@ -59,39 +59,39 @@ func (uc *LoginUsecase) verifyPassword(hash string, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
-func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.Kind, unique *string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) password(ctx context.Context, kind authenticatorNested.Kind, unique *string, password string) (string, error) {
 	if unique == nil {
-		return nil, ErrUniqueRequired
+		return "", ErrUniqueRequired
 	}
 	auth, err := uc.repo.GetAuthenticator(ctx, kind, *unique)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, ErrPasswordLogin
+			return "", ErrPasswordLogin
 		}
-		return nil, err
+		return "", err
 	}
-	user, err := uc.repo.GetUser(ctx, *auth.UserID)
+	userPassword, ancestorId, err := uc.repo.GetUserPasswordAndAncestorId(ctx, *auth.UserID)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	if user.Password == nil || !uc.verifyPassword(*user.Password, password) {
-		return nil, ErrPasswordLogin
+	if userPassword == nil || !uc.verifyPassword(*userPassword, password) {
+		return "", ErrPasswordLogin
 	}
-	return user, nil
+	return ancestorId, nil
 }
 
 // accountPassword 账户密码登录
-func (uc *LoginUsecase) accountPassword(ctx context.Context, username *string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) accountPassword(ctx context.Context, username *string, password string) (string, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_ACCOUNT, username, password)
 }
 
 // AccountPassword 邮箱密码登录
-func (uc *LoginUsecase) emailPassword(ctx context.Context, email *string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) emailPassword(ctx context.Context, email *string, password string) (string, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_EMAIL, email, password)
 }
 
 // AccountPassword 手机密码登录
-func (uc *LoginUsecase) phonePassword(ctx context.Context, phone *string, password string) (*ent.User, error) {
+func (uc *LoginUsecase) phonePassword(ctx context.Context, phone *string, password string) (string, error) {
 	return uc.password(ctx, authenticatorNested.Kind_KIND_PHONE, phone, password)
 }
 
@@ -101,7 +101,7 @@ func (uc *LoginUsecase) PreEmail(ctx context.Context, email string) error {
 	if err := uc.aliyunHelper.SendEmail(email, uc.aliyunHelper.NewEmailHtmlCode(code)); err != nil {
 		return err
 	}
-	if err := uc.repo.CacheLoginEmail(ctx, email, code); err != nil {
+	if err := uc.repo.CacheLoginEmail(ctx, email, code, uc.conf.Expiration.Code.AsDuration()); err != nil {
 		return err
 	}
 	return nil
@@ -121,74 +121,66 @@ func (uc *LoginUsecase) PrePhone(ctx context.Context, phone string) error {
 			return err
 		}
 	}
-	if err := uc.repo.CacheLoginPhone(ctx, phone, code); err != nil {
+	if err := uc.repo.CacheLoginPhone(ctx, phone, code, uc.conf.Expiration.Code.AsDuration()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (uc *LoginUsecase) emailCode(ctx context.Context, email *string, code string) (*ent.User, error) {
+func (uc *LoginUsecase) emailCode(ctx context.Context, email *string, code string) (string, error) {
 	if email == nil {
-		return nil, ErrUniqueRequired
+		return "", ErrUniqueRequired
 	}
 	verified, err := uc.repo.VerifyLoginEmailCode(ctx, *email, code)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if !verified {
-		return nil, ErrCodeMismatch
+		return "", ErrCodeMismatch
 	}
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_EMAIL, email)
 	var userId string
 	if err != nil {
 		id, err := uc.registerUsecase.Email(ctx, *email, nil, *email)
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 		userId = id
 	} else {
 		userId = *auth.UserID
 	}
-	user, err := uc.repo.GetUser(ctx, userId)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return uc.repo.GetAncestorId(ctx, userId)
 }
 
-func (uc *LoginUsecase) phoneCode(ctx context.Context, phone *string, code string) (*ent.User, error) {
+func (uc *LoginUsecase) phoneCode(ctx context.Context, phone *string, code string) (string, error) {
 	if phone == nil {
-		return nil, ErrUniqueRequired
+		return "", ErrUniqueRequired
 	}
 	verified, err := uc.repo.VerifyLoginPhoneCode(ctx, *phone, code)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if !verified {
-		return nil, ErrCodeMismatch
+		return "", ErrCodeMismatch
 	}
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_PHONE, phone)
 	var userId string
 	if err != nil {
 		id, err := uc.registerUsecase.Phone(ctx, *phone, nil, *phone)
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 		userId = id
 	} else {
 		userId = *auth.UserID
 	}
-	user, err := uc.repo.GetUser(ctx, userId)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return uc.repo.GetAncestorId(ctx, userId)
 }
 
-func (uc *LoginUsecase) githubCode(ctx context.Context, code string) (*ent.User, error) {
+func (uc *LoginUsecase) githubCode(ctx context.Context, code string) (string, error) {
 	info, err := uc.githubProvider.Login(ctx, code)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_GITHUB, info.GetUnique())
 	var userId string
@@ -196,26 +188,22 @@ func (uc *LoginUsecase) githubCode(ctx context.Context, code string) (*ent.User,
 		if ent.IsNotFound(err) {
 			id, err := uc.registerUsecase.Github(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
 			if err != nil {
-				return nil, err
+				return "", err
 			}
 			userId = id
 		} else {
-			return nil, err
+			return "", err
 		}
 	} else {
 		userId = *auth.UserID
 	}
-	user, err := uc.repo.GetUser(ctx, userId)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return uc.repo.GetAncestorId(ctx, userId)
 }
 
-func (uc *LoginUsecase) microsoftCode(ctx context.Context, code string) (*ent.User, error) {
+func (uc *LoginUsecase) microsoftCode(ctx context.Context, code string) (string, error) {
 	info, err := uc.microsoftProvider.Login(ctx, code)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	auth, err := uc.repo.GetAuthenticator(ctx, authenticatorNested.Kind_KIND_MICROSOFT, info.GetUnique())
 	var userId string
@@ -223,85 +211,81 @@ func (uc *LoginUsecase) microsoftCode(ctx context.Context, code string) (*ent.Us
 		if ent.IsNotFound(err) {
 			id, err := uc.registerUsecase.Microsoft(ctx, info.GetUnique(), info.GetNickname(), info.GetAvatar())
 			if err != nil {
-				return nil, err
+				return "", err
 			}
 			userId = id
 		} else {
-			return nil, err
+			return "", err
 		}
 	} else {
 		userId = *auth.UserID
 	}
-	user, err := uc.repo.GetUser(ctx, userId)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return uc.repo.GetAncestorId(ctx, userId)
 }
 
-func (uc *LoginUsecase) Login(ctx context.Context, _type v1.Type, method v1.Method, unique *string, secret string) (*ent.User, error) {
-	var user *ent.User
+func (uc *LoginUsecase) Login(ctx context.Context, _type v1.Type, method v1.Method, unique *string, secret string) (string, error) {
+	var ancestorId string
 	switch method {
 	case v1.Method_METHOD_PASSWORD:
 		switch _type {
 		case v1.Type_TYPE_ACCOUNT:
 			result, err := uc.accountPassword(ctx, unique, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		case v1.Type_TYPE_EMAIL:
 			result, err := uc.emailPassword(ctx, unique, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		case v1.Type_TYPE_PHONE:
 			result, err := uc.phonePassword(ctx, unique, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		default:
-			return nil, ErrUnknownKind
+			return ancestorId, ErrUnknownKind
 		}
 	case v1.Method_METHOD_CODE:
 		switch _type {
 		case v1.Type_TYPE_EMAIL:
 			result, err := uc.emailCode(ctx, unique, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		case v1.Type_TYPE_PHONE:
 			result, err := uc.phoneCode(ctx, unique, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		case v1.Type_TYPE_GITHUB:
 			result, err := uc.githubCode(ctx, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		case v1.Type_TYPE_MICROSOFT:
 			result, err := uc.microsoftCode(ctx, secret)
 			if err != nil {
-				return nil, err
+				return ancestorId, err
 			}
-			user = result
+			ancestorId = result
 		default:
-			return nil, ErrUnknownKind
+			return ancestorId, ErrUnknownKind
 		}
 	default:
-		return nil, ErrUnknownKind
+		return ancestorId, ErrUnknownKind
 	}
-	return user, nil
+	return ancestorId, nil
 }
 
-func (uc *LoginUsecase) GenerateAccessToken(clientId string, user *ent.User) (string, error) {
-	token := uc.tokenHelper.GenerateAccessToken(clientId, *user.AncestorID)
+func (uc *LoginUsecase) GenerateAccessToken(clientId string, ancestorId string) (string, error) {
+	token := uc.tokenHelper.GenerateBasicToken(clientId, ancestorId)
 	signed, err := uc.tokenHelper.SignJWT(token)
 	if err != nil {
 		return "", err

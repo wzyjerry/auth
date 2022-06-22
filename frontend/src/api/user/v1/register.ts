@@ -1,7 +1,6 @@
 /* eslint-disable */
-import * as Long from 'long';
+import Long from 'long';
 import * as _m0 from 'protobufjs/minimal';
-import { Empty } from '../../google/protobuf/empty';
 
 export const protobufPackage = 'api.user.v1';
 
@@ -427,59 +426,6 @@ export const RegisterPhoneRequest = {
   },
 };
 
-export interface RegisterService {
-  Account(request: RegisterAccountRequest): Promise<RegisterReply>;
-  PreEmail(request: RegisterPreEmailRequest): Promise<Empty>;
-  Email(request: RegisterEmailRequest): Promise<RegisterReply>;
-  PrePhone(request: RegisterPrePhoneRequest): Promise<Empty>;
-  Phone(request: RegisterPhoneRequest): Promise<RegisterReply>;
-}
-
-export class RegisterServiceClientImpl implements RegisterService {
-  private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
-    this.rpc = rpc;
-    this.Account = this.Account.bind(this);
-    this.PreEmail = this.PreEmail.bind(this);
-    this.Email = this.Email.bind(this);
-    this.PrePhone = this.PrePhone.bind(this);
-    this.Phone = this.Phone.bind(this);
-  }
-  Account(request: RegisterAccountRequest): Promise<RegisterReply> {
-    const data = RegisterAccountRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.RegisterService', 'Account', data);
-    return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
-  }
-
-  PreEmail(request: RegisterPreEmailRequest): Promise<Empty> {
-    const data = RegisterPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.RegisterService', 'PreEmail', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  Email(request: RegisterEmailRequest): Promise<RegisterReply> {
-    const data = RegisterEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.RegisterService', 'Email', data);
-    return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
-  }
-
-  PrePhone(request: RegisterPrePhoneRequest): Promise<Empty> {
-    const data = RegisterPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.RegisterService', 'PrePhone', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  Phone(request: RegisterPhoneRequest): Promise<RegisterReply> {
-    const data = RegisterPhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.RegisterService', 'Phone', data);
-    return promise.then((data) => RegisterReply.decode(new _m0.Reader(data)));
-  }
-}
-
-interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-}
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
@@ -497,8 +443,6 @@ export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();

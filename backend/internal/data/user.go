@@ -3,23 +3,21 @@ package data
 import (
 	"context"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/wzyjerry/auth/internal/biz/userBiz"
-	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/ent"
 	"github.com/wzyjerry/auth/internal/ent/authenticator"
 	"github.com/wzyjerry/auth/internal/ent/avatar"
 	"github.com/wzyjerry/auth/internal/ent/schema/authenticatorNested"
 	"github.com/wzyjerry/auth/internal/ent/schema/avatarNested"
+	"github.com/wzyjerry/auth/internal/ent/user"
 )
 
 type userRepo struct {
 	data *Data
-	conf *conf.Security
-	log  *log.Helper
 }
 
 const (
@@ -29,28 +27,40 @@ const (
 	AuthLoginPhone    = "Auth:Login:Phone:"
 )
 
-func (r *userRepo) cacheCode(ctx context.Context, key string, code string) error {
-	return r.data.redis.Set(ctx, key, code, r.conf.Expiration.Code.AsDuration()).Err()
+func (r *userRepo) cacheCode(ctx context.Context, key string, code string, expiration time.Duration) error {
+	return r.data.redis.Set(ctx, key, code, expiration).Err()
 }
 
-func (r *userRepo) GetUser(ctx context.Context, id string) (*ent.User, error) {
-	return r.data.db.User.Get(ctx, id)
+func (r *userRepo) GetAncestorId(ctx context.Context, id string) (string, error) {
+	item, err := r.data.db.User.Query().Where(user.IDEQ(id)).Select(user.FieldAncestorID).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	return *item.AncestorID, nil
 }
 
-func (r *userRepo) CacheRegisterEmail(ctx context.Context, email string, code string) error {
-	return r.cacheCode(ctx, AuthRegisterEmail+email, code)
+func (r *userRepo) GetUserPasswordAndAncestorId(ctx context.Context, id string) (*string, string, error) {
+	item, err := r.data.db.User.Query().Where(user.IDEQ(id)).Select(user.FieldPassword, user.FieldAncestorID).Only(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+	return item.Password, *item.AncestorID, nil
 }
 
-func (r *userRepo) CacheRegisterPhone(ctx context.Context, phone string, code string) error {
-	return r.cacheCode(ctx, AuthRegisterPhone+phone, code)
+func (r *userRepo) CacheRegisterEmail(ctx context.Context, email string, code string, expiration time.Duration) error {
+	return r.cacheCode(ctx, AuthRegisterEmail+email, code, expiration)
 }
 
-func (r *userRepo) CacheLoginEmail(ctx context.Context, email string, code string) error {
-	return r.cacheCode(ctx, AuthLoginEmail+email, code)
+func (r *userRepo) CacheRegisterPhone(ctx context.Context, phone string, code string, expiration time.Duration) error {
+	return r.cacheCode(ctx, AuthRegisterPhone+phone, code, expiration)
 }
 
-func (r *userRepo) CacheLoginPhone(ctx context.Context, phone string, code string) error {
-	return r.cacheCode(ctx, AuthLoginPhone+phone, code)
+func (r *userRepo) CacheLoginEmail(ctx context.Context, email string, code string, expiration time.Duration) error {
+	return r.cacheCode(ctx, AuthLoginEmail+email, code, expiration)
+}
+
+func (r *userRepo) CacheLoginPhone(ctx context.Context, phone string, code string, expiration time.Duration) error {
+	return r.cacheCode(ctx, AuthLoginPhone+phone, code, expiration)
 }
 
 func (r *userRepo) verifyCode(ctx context.Context, key string, code string) (bool, error) {
@@ -182,6 +192,9 @@ func (r *userRepo) CreateAvatar(ctx context.Context, id string, base64 string) {
 func (r *userRepo) GetAvatar(ctx context.Context, id string) (*string, error) {
 	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Only(ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return avatar.Avatar, nil
@@ -189,11 +202,8 @@ func (r *userRepo) GetAvatar(ctx context.Context, id string) (*string, error) {
 
 func NewUserRepo(
 	data *Data,
-	conf *conf.Security,
-	logger log.Logger) userBiz.UserRepo {
+) userBiz.UserRepo {
 	return &userRepo{
 		data: data,
-		conf: conf,
-		log:  log.NewHelper(logger),
 	}
 }

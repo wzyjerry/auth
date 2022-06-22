@@ -119,24 +119,19 @@ func (r *applicationRepo) GenerateClientSecret(ctx context.Context, admin string
 	return secret, nil
 }
 
-func (r *applicationRepo) GetLogo(ctx context.Context, id string) (string, error) {
+func (r *applicationRepo) GetLogo(ctx context.Context, id string) (*string, error) {
 	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Only(ctx)
 	if err != nil {
-		return "", err
+		if ent.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
 	}
-	return *avatar.Avatar, nil
+	return avatar.Avatar, nil
 }
 
 func (r *applicationRepo) Retrieve(ctx context.Context, admin string, id string) (*ent.Application, error) {
 	return r.data.db.Application.Query().Where(application.AdminEQ(admin), application.IDEQ(id)).Only(ctx)
-}
-
-func NewApplicationRepo(
-	data *Data,
-) applicationBiz.ApplicationRepo {
-	return &applicationRepo{
-		data: data,
-	}
 }
 
 func (r *applicationRepo) Create(ctx context.Context, admin string, name string, homepage string, description *string, callback string) (string, error) {
@@ -153,4 +148,12 @@ func (r *applicationRepo) Create(ctx context.Context, admin string, name string,
 		return "", err
 	}
 	return application.ID, nil
+}
+
+func NewApplicationRepo(
+	data *Data,
+) applicationBiz.ApplicationRepo {
+	return &applicationRepo{
+		data: data,
+	}
 }

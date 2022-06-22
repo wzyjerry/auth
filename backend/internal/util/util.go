@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"math/rand"
 	math_rand "math/rand"
+	"net"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/google/uuid"
@@ -49,4 +51,41 @@ func ImgBase64(img []byte) string {
 	avatar.WriteString(";base64,")
 	avatar.Write([]byte(base64.StdEncoding.EncodeToString(img)))
 	return avatar.String()
+}
+
+func IsLoopback(hostname string) bool {
+	ip := net.ParseIP(hostname)
+	if ip == nil {
+		if hostname == "localhost" {
+			return true
+		}
+	}
+	return ip.IsLoopback()
+}
+
+// 验证actual是否与expected相同或为子域名
+// 对于环回地址，允许不安全版本协议和任意端口号
+// 否则，只允许https协议，且要求端口匹配
+func VerifyRedirectUri(expected string, actual string) bool {
+	expectedUrl, err := url.Parse(expected)
+	if err != nil {
+		return false
+	}
+	actualUrl, err := url.Parse(actual)
+	if err != nil {
+		return false
+	}
+	if IsLoopback(expectedUrl.Hostname()) {
+		if IsLoopback(actualUrl.Hostname()) {
+			return strings.HasPrefix(actualUrl.Path, expectedUrl.Path)
+		}
+		return false
+	}
+	if !strings.EqualFold(expectedUrl.Scheme, "https") && !strings.EqualFold(actualUrl.Scheme, "https") {
+		return false
+	}
+	if expectedUrl.Host != actualUrl.Host {
+		return false
+	}
+	return strings.HasPrefix(actualUrl.Path, expectedUrl.Path)
 }

@@ -8,10 +8,12 @@ import (
 	"github.com/go-kratos/swagger-api/openapiv2"
 	"github.com/gorilla/handlers"
 	applicationV1 "github.com/wzyjerry/auth/api/application/v1"
+	oauth2V1 "github.com/wzyjerry/auth/api/oauth2/v1"
 	userV1 "github.com/wzyjerry/auth/api/user/v1"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/service/applicationService"
+	"github.com/wzyjerry/auth/internal/service/oauth2Service"
 	"github.com/wzyjerry/auth/internal/service/userService"
 )
 
@@ -23,6 +25,7 @@ func NewHTTPServer(
 	login *userService.LoginService,
 	profile *userService.ProfileService,
 	application *applicationService.ApplicationService,
+	oauth2 *oauth2Service.OAuth2Service,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -49,5 +52,6 @@ func NewHTTPServer(
 	userV1.RegisterLoginServiceHTTPServer(srv, login)
 	userV1.RegisterProfileServiceHTTPServer(srv, profile)
 	applicationV1.RegisterApplicationServiceHTTPServer(srv, application)
+	oauth2V1.RegisterOAuth2ServiceHTTPServer(srv, oauth2)
 	return srv
 }

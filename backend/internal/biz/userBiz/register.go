@@ -89,7 +89,7 @@ func (uc *RegisterUsecase) PreEmail(ctx context.Context, email string) error {
 			if err := uc.helper.SendEmail(email, uc.helper.NewEmailHtmlCode(code)); err != nil {
 				return err
 			}
-			if err := uc.repo.CacheRegisterEmail(ctx, email, code); err != nil {
+			if err := uc.repo.CacheRegisterEmail(ctx, email, code, uc.conf.Expiration.Code.AsDuration()); err != nil {
 				return err
 			}
 			return nil
@@ -115,7 +115,7 @@ func (uc *RegisterUsecase) PrePhone(ctx context.Context, phone string) error {
 					return err
 				}
 			}
-			if err := uc.repo.CacheRegisterPhone(ctx, phone, code); err != nil {
+			if err := uc.repo.CacheRegisterPhone(ctx, phone, code, uc.conf.Expiration.Code.AsDuration()); err != nil {
 				return err
 			}
 			return nil

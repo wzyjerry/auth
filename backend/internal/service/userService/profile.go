@@ -32,7 +32,7 @@ func NewProfileService(
 }
 
 func (s *ProfileService) GetAvatar(ctx context.Context, _ *emptypb.Empty) (*v1.GetAvatarReply, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}

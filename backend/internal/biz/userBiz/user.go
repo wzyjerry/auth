@@ -3,6 +3,7 @@ package userBiz
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/wzyjerry/auth/internal/ent"
@@ -21,10 +22,10 @@ var (
 
 type UserRepo interface {
 	// redis部分
-	CacheRegisterEmail(ctx context.Context, email string, code string) error
-	CacheRegisterPhone(ctx context.Context, phone string, code string) error
-	CacheLoginEmail(ctx context.Context, email string, code string) error
-	CacheLoginPhone(ctx context.Context, phone string, code string) error
+	CacheRegisterEmail(ctx context.Context, email string, code string, expiration time.Duration) error
+	CacheRegisterPhone(ctx context.Context, phone string, code string, expiration time.Duration) error
+	CacheLoginEmail(ctx context.Context, email string, code string, expiration time.Duration) error
+	CacheLoginPhone(ctx context.Context, phone string, code string, expiration time.Duration) error
 	VerifyRegisterEmailCode(ctx context.Context, email string, code string) (bool, error)
 	VerifyRegisterPhoneCode(ctx context.Context, phone string, code string) (bool, error)
 	VerifyLoginEmailCode(ctx context.Context, email string, code string) (bool, error)
@@ -33,6 +34,7 @@ type UserRepo interface {
 	GetAuthenticator(ctx context.Context, kind authenticatorNested.Kind, unique interface{}) (*ent.Authenticator, error)
 	CreateUser(ctx context.Context, kind int32, unique *authenticatorNested.Unique, password *string, nickname string, ip string) (string, error)
 	CreateAvatar(ctx context.Context, id string, base64 string)
-	GetUser(ctx context.Context, id string) (*ent.User, error)
+	GetAncestorId(ctx context.Context, id string) (string, error)
+	GetUserPasswordAndAncestorId(ctx context.Context, id string) (*string, string, error)
 	GetAvatar(ctx context.Context, id string) (*string, error)
 }

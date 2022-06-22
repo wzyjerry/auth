@@ -6,10 +6,12 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	applicationV1 "github.com/wzyjerry/auth/api/application/v1"
+	oauth2V1 "github.com/wzyjerry/auth/api/oauth2/v1"
 	userV1 "github.com/wzyjerry/auth/api/user/v1"
 	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/service/applicationService"
+	"github.com/wzyjerry/auth/internal/service/oauth2Service"
 	"github.com/wzyjerry/auth/internal/service/userService"
 )
 
@@ -21,6 +23,7 @@ func NewGRPCServer(
 	login *userService.LoginService,
 	profile *userService.ProfileService,
 	application *applicationService.ApplicationService,
+	oauth2 *oauth2Service.OAuth2Service,
 ) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
@@ -40,5 +43,6 @@ func NewGRPCServer(
 	userV1.RegisterLoginServiceServer(srv, login)
 	userV1.RegisterProfileServiceServer(srv, profile)
 	applicationV1.RegisterApplicationServiceServer(srv, application)
+	oauth2V1.RegisterOAuth2ServiceServer(srv, oauth2)
 	return srv
 }

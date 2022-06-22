@@ -1,7 +1,6 @@
 /* eslint-disable */
-import * as Long from 'long';
+import Long from 'long';
 import * as _m0 from 'protobufjs/minimal';
-import { Empty } from '../../google/protobuf/empty';
 
 export const protobufPackage = 'api.user.v1';
 
@@ -127,13 +126,6 @@ export interface LoginPrePhoneRequest {
 
 export interface LoginPreEmailRequest {
   email: string;
-}
-
-export interface TrashReply {
-  authToken: boolean;
-  userToken: boolean;
-  clientToken: boolean;
-  sub: string;
 }
 
 function createBaseLoginRequest(): LoginRequest {
@@ -464,127 +456,6 @@ export const LoginPreEmailRequest = {
   },
 };
 
-function createBaseTrashReply(): TrashReply {
-  return { authToken: false, userToken: false, clientToken: false, sub: '' };
-}
-
-export const TrashReply = {
-  encode(message: TrashReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.authToken === true) {
-      writer.uint32(8).bool(message.authToken);
-    }
-    if (message.userToken === true) {
-      writer.uint32(16).bool(message.userToken);
-    }
-    if (message.clientToken === true) {
-      writer.uint32(24).bool(message.clientToken);
-    }
-    if (message.sub !== '') {
-      writer.uint32(34).string(message.sub);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): TrashReply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTrashReply();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.authToken = reader.bool();
-          break;
-        case 2:
-          message.userToken = reader.bool();
-          break;
-        case 3:
-          message.clientToken = reader.bool();
-          break;
-        case 4:
-          message.sub = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TrashReply {
-    return {
-      authToken: isSet(object.authToken) ? Boolean(object.authToken) : false,
-      userToken: isSet(object.userToken) ? Boolean(object.userToken) : false,
-      clientToken: isSet(object.clientToken) ? Boolean(object.clientToken) : false,
-      sub: isSet(object.sub) ? String(object.sub) : '',
-    };
-  },
-
-  toJSON(message: TrashReply): unknown {
-    const obj: any = {};
-    message.authToken !== undefined && (obj.authToken = message.authToken);
-    message.userToken !== undefined && (obj.userToken = message.userToken);
-    message.clientToken !== undefined && (obj.clientToken = message.clientToken);
-    message.sub !== undefined && (obj.sub = message.sub);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<TrashReply>, I>>(object: I): TrashReply {
-    const message = createBaseTrashReply();
-    message.authToken = object.authToken ?? false;
-    message.userToken = object.userToken ?? false;
-    message.clientToken = object.clientToken ?? false;
-    message.sub = object.sub ?? '';
-    return message;
-  },
-};
-
-export interface LoginService {
-  PrePhone(request: LoginPrePhoneRequest): Promise<Empty>;
-  PreEmail(request: LoginPreEmailRequest): Promise<Empty>;
-  Login(request: LoginRequest): Promise<LoginReply>;
-  Trash(request: Empty): Promise<TrashReply>;
-}
-
-export class LoginServiceClientImpl implements LoginService {
-  private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
-    this.rpc = rpc;
-    this.PrePhone = this.PrePhone.bind(this);
-    this.PreEmail = this.PreEmail.bind(this);
-    this.Login = this.Login.bind(this);
-    this.Trash = this.Trash.bind(this);
-  }
-  PrePhone(request: LoginPrePhoneRequest): Promise<Empty> {
-    const data = LoginPrePhoneRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.LoginService', 'PrePhone', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  PreEmail(request: LoginPreEmailRequest): Promise<Empty> {
-    const data = LoginPreEmailRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.LoginService', 'PreEmail', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  Login(request: LoginRequest): Promise<LoginReply> {
-    const data = LoginRequest.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.LoginService', 'Login', data);
-    return promise.then((data) => LoginReply.decode(new _m0.Reader(data)));
-  }
-
-  Trash(request: Empty): Promise<TrashReply> {
-    const data = Empty.encode(request).finish();
-    const promise = this.rpc.request('api.user.v1.LoginService', 'Trash', data);
-    return promise.then((data) => TrashReply.decode(new _m0.Reader(data)));
-  }
-}
-
-interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-}
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
@@ -602,8 +473,6 @@ export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();

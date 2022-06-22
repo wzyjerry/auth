@@ -15,7 +15,7 @@ type ApplicationRepo interface {
 	// db部分
 	Create(ctx context.Context, admin string, name string, homepage string, description *string, callback string) (string, error)
 	Retrieve(ctx context.Context, admin string, id string) (*ent.Application, error)
-	GetLogo(ctx context.Context, id string) (string, error)
+	GetLogo(ctx context.Context, id string) (*string, error)
 	GenerateClientSecret(ctx context.Context, admin string, id string, description string) (*applicationNested.ClientSecret, error)
 	RevokeClientSecret(ctx context.Context, admin string, id string, secretId string) error
 	SetLogo(ctx context.Context, admin string, id string, logo string) error
@@ -63,11 +63,11 @@ func (uc *ApplicationUsecase) Retrieve(ctx context.Context, admin string, id str
 		Callback:      *application.Callback,
 	}
 	logo, err := uc.repo.GetLogo(ctx, id)
-	if err == nil {
-		reply.Logo = &logo
-	} else if !ent.IsNotFound(err) {
+	if err != nil {
 		return nil, err
+
 	}
+	reply.Logo = logo
 	for _, item := range application.ClientSecrets {
 		secret := &v1.Secret{
 			Id:          *item.Id,

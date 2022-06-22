@@ -22,7 +22,6 @@ type LoginServiceHTTPServer interface {
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	PreEmail(context.Context, *LoginPreEmailRequest) (*emptypb.Empty, error)
 	PrePhone(context.Context, *LoginPrePhoneRequest) (*emptypb.Empty, error)
-	Trash(context.Context, *emptypb.Empty) (*TrashReply, error)
 }
 
 func RegisterLoginServiceHTTPServer(s *http.Server, srv LoginServiceHTTPServer) {
@@ -30,7 +29,6 @@ func RegisterLoginServiceHTTPServer(s *http.Server, srv LoginServiceHTTPServer) 
 	r.POST("/user/v1/login/pre_phone", _LoginService_PrePhone0_HTTP_Handler(srv))
 	r.POST("/user/v1/login/pre_email", _LoginService_PreEmail0_HTTP_Handler(srv))
 	r.POST("/user/v1/login/login", _LoginService_Login0_HTTP_Handler(srv))
-	r.GET("/user/v1/login/trash", _LoginService_Trash0_HTTP_Handler(srv))
 }
 
 func _LoginService_PrePhone0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
@@ -90,30 +88,10 @@ func _LoginService_Login0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http
 	}
 }
 
-func _LoginService_Trash0_HTTP_Handler(srv LoginServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in emptypb.Empty
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, "/api.user.v1.LoginService/Trash")
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Trash(ctx, req.(*emptypb.Empty))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*TrashReply)
-		return ctx.Result(200, reply)
-	}
-}
-
 type LoginServiceHTTPClient interface {
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	PreEmail(ctx context.Context, req *LoginPreEmailRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	PrePhone(ctx context.Context, req *LoginPrePhoneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	Trash(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *TrashReply, err error)
 }
 
 type LoginServiceHTTPClientImpl struct {
@@ -157,19 +135,6 @@ func (c *LoginServiceHTTPClientImpl) PrePhone(ctx context.Context, in *LoginPreP
 	opts = append(opts, http.Operation("/api.user.v1.LoginService/PrePhone"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *LoginServiceHTTPClientImpl) Trash(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*TrashReply, error) {
-	var out TrashReply
-	pattern := "/user/v1/login/trash"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.user.v1.LoginService/Trash"))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

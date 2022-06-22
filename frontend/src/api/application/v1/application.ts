@@ -1,8 +1,7 @@
 /* eslint-disable */
-import * as Long from 'long';
+import Long from 'long';
 import * as _m0 from 'protobufjs/minimal';
 import { Timestamp } from '../../google/protobuf/timestamp';
-import { Empty } from '../../google/protobuf/empty';
 
 export const protobufPackage = 'api.application.v1';
 
@@ -1103,91 +1102,6 @@ export const GetAllReply = {
   },
 };
 
-export interface ApplicationService {
-  Create(request: CreateRequest): Promise<CreateReply>;
-  Retrieve(request: RetrieveRequest): Promise<RetrieveReply>;
-  GenerateClientSecret(request: GenerateClientSecretRequest): Promise<GenerateClientSecretReply>;
-  RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty>;
-  UploadLogo(request: UploadLogoRequest): Promise<Empty>;
-  Update(request: UpdateRequest): Promise<Empty>;
-  Delete(request: DeleteRequest): Promise<Empty>;
-  GetAll(request: Empty): Promise<GetAllReply>;
-}
-
-export class ApplicationServiceClientImpl implements ApplicationService {
-  private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
-    this.rpc = rpc;
-    this.Create = this.Create.bind(this);
-    this.Retrieve = this.Retrieve.bind(this);
-    this.GenerateClientSecret = this.GenerateClientSecret.bind(this);
-    this.RevokeClientSecret = this.RevokeClientSecret.bind(this);
-    this.UploadLogo = this.UploadLogo.bind(this);
-    this.Update = this.Update.bind(this);
-    this.Delete = this.Delete.bind(this);
-    this.GetAll = this.GetAll.bind(this);
-  }
-  Create(request: CreateRequest): Promise<CreateReply> {
-    const data = CreateRequest.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Create', data);
-    return promise.then((data) => CreateReply.decode(new _m0.Reader(data)));
-  }
-
-  Retrieve(request: RetrieveRequest): Promise<RetrieveReply> {
-    const data = RetrieveRequest.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Retrieve', data);
-    return promise.then((data) => RetrieveReply.decode(new _m0.Reader(data)));
-  }
-
-  GenerateClientSecret(request: GenerateClientSecretRequest): Promise<GenerateClientSecretReply> {
-    const data = GenerateClientSecretRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.application.v1.ApplicationService',
-      'GenerateClientSecret',
-      data,
-    );
-    return promise.then((data) => GenerateClientSecretReply.decode(new _m0.Reader(data)));
-  }
-
-  RevokeClientSecret(request: RevokeClientSecretRequest): Promise<Empty> {
-    const data = RevokeClientSecretRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      'api.application.v1.ApplicationService',
-      'RevokeClientSecret',
-      data,
-    );
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  UploadLogo(request: UploadLogoRequest): Promise<Empty> {
-    const data = UploadLogoRequest.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'UploadLogo', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  Update(request: UpdateRequest): Promise<Empty> {
-    const data = UpdateRequest.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Update', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  Delete(request: DeleteRequest): Promise<Empty> {
-    const data = DeleteRequest.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'Delete', data);
-    return promise.then((data) => Empty.decode(new _m0.Reader(data)));
-  }
-
-  GetAll(request: Empty): Promise<GetAllReply> {
-    const data = Empty.encode(request).finish();
-    const promise = this.rpc.request('api.application.v1.ApplicationService', 'GetAll', data);
-    return promise.then((data) => GetAllReply.decode(new _m0.Reader(data)));
-  }
-}
-
-interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-}
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
@@ -1227,8 +1141,6 @@ function fromJsonTimestamp(o: any): Date {
   }
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();

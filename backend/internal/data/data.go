@@ -27,6 +27,7 @@ var ProviderSet = wire.NewSet(
 	NewPrivateKey,
 	NewUserRepo,
 	NewApplicationRepo,
+	NewOAuth2Repo,
 )
 
 // Data .

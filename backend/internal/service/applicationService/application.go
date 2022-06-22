@@ -5,7 +5,6 @@ import (
 
 	v1 "github.com/wzyjerry/auth/api/application/v1"
 	"github.com/wzyjerry/auth/internal/biz/applicationBiz"
-	"github.com/wzyjerry/auth/internal/conf"
 	"github.com/wzyjerry/auth/internal/middleware"
 	"github.com/wzyjerry/auth/internal/util"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -15,24 +14,21 @@ type ApplicationService struct {
 	v1.UnimplementedApplicationServiceServer
 
 	uc     *applicationBiz.ApplicationUsecase
-	conf   *conf.Security
 	helper *util.TokenHelper
 }
 
 func NewApplicationService(
 	uc *applicationBiz.ApplicationUsecase,
-	conf *conf.Security,
 	helper *util.TokenHelper,
 ) *ApplicationService {
 	return &ApplicationService{
 		uc:     uc,
-		conf:   conf,
 		helper: helper,
 	}
 }
 
 func (s *ApplicationService) Create(ctx context.Context, in *v1.CreateRequest) (*v1.CreateReply, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +42,7 @@ func (s *ApplicationService) Create(ctx context.Context, in *v1.CreateRequest) (
 }
 
 func (s *ApplicationService) Retrieve(ctx context.Context, in *v1.RetrieveRequest) (*v1.RetrieveReply, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +50,7 @@ func (s *ApplicationService) Retrieve(ctx context.Context, in *v1.RetrieveReques
 }
 
 func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.GenerateClientSecretRequest) (*v1.GenerateClientSecretReply, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +58,7 @@ func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.Ge
 }
 
 func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.RevokeClientSecretRequest) (*emptypb.Empty, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +66,7 @@ func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.Revo
 }
 
 func (s *ApplicationService) UploadLogo(ctx context.Context, in *v1.UploadLogoRequest) (*emptypb.Empty, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +74,7 @@ func (s *ApplicationService) UploadLogo(ctx context.Context, in *v1.UploadLogoRe
 }
 
 func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (*emptypb.Empty, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +82,7 @@ func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (
 }
 
 func (s *ApplicationService) Delete(ctx context.Context, in *v1.DeleteRequest) (*emptypb.Empty, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +90,7 @@ func (s *ApplicationService) Delete(ctx context.Context, in *v1.DeleteRequest) (
 }
 
 func (s *ApplicationService) GetAll(ctx context.Context, _ *emptypb.Empty) (*v1.GetAllReply, error) {
-	token, err := middleware.Validator(ctx, s.helper, middleware.UserToken)
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {
 		return nil, err
 	}
