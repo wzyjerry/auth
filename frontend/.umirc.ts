@@ -1,5 +1,5 @@
 import { defineConfig } from 'umi';
-
+import theme from './theme';
 export default defineConfig({
   dva: {
     immer: true,
@@ -9,5 +9,6 @@ export default defineConfig({
     type: 'none',
   },
   fastRefresh: {},
-  mfsu: {},
+  // mfsu: {},
+  theme,
 });
