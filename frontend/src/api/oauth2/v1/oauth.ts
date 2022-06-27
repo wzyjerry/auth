@@ -9,10 +9,35 @@ export interface AuthorizeRequest {
   clientId: string;
   redirectUri: string;
   scope: string;
+  nonce?: string | undefined;
 }
 
 export interface AuthorizeReply {
   code: string;
+  idToken?: string | undefined;
+}
+
+export interface PreAuthorizeRequest {
+  responseType: string;
+  clientId: string;
+  redirectUri: string;
+  scope: string;
+}
+
+export interface PreAuthorizeReply {
+  name: string;
+  logo?: string | undefined;
+  homepage: string;
+  description?: string | undefined;
+}
+
+export interface OAuth {
+  name: string;
+  logo?: string | undefined;
+  homepage: string;
+  description?: string | undefined;
+  code: string;
+  idToken?: string | undefined;
 }
 
 export interface TokenRequest {
@@ -33,7 +58,7 @@ export interface TokenReply {
 }
 
 function createBaseAuthorizeRequest(): AuthorizeRequest {
-  return { responseType: '', clientId: '', redirectUri: '', scope: '' };
+  return { responseType: '', clientId: '', redirectUri: '', scope: '', nonce: undefined };
 }
 
 export const AuthorizeRequest = {
@@ -49,6 +74,9 @@ export const AuthorizeRequest = {
     }
     if (message.scope !== '') {
       writer.uint32(34).string(message.scope);
+    }
+    if (message.nonce !== undefined) {
+      writer.uint32(42).string(message.nonce);
     }
     return writer;
   },
@@ -72,6 +100,9 @@ export const AuthorizeRequest = {
         case 4:
           message.scope = reader.string();
           break;
+        case 5:
+          message.nonce = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -86,6 +117,7 @@ export const AuthorizeRequest = {
       clientId: isSet(object.clientId) ? String(object.clientId) : '',
       redirectUri: isSet(object.redirectUri) ? String(object.redirectUri) : '',
       scope: isSet(object.scope) ? String(object.scope) : '',
+      nonce: isSet(object.nonce) ? String(object.nonce) : undefined,
     };
   },
 
@@ -95,6 +127,7 @@ export const AuthorizeRequest = {
     message.clientId !== undefined && (obj.clientId = message.clientId);
     message.redirectUri !== undefined && (obj.redirectUri = message.redirectUri);
     message.scope !== undefined && (obj.scope = message.scope);
+    message.nonce !== undefined && (obj.nonce = message.nonce);
     return obj;
   },
 
@@ -104,18 +137,22 @@ export const AuthorizeRequest = {
     message.clientId = object.clientId ?? '';
     message.redirectUri = object.redirectUri ?? '';
     message.scope = object.scope ?? '';
+    message.nonce = object.nonce ?? undefined;
     return message;
   },
 };
 
 function createBaseAuthorizeReply(): AuthorizeReply {
-  return { code: '' };
+  return { code: '', idToken: undefined };
 }
 
 export const AuthorizeReply = {
   encode(message: AuthorizeReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.code !== '') {
       writer.uint32(10).string(message.code);
+    }
+    if (message.idToken !== undefined) {
+      writer.uint32(18).string(message.idToken);
     }
     return writer;
   },
@@ -130,6 +167,9 @@ export const AuthorizeReply = {
         case 1:
           message.code = reader.string();
           break;
+        case 2:
+          message.idToken = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -141,18 +181,276 @@ export const AuthorizeReply = {
   fromJSON(object: any): AuthorizeReply {
     return {
       code: isSet(object.code) ? String(object.code) : '',
+      idToken: isSet(object.idToken) ? String(object.idToken) : undefined,
     };
   },
 
   toJSON(message: AuthorizeReply): unknown {
     const obj: any = {};
     message.code !== undefined && (obj.code = message.code);
+    message.idToken !== undefined && (obj.idToken = message.idToken);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthorizeReply>, I>>(object: I): AuthorizeReply {
     const message = createBaseAuthorizeReply();
     message.code = object.code ?? '';
+    message.idToken = object.idToken ?? undefined;
+    return message;
+  },
+};
+
+function createBasePreAuthorizeRequest(): PreAuthorizeRequest {
+  return { responseType: '', clientId: '', redirectUri: '', scope: '' };
+}
+
+export const PreAuthorizeRequest = {
+  encode(message: PreAuthorizeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.responseType !== '') {
+      writer.uint32(10).string(message.responseType);
+    }
+    if (message.clientId !== '') {
+      writer.uint32(18).string(message.clientId);
+    }
+    if (message.redirectUri !== '') {
+      writer.uint32(26).string(message.redirectUri);
+    }
+    if (message.scope !== '') {
+      writer.uint32(34).string(message.scope);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PreAuthorizeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePreAuthorizeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.responseType = reader.string();
+          break;
+        case 2:
+          message.clientId = reader.string();
+          break;
+        case 3:
+          message.redirectUri = reader.string();
+          break;
+        case 4:
+          message.scope = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PreAuthorizeRequest {
+    return {
+      responseType: isSet(object.responseType) ? String(object.responseType) : '',
+      clientId: isSet(object.clientId) ? String(object.clientId) : '',
+      redirectUri: isSet(object.redirectUri) ? String(object.redirectUri) : '',
+      scope: isSet(object.scope) ? String(object.scope) : '',
+    };
+  },
+
+  toJSON(message: PreAuthorizeRequest): unknown {
+    const obj: any = {};
+    message.responseType !== undefined && (obj.responseType = message.responseType);
+    message.clientId !== undefined && (obj.clientId = message.clientId);
+    message.redirectUri !== undefined && (obj.redirectUri = message.redirectUri);
+    message.scope !== undefined && (obj.scope = message.scope);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<PreAuthorizeRequest>, I>>(
+    object: I,
+  ): PreAuthorizeRequest {
+    const message = createBasePreAuthorizeRequest();
+    message.responseType = object.responseType ?? '';
+    message.clientId = object.clientId ?? '';
+    message.redirectUri = object.redirectUri ?? '';
+    message.scope = object.scope ?? '';
+    return message;
+  },
+};
+
+function createBasePreAuthorizeReply(): PreAuthorizeReply {
+  return { name: '', logo: undefined, homepage: '', description: undefined };
+}
+
+export const PreAuthorizeReply = {
+  encode(message: PreAuthorizeReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== '') {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.logo !== undefined) {
+      writer.uint32(18).string(message.logo);
+    }
+    if (message.homepage !== '') {
+      writer.uint32(26).string(message.homepage);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(34).string(message.description);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PreAuthorizeReply {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePreAuthorizeReply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.logo = reader.string();
+          break;
+        case 3:
+          message.homepage = reader.string();
+          break;
+        case 4:
+          message.description = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PreAuthorizeReply {
+    return {
+      name: isSet(object.name) ? String(object.name) : '',
+      logo: isSet(object.logo) ? String(object.logo) : undefined,
+      homepage: isSet(object.homepage) ? String(object.homepage) : '',
+      description: isSet(object.description) ? String(object.description) : undefined,
+    };
+  },
+
+  toJSON(message: PreAuthorizeReply): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.logo !== undefined && (obj.logo = message.logo);
+    message.homepage !== undefined && (obj.homepage = message.homepage);
+    message.description !== undefined && (obj.description = message.description);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<PreAuthorizeReply>, I>>(object: I): PreAuthorizeReply {
+    const message = createBasePreAuthorizeReply();
+    message.name = object.name ?? '';
+    message.logo = object.logo ?? undefined;
+    message.homepage = object.homepage ?? '';
+    message.description = object.description ?? undefined;
+    return message;
+  },
+};
+
+function createBaseOAuth(): OAuth {
+  return {
+    name: '',
+    logo: undefined,
+    homepage: '',
+    description: undefined,
+    code: '',
+    idToken: undefined,
+  };
+}
+
+export const OAuth = {
+  encode(message: OAuth, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== '') {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.logo !== undefined) {
+      writer.uint32(18).string(message.logo);
+    }
+    if (message.homepage !== '') {
+      writer.uint32(26).string(message.homepage);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.code !== '') {
+      writer.uint32(42).string(message.code);
+    }
+    if (message.idToken !== undefined) {
+      writer.uint32(50).string(message.idToken);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OAuth {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOAuth();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.logo = reader.string();
+          break;
+        case 3:
+          message.homepage = reader.string();
+          break;
+        case 4:
+          message.description = reader.string();
+          break;
+        case 5:
+          message.code = reader.string();
+          break;
+        case 6:
+          message.idToken = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OAuth {
+    return {
+      name: isSet(object.name) ? String(object.name) : '',
+      logo: isSet(object.logo) ? String(object.logo) : undefined,
+      homepage: isSet(object.homepage) ? String(object.homepage) : '',
+      description: isSet(object.description) ? String(object.description) : undefined,
+      code: isSet(object.code) ? String(object.code) : '',
+      idToken: isSet(object.idToken) ? String(object.idToken) : undefined,
+    };
+  },
+
+  toJSON(message: OAuth): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.logo !== undefined && (obj.logo = message.logo);
+    message.homepage !== undefined && (obj.homepage = message.homepage);
+    message.description !== undefined && (obj.description = message.description);
+    message.code !== undefined && (obj.code = message.code);
+    message.idToken !== undefined && (obj.idToken = message.idToken);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<OAuth>, I>>(object: I): OAuth {
+    const message = createBaseOAuth();
+    message.name = object.name ?? '';
+    message.logo = object.logo ?? undefined;
+    message.homepage = object.homepage ?? '';
+    message.description = object.description ?? undefined;
+    message.code = object.code ?? '';
+    message.idToken = object.idToken ?? undefined;
     return message;
   },
 };

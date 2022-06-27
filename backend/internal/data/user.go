@@ -190,7 +190,7 @@ func (r *userRepo) CreateAvatar(ctx context.Context, id string, base64 string) {
 }
 
 func (r *userRepo) GetAvatar(ctx context.Context, id string) (*string, error) {
-	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Only(ctx)
+	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Select(avatar.FieldAvatar).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, nil

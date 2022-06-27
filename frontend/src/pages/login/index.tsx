@@ -1,4 +1,3 @@
-import styles from './login.less';
 import { useLocation } from 'react-router-dom';
 import { Layout, message } from 'antd';
 import LoginForm from '@/components/login';
@@ -38,11 +37,7 @@ const Login: React.FC = () => {
   }, [error]);
 
   return (
-    <Layout className={styles.login}>
-      <Content className={styles.main}>
-        <LoginForm returnTo={returnTo} />
-      </Content>
-    </Layout>
+      <LoginForm returnTo={returnTo} />
   );
 };
 export default Login;

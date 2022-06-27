@@ -1,5 +1,6 @@
 import type { ImmerReducer } from 'umi';
 import { history } from 'umi';
+import jwt_decode from 'jwt-decode';
 import type { Effect, EffectsCommandMap } from 'dva';
 import type { LoginRequest, LoginReply } from '@/api/user/v1/login';
 import type { GetAvatarReply } from '@/api/user/v1/profile';
@@ -62,7 +63,7 @@ const UserModel: UserModelType = {
         });
       } else {
         history.push(
-          `/user/login?error=${error.name}&return_to=${encodeURIComponent(payload.returnTo)}`,
+          `/login?error=${error.name}&return_to=${encodeURIComponent(payload.returnTo)}`,
         );
       }
     },
@@ -84,6 +85,9 @@ const UserModel: UserModelType = {
     setToken(state, { payload }) {
       state.token = payload;
       localStorage.setItem(AUTH_TOKEN_KEY, payload);
+      const decoded = jwt_decode(payload);
+      console.log(decoded);
+      // TODO: 添加idToken
     },
     setAvatar(state, { payload }) {
       if (payload) {

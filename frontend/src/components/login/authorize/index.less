@@ -1,0 +1,83 @@
+.authorize{
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .title {
+    font-size: 24px;
+    font-weight: 400;
+  }
+  .info {
+    width: 540px;
+    margin-top: 36px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    .infoBody {
+      padding: 24px;
+      border-bottom: 1px solid #d0d7de;
+      .infoLine {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 8px;
+        .iconArea {
+          font-size: 36px;
+          margin-right: -12px;
+        }
+        .infoArea {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 0 24px;
+          .infoLabel {
+            .owner {
+              padding: 4px;
+              font-weight: 600;
+            }
+            .name {
+              font-weight: 600;
+            }
+            .data {
+              padding-left: 4px;
+              font-weight: 600;
+            }
+          }
+          .infoDescription {
+            padding-left: 4px;
+            font-size: 12px;
+            .nickname {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+    .infoFooter {
+      padding: 24px;
+      .actions {
+        display: flex;
+        margin-bottom: 8px;
+        .cancel {
+          width: 240px;
+          margin: auto;
+        }
+        .submit {
+          width: 240px;
+          margin: auto;
+        }
+      }
+      .footerInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .footerLabel {
+          font-size: 12px;
+        }
+        .homepage {
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

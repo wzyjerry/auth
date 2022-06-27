@@ -19,13 +19,34 @@ const _ = http.SupportPackageIsVersion1
 
 type OAuth2ServiceHTTPServer interface {
 	Authorize(context.Context, *AuthorizeRequest) (*AuthorizeReply, error)
+	PreAuthorize(context.Context, *PreAuthorizeRequest) (*PreAuthorizeReply, error)
 	Token(context.Context, *TokenRequest) (*TokenReply, error)
 }
 
 func RegisterOAuth2ServiceHTTPServer(s *http.Server, srv OAuth2ServiceHTTPServer) {
 	r := s.Route("/")
+	r.POST("/oauth2/v1/pre_authorize", _OAuth2Service_PreAuthorize0_HTTP_Handler(srv))
 	r.POST("/oauth2/v1/authorize", _OAuth2Service_Authorize0_HTTP_Handler(srv))
 	r.POST("/oauth2/v1/token", _OAuth2Service_Token0_HTTP_Handler(srv))
+}
+
+func _OAuth2Service_PreAuthorize0_HTTP_Handler(srv OAuth2ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PreAuthorizeRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.oauth2.v1.OAuth2Service/PreAuthorize")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.PreAuthorize(ctx, req.(*PreAuthorizeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PreAuthorizeReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _OAuth2Service_Authorize0_HTTP_Handler(srv OAuth2ServiceHTTPServer) func(ctx http.Context) error {
@@ -68,6 +89,7 @@ func _OAuth2Service_Token0_HTTP_Handler(srv OAuth2ServiceHTTPServer) func(ctx ht
 
 type OAuth2ServiceHTTPClient interface {
 	Authorize(ctx context.Context, req *AuthorizeRequest, opts ...http.CallOption) (rsp *AuthorizeReply, err error)
+	PreAuthorize(ctx context.Context, req *PreAuthorizeRequest, opts ...http.CallOption) (rsp *PreAuthorizeReply, err error)
 	Token(ctx context.Context, req *TokenRequest, opts ...http.CallOption) (rsp *TokenReply, err error)
 }
 
@@ -84,6 +106,19 @@ func (c *OAuth2ServiceHTTPClientImpl) Authorize(ctx context.Context, in *Authori
 	pattern := "/oauth2/v1/authorize"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.oauth2.v1.OAuth2Service/Authorize"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *OAuth2ServiceHTTPClientImpl) PreAuthorize(ctx context.Context, in *PreAuthorizeRequest, opts ...http.CallOption) (*PreAuthorizeReply, error) {
+	var out PreAuthorizeReply
+	pattern := "/oauth2/v1/pre_authorize"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.oauth2.v1.OAuth2Service/PreAuthorize"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

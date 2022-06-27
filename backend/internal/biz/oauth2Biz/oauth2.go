@@ -25,6 +25,7 @@ type OAuth2Repo interface {
 	// db部分
 	GetUserInfo(ctx context.Context, id string) (*ent.User, error)
 	AvatarExist(ctx context.Context, id string) (bool, error)
+	GetLogo(ctx context.Context, id string) (*string, error)
 	GetApplication(ctx context.Context, clientId string, fields ...string) (*ent.Application, error)
 	UpdateClientSecrets(ctx context.Context, id string, clientSecrets []*applicationNested.ClientSecret) error
 }
@@ -62,6 +63,7 @@ var (
 	ErrOAuth2InvalidGrant   = errors.New(http.StatusBadRequest, "OAUTH2_INVALID_GRANT", "invalid grant")
 	ErrInvalidGrantType     = errors.New(http.StatusBadRequest, "INVALID_GRANT_TYPE", "unknown grant type")
 	ErrInvalidResponseType  = errors.New(http.StatusBadRequest, "INVALID_RESPONSE_TYPE", "unsupported response type")
+	ErrInternalServerError  = errors.New(http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "internal server error")
 )
 
 func (uc *OAuth2Usecase) generateToken(ctx context.Context, clientId string, clientSecret string, info map[string]string) (*v1.TokenReply, error) {
@@ -174,6 +176,44 @@ func (uc *OAuth2Usecase) idToken(ctx context.Context, id string, clientId string
 	return uc.helper.SignJWT(token)
 }
 
+func (uc *OAuth2Usecase) PreAuthorize(ctx context.Context, responseType ResponseType, id string, clientId string, redirectUri string, scope string) (*v1.PreAuthorizeReply, error) {
+	item, err := uc.repo.GetApplication(ctx, clientId,
+		application.FieldCallback, 
+		application.FieldID, 
+		application.FieldName, 
+		application.FieldHomepage,
+		application.FieldDescription,
+	)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, ErrInvalidRedirectURI
+		}
+		return nil, err
+	}
+	if ok := util.VerifyRedirectUri(*item.Callback, redirectUri); !ok {
+		return nil, ErrInvalidRedirectURI
+	}
+	for _, item := range strings.Fields(scope) {
+		switch Scope(item) {
+		case scopeUser, scopeOfflineAccess, scopeOpenid:
+		// do nothing
+		default:
+			return nil, ErrInvalidScope
+		}
+	}
+	reply := &v1.PreAuthorizeReply{
+		Name:        *item.Name,
+		Homepage:    *item.Homepage,
+		Description: item.Description,
+	}
+	logo, err := uc.repo.GetLogo(ctx, item.ID)
+	if err != nil {
+		return nil, ErrInternalServerError
+	}
+	reply.Logo = logo
+	return reply, nil
+}
+
 func (uc *OAuth2Usecase) Authorize(ctx context.Context, responseType ResponseType, id string, clientId string, redirectUri string, scope string, nonce *string) (*v1.AuthorizeReply, error) {
 	item, err := uc.repo.GetApplication(ctx, clientId, application.FieldCallback)
 	if err != nil {
@@ -185,7 +225,7 @@ func (uc *OAuth2Usecase) Authorize(ctx context.Context, responseType ResponseTyp
 	if ok := util.VerifyRedirectUri(*item.Callback, redirectUri); !ok {
 		return nil, ErrInvalidRedirectURI
 	}
-	scopeInvalid, hasOpenid := false, false
+	hasOpenid := false
 	for _, item := range strings.Fields(scope) {
 		switch Scope(item) {
 		case scopeUser, scopeOfflineAccess:
@@ -193,11 +233,8 @@ func (uc *OAuth2Usecase) Authorize(ctx context.Context, responseType ResponseTyp
 		case scopeOpenid:
 			hasOpenid = true
 		default:
-			scopeInvalid = true
+			return nil, ErrInvalidScope
 		}
-	}
-	if scopeInvalid {
-		return nil, ErrInvalidScope
 	}
 	if responseType == ResponseTypeCode {
 		code, err := uc.code(ctx, id, clientId, redirectUri, scope, nil)

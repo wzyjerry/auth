@@ -17,7 +17,7 @@ const Github = () => {
   const githubLogin = useCallback(
     (code: string | null, returnTo: string) => {
       if (code === null) {
-        history.push(`/user/login?error=invalid_code&return_to=${encodeURIComponent(returnTo)}`);
+        history.push(`/login?error=invalid_code&return_to=${encodeURIComponent(returnTo)}`);
       } else {
         const request: LoginRequest = {
           type: Type.TYPE_GITHUB,

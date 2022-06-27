@@ -272,6 +272,365 @@ var _ interface {
 	ErrorName() string
 } = AuthorizeReplyValidationError{}
 
+// Validate checks the field values on PreAuthorizeRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *PreAuthorizeRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PreAuthorizeRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// PreAuthorizeRequestMultiError, or nil if none found.
+func (m *PreAuthorizeRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PreAuthorizeRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for ResponseType
+
+	// no validation rules for ClientId
+
+	if uri, err := url.Parse(m.GetRedirectUri()); err != nil {
+		err = PreAuthorizeRequestValidationError{
+			field:  "RedirectUri",
+			reason: "value must be a valid URI",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	} else if !uri.IsAbs() {
+		err := PreAuthorizeRequestValidationError{
+			field:  "RedirectUri",
+			reason: "value must be absolute",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for Scope
+
+	if len(errors) > 0 {
+		return PreAuthorizeRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// PreAuthorizeRequestMultiError is an error wrapping multiple validation
+// errors returned by PreAuthorizeRequest.ValidateAll() if the designated
+// constraints aren't met.
+type PreAuthorizeRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PreAuthorizeRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PreAuthorizeRequestMultiError) AllErrors() []error { return m }
+
+// PreAuthorizeRequestValidationError is the validation error returned by
+// PreAuthorizeRequest.Validate if the designated constraints aren't met.
+type PreAuthorizeRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PreAuthorizeRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PreAuthorizeRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PreAuthorizeRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PreAuthorizeRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PreAuthorizeRequestValidationError) ErrorName() string {
+	return "PreAuthorizeRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e PreAuthorizeRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPreAuthorizeRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PreAuthorizeRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PreAuthorizeRequestValidationError{}
+
+// Validate checks the field values on PreAuthorizeReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *PreAuthorizeReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PreAuthorizeReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// PreAuthorizeReplyMultiError, or nil if none found.
+func (m *PreAuthorizeReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PreAuthorizeReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	// no validation rules for Homepage
+
+	if m.Logo != nil {
+		// no validation rules for Logo
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if len(errors) > 0 {
+		return PreAuthorizeReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// PreAuthorizeReplyMultiError is an error wrapping multiple validation errors
+// returned by PreAuthorizeReply.ValidateAll() if the designated constraints
+// aren't met.
+type PreAuthorizeReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PreAuthorizeReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PreAuthorizeReplyMultiError) AllErrors() []error { return m }
+
+// PreAuthorizeReplyValidationError is the validation error returned by
+// PreAuthorizeReply.Validate if the designated constraints aren't met.
+type PreAuthorizeReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PreAuthorizeReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PreAuthorizeReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PreAuthorizeReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PreAuthorizeReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PreAuthorizeReplyValidationError) ErrorName() string {
+	return "PreAuthorizeReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e PreAuthorizeReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPreAuthorizeReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PreAuthorizeReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PreAuthorizeReplyValidationError{}
+
+// Validate checks the field values on OAuth with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *OAuth) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on OAuth with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in OAuthMultiError, or nil if none found.
+func (m *OAuth) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *OAuth) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	// no validation rules for Homepage
+
+	// no validation rules for Code
+
+	if m.Logo != nil {
+		// no validation rules for Logo
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if m.IdToken != nil {
+		// no validation rules for IdToken
+	}
+
+	if len(errors) > 0 {
+		return OAuthMultiError(errors)
+	}
+
+	return nil
+}
+
+// OAuthMultiError is an error wrapping multiple validation errors returned by
+// OAuth.ValidateAll() if the designated constraints aren't met.
+type OAuthMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m OAuthMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m OAuthMultiError) AllErrors() []error { return m }
+
+// OAuthValidationError is the validation error returned by OAuth.Validate if
+// the designated constraints aren't met.
+type OAuthValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e OAuthValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e OAuthValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e OAuthValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e OAuthValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e OAuthValidationError) ErrorName() string { return "OAuthValidationError" }
+
+// Error satisfies the builtin error interface
+func (e OAuthValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sOAuth.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = OAuthValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = OAuthValidationError{}
+
 // Validate checks the field values on TokenRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

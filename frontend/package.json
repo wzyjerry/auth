@@ -7,7 +7,6 @@
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage",
-
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
     "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
@@ -27,6 +26,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "bson": "^4.6.4",
+    "jwt-decode": "^3.1.2",
     "protobufjs": "^6.11.3",
     "react": "17.x",
     "react-dom": "17.x",

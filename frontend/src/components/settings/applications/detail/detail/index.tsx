@@ -12,9 +12,7 @@ import { useSelector } from 'umi';
 
 const Detail: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const application: Application = useSelector(
-    ({ application }: { application: Application }) => application,
-  );
+  const application = useSelector(({ application }: { application: Application }) => application);
   const copyClientId = (): void => {
     copy(application.clientId);
     message.success(`已复制到剪切板: ${application.clientId}`);

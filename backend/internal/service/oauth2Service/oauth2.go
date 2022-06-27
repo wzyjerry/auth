@@ -39,6 +39,25 @@ const (
 	grantTypeRefreshToken      = "refresh_token"
 )
 
+func (s *OAuth2Service) PreAuthorize(ctx context.Context, in *v1.PreAuthorizeRequest) (*v1.PreAuthorizeReply, error) {
+	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
+	if err != nil {
+		return nil, err
+	}
+	var responseType oauth2Biz.ResponseType
+	for _, item := range strings.Fields(in.ResponseType) {
+		switch item {
+		case responseTypeCode:
+			responseType |= oauth2Biz.ResponseTypeCode
+		case responseTypeIdToken:
+			responseType |= oauth2Biz.ResponseTypeIdToken
+		default:
+			return nil, oauth2Biz.ErrInvalidResponseType
+		}
+	}
+	return s.uc.PreAuthorize(ctx, responseType, (*token).Subject(), in.ClientId, in.RedirectUri, in.Scope)
+}
+
 func (s *OAuth2Service) Authorize(ctx context.Context, in *v1.AuthorizeRequest) (*v1.AuthorizeReply, error) {
 	token, err := middleware.Validator(ctx, s.helper, middleware.AuthToken)
 	if err != nil {

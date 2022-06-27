@@ -120,7 +120,7 @@ func (r *applicationRepo) GenerateClientSecret(ctx context.Context, admin string
 }
 
 func (r *applicationRepo) GetLogo(ctx context.Context, id string) (*string, error) {
-	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Only(ctx)
+	avatar, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Select(avatar.FieldAvatar).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, nil

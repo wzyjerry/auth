@@ -25,6 +25,16 @@ type oauth2Repo struct {
 func (r *oauth2Repo) AvatarExist(ctx context.Context, id string) (bool, error) {
 	return r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_USER)), avatar.RelIDEQ(id)).Select(avatar.FieldID).Exist(ctx)
 }
+func (r *oauth2Repo) GetLogo(ctx context.Context, id string) (*string, error) {
+	logo, err := r.data.db.Avatar.Query().Where(avatar.KindEQ(int32(avatarNested.Kind_KIND_APPLICATION)), avatar.RelIDEQ(id)).Select(avatar.FieldAvatar).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return logo.Avatar, nil
+}
 
 func (r *oauth2Repo) GetUserInfo(ctx context.Context, id string) (*ent.User, error) {
 	return r.data.db.User.Query().Where(user.IDEQ(id)).Select(user.FieldIP, user.FieldNickname).Only(ctx)

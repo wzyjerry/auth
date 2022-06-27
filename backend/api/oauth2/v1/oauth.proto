@@ -34,6 +34,31 @@ message AuthorizeReply {
     optional string id_token = 2;
 }
 
+message PreAuthorizeRequest {
+    string response_type = 1;
+    string client_id = 2;
+    string redirect_uri = 3 [(validate.rules).string.uri = true];
+    string scope = 4;
+}
+
+message PreAuthorizeReply {
+    string name = 1;
+    optional string logo = 2;
+    string homepage = 3;
+    optional string description = 4;
+    string owner = 5;
+    string nickname = 6;
+}
+
+message OAuth {
+    string name = 1;
+    optional string logo = 2;
+    string homepage = 3;
+    optional string description = 4;
+    string code = 5;
+    optional string id_token = 6;
+}
+
 message TokenRequest {
     string grant_type = 1;
     string client_id = 2;
@@ -52,6 +77,19 @@ message TokenReply {
 }
 
 service OAuth2Service {
+    rpc PreAuthorize(PreAuthorizeRequest) returns (PreAuthorizeReply) {
+        option (google.api.http) = {
+            post: "/oauth2/v1/pre_authorize"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            security: {
+                security_requirement: {
+                    key: "bearer"
+                }
+            }
+        };
+    }
     rpc Authorize(AuthorizeRequest) returns (AuthorizeReply) {
         option (google.api.http) = {
             post: "/oauth2/v1/authorize"

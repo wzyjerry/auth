@@ -20,7 +20,7 @@ export function errorHandler(error: ResponseError<backendError>) {
       case 'UNAUTHORIZED':
       case 'FORBIDDEN':
         history.push(
-          `/user/login?return_to=${encodeURIComponent(
+          `/login?return_to=${encodeURIComponent(
             location.pathname + location.search + location.hash,
           )}`,
         );
