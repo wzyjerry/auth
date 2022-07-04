@@ -36,7 +36,7 @@ func (s *ProfileService) GetAvatar(ctx context.Context, _ *emptypb.Empty) (*v1.G
 	if err != nil {
 		return nil, err
 	}
-	avatar, err := s.uc.GetAvatar(ctx, (*token).Subject())
+	avatar, err := s.uc.GetAvatar(ctx, token.Subject())
 	if err != nil {
 		return nil, err
 	}

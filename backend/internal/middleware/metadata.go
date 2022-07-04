@@ -63,7 +63,7 @@ func GetIp(ctx context.Context) (string, error) {
 	return val.(string), nil
 }
 
-func Validator(ctx context.Context, helper *util.TokenHelper, tokenType TokenType) (*jwt.Token, error) {
+func Validator(ctx context.Context, helper *util.TokenHelper, tokenType TokenType) (jwt.Token, error) {
 	val := ctx.Value(auth{})
 	if val == nil {
 		return nil, ErrUnauthorized

@@ -55,7 +55,7 @@ func (s *OAuth2Service) PreAuthorize(ctx context.Context, in *v1.PreAuthorizeReq
 			return nil, oauth2Biz.ErrInvalidResponseType
 		}
 	}
-	return s.uc.PreAuthorize(ctx, responseType, (*token).Subject(), in.ClientId, in.RedirectUri, in.Scope)
+	return s.uc.PreAuthorize(ctx, responseType, token.Subject(), in.ClientId, in.RedirectUri, in.Scope)
 }
 
 func (s *OAuth2Service) Authorize(ctx context.Context, in *v1.AuthorizeRequest) (*v1.AuthorizeReply, error) {
@@ -74,7 +74,7 @@ func (s *OAuth2Service) Authorize(ctx context.Context, in *v1.AuthorizeRequest) 
 			return nil, oauth2Biz.ErrInvalidResponseType
 		}
 	}
-	return s.uc.Authorize(ctx, responseType, (*token).Subject(), in.ClientId, in.RedirectUri, in.Scope, in.Nonce)
+	return s.uc.Authorize(ctx, responseType, token.Subject(), in.ClientId, in.RedirectUri, in.Scope, in.Nonce)
 }
 
 func (s *OAuth2Service) Token(ctx context.Context, in *v1.TokenRequest) (*v1.TokenReply, error) {

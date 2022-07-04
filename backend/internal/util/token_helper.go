@@ -43,30 +43,30 @@ func NewTokenHelper(
 
 func (h *TokenHelper) ParseJWT(
 	signed string,
-) (*jwt.Token, error) {
+) (jwt.Token, error) {
 	token, err := jwt.ParseString(signed, jwt.WithKey(jwa.RS256, h.privateKey.PublicKey))
 	if err != nil {
 		return nil, err
 	}
-	return &token, nil
+	return token, nil
 }
 
-func (h *TokenHelper) IsIdToken(token *jwt.Token) bool {
-	_, ok := (*token).Get(nonceKey)
+func (h *TokenHelper) IsIdToken(token jwt.Token) bool {
+	_, ok := token.Get(nonceKey)
 	return ok
 }
 
-func (h *TokenHelper) IsAuthToken(token *jwt.Token) bool {
-	audience := (*token).Audience()
+func (h *TokenHelper) IsAuthToken(token jwt.Token) bool {
+	audience := token.Audience()
 	return len(audience) > 0 && strings.Compare(audience[0], os.Getenv(h.conf.ClientId)) == 0
 }
 
-func (h *TokenHelper) IsClientToken(token *jwt.Token) bool {
-	idType, ok := (*token).Get(idTypeKey)
+func (h *TokenHelper) IsClientToken(token jwt.Token) bool {
+	idType, ok := token.Get(idTypeKey)
 	return ok && strings.Compare(idType.(string), appWord) == 0
 }
 
-func (h *TokenHelper) IsUserToken(token *jwt.Token) bool {
+func (h *TokenHelper) IsUserToken(token jwt.Token) bool {
 	return !h.IsClientToken(token)
 }
 

@@ -32,7 +32,7 @@ func (s *ApplicationService) Create(ctx context.Context, in *v1.CreateRequest) (
 	if err != nil {
 		return nil, err
 	}
-	id, err := s.uc.Create(ctx, (*token).Subject(), in.Name, in.Homepage, in.Description, in.Callback)
+	id, err := s.uc.Create(ctx, token.Subject(), in.Name, in.Homepage, in.Description, in.Callback)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *ApplicationService) Retrieve(ctx context.Context, in *v1.RetrieveReques
 	if err != nil {
 		return nil, err
 	}
-	return s.uc.Retrieve(ctx, (*token).Subject(), in.Id)
+	return s.uc.Retrieve(ctx, token.Subject(), in.Id)
 }
 
 func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.GenerateClientSecretRequest) (*v1.GenerateClientSecretReply, error) {
@@ -54,7 +54,7 @@ func (s *ApplicationService) GenerateClientSecret(ctx context.Context, in *v1.Ge
 	if err != nil {
 		return nil, err
 	}
-	return s.uc.GenerateClientSecret(ctx, (*token).Subject(), in.Id, in.Description)
+	return s.uc.GenerateClientSecret(ctx, token.Subject(), in.Id, in.Description)
 }
 
 func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.RevokeClientSecretRequest) (*emptypb.Empty, error) {
@@ -62,7 +62,7 @@ func (s *ApplicationService) RevokeClientSecret(ctx context.Context, in *v1.Revo
 	if err != nil {
 		return nil, err
 	}
-	return nil, s.uc.RevokeClientSecret(ctx, (*token).Subject(), in.Id, in.SecretId)
+	return nil, s.uc.RevokeClientSecret(ctx, token.Subject(), in.Id, in.SecretId)
 }
 
 func (s *ApplicationService) UploadLogo(ctx context.Context, in *v1.UploadLogoRequest) (*emptypb.Empty, error) {
@@ -70,7 +70,7 @@ func (s *ApplicationService) UploadLogo(ctx context.Context, in *v1.UploadLogoRe
 	if err != nil {
 		return nil, err
 	}
-	return nil, s.uc.UploadLogo(ctx, (*token).Subject(), in.Id, in.Logo)
+	return nil, s.uc.UploadLogo(ctx, token.Subject(), in.Id, in.Logo)
 }
 
 func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (*emptypb.Empty, error) {
@@ -78,7 +78,7 @@ func (s *ApplicationService) Update(ctx context.Context, in *v1.UpdateRequest) (
 	if err != nil {
 		return nil, err
 	}
-	return nil, s.uc.Update(ctx, (*token).Subject(), in.Id, in.Name, in.Homepage, in.Description, in.Callback)
+	return nil, s.uc.Update(ctx, token.Subject(), in.Id, in.Name, in.Homepage, in.Description, in.Callback)
 }
 
 func (s *ApplicationService) Delete(ctx context.Context, in *v1.DeleteRequest) (*emptypb.Empty, error) {
@@ -86,7 +86,7 @@ func (s *ApplicationService) Delete(ctx context.Context, in *v1.DeleteRequest) (
 	if err != nil {
 		return nil, err
 	}
-	return nil, s.uc.Delete(ctx, (*token).Subject(), in.Id)
+	return nil, s.uc.Delete(ctx, token.Subject(), in.Id)
 }
 
 func (s *ApplicationService) GetAll(ctx context.Context, _ *emptypb.Empty) (*v1.GetAllReply, error) {
@@ -94,5 +94,5 @@ func (s *ApplicationService) GetAll(ctx context.Context, _ *emptypb.Empty) (*v1.
 	if err != nil {
 		return nil, err
 	}
-	return s.uc.GetAll(ctx, (*token).Subject())
+	return s.uc.GetAll(ctx, token.Subject())
 }
